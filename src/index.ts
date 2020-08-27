@@ -4,7 +4,7 @@ import { DISCORD_TOKEN } from './config/secrets';
 import CommandHandler from './commandHandler';
 import config from './config/botConfig';
 
-const PORT = parseInt(process.argv[0]) || 5000;
+const PORT = parseInt(process.argv[2]) || 5000;
 
 const app = express();
 const client = new Discord.Client();
