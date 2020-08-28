@@ -1,6 +1,6 @@
 import {ArgCommand} from './commandArgInterface'
 import {ChannelFinder} from '../util/ChannelFinder'
-import {Message, Permissions} from 'discord.js'
+import {Message, Permissions, GuildChannel} from 'discord.js'
 export class DeleteChannelCommand implements ArgCommand{
 commandNames:string[]=['deletechannel']
 guildExclusive:boolean=true
@@ -27,5 +27,5 @@ if(!channel){
 msg.reply('no pude identificar el canal')
 return
 }
-await channel.delete().then(c=>msg.channel.send(`Canal **${c.name}** borrado sin problemas.`))
+await channel.delete(`Comando ejecutado por ${mod.user.tag}`).then((c:GuildChannel)=>msg.channel.send(`Canal **${c.name}** borrado sin problemas.`))
 }}
