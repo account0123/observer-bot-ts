@@ -47,7 +47,7 @@ export default class CommandHandler {
         return
       }
       await matchedCommand.run(message).catch(error => {
-        message.reply(`'${this.echoMessage(message)}' falló por ${error}`);
+        console.error(`"${this.echoMessage(message)}" falló por "${error}"`);
       });
     }
     if (matchedArgCommand) {
@@ -60,7 +60,7 @@ export default class CommandHandler {
         return
       }
       await matchedArgCommand.run(message,commandParser.args).catch(error => {
-        message.reply(`'${this.echoMessage(message)}' falló por ${error}`);
+        console.error(`"${this.echoMessage(message)}" falló por "${error}"`);
       });
     }
   }
