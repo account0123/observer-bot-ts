@@ -15,7 +15,7 @@ export class ActivitycheckCommand implements Command {
         let dnd:number = 0 
         let offline:number = 0
         if (!message.guild) return
-        for (const member of message.guild.roles.cache.values()) { 
+        for (const member of message.guild.members.cache.values()) { 
             if(member.user.bot) continue;  
             switch (member.presence.status) {
                 case 'online':
