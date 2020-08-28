@@ -1,4 +1,4 @@
-import {ArgCommand} from './commandArgInterface'
+import ArgCommand from './commandArgInterface'
 import {ChannelFinder} from '../util/ChannelFinder'
 import {Message, Permissions, GuildChannel} from 'discord.js'
 export class DeleteChannelCommand implements ArgCommand{
