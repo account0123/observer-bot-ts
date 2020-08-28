@@ -24,7 +24,7 @@ export class BanCommand implements ArgCommand {
 		}
 		await member.ban({reason: reason}).then(banned => {
 			const embed = new MessageEmbed()
-				.setAuthor(`¡Fuiste baneado de ${banned.guild.name}!`, msg.client.user?.avatarURL()!)
+				.setAuthor(`¡Fuiste baneado de ${banned.guild.name}!`, msg.client.user!.avatarURL()!)
 				.setTitle('Razón:')
 				.setDescription(reason)
 				.setFooter(`Admin: ${mod.user.tag}`);
