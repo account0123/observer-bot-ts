@@ -10,7 +10,7 @@ export class CreateRoleCommand implements ArgCommand{
 	guildExclusive: boolean = true
 	async run(msg: Message, args: string[]): Promise<void> {
 		const bot = msg.guild!.member(msg.client.user!)
-		if (!bot?.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!bot!.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
 			msg.reply('no tengo el permiso de gestionar roles, así que tampoco puedo crearlos')
 			return
 		}
