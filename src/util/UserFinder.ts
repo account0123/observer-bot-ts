@@ -9,7 +9,7 @@ export class UserFinder {
         const c:Client = message.client
         
         // Verifica que la variable sea una mención
-        let matches = mention.match(/<@!?(\d{17,19})>/);
+        let matches = mention.match(/<@(\d{17,19})>/);
         // Si no hay coincidencia en el formato, 'matches' será nulo
         if (!matches){
             matches = mention.match(/\d{17,19}/)
