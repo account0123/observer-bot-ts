@@ -8,7 +8,8 @@ export class SayCommand implements ArgCommand {
 	usage: string = '<palabra o frase>'
 	guildExclusive: boolean = false
 	async run(msg: Message, args: string[]): Promise<void> {
-		await msg.channel.send(args.join(' ')).then(m=>m.delete({reason: 'comando say ejecutado'}))
+		await msg.channel.send(args.join(' '))
+		await msg.delete({timeout: 1000,reason: 'comando say ejecutado'})
 	}
 	
 }
