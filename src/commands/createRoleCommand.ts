@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, Permissions, MessageEmbed } from "discord.js";
+import { Message, Permissions, MessageEmbed, RoleData, Collection } from "discord.js";
 import { RoleFinder } from "../util/RoleFinder";
 
 export class CreateRoleCommand implements ArgCommand{
@@ -14,57 +14,15 @@ export class CreateRoleCommand implements ArgCommand{
 			msg.reply('no tengo el permiso de gestionar roles, así que tampoco puedo crearlos')
 			return
 		}
-		const arg = args.join(' ');
-        // RegEx
-        const nameEx = /^\w+(?:\s?\w)+/;
-        const colorEx = /#[A-Fa-f0-9]{,6}/;
-        const permsEx = /0x[A-Fa-f0-9]{1,6}/;
-        const lroleEx = /\^\w+(\s?\w+?)+|\^(<&\d+>)|\^(\d+)/;
-        const hroleEx = /!((\w+\s?)+)|!(<&\d+>)|!(\d+)/;
-		const booleansEx = /-mentionable|-hoist/g;
-		const name = arg.match(nameEx);
-		if(!name) {
-			msg.reply('no pude encontrar un nombre de rol, lo que es raro.')
-			return
+		const mod = msg.guild.members.cache.get(msg.author!.id)!
+		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+		  msg.reply('no tienes permiso para crear roles')
+		  return
 		}
-        const color = (arg.match(colorEx) || ['DEFAULT']);
-		let perms = parseInt(arg.match(permsEx)![0],16) || Permissions.DEFAULT
-		let hrolematch = arg.match(hroleEx);
-		var hroleinput = ""
-		var lroleinput = ""
-        if(hrolematch) hroleinput = hrolematch[1];
-        let lrolematch = arg.match(lroleEx);
-        if(lrolematch) lroleinput = lrolematch[1];
-        const options = arg.match(booleansEx);
-        var hoist = false;
-        var mentionable = false;
-        if (options != null) {
-            hoist = options.includes('-hoist');
-            mentionable = options.includes('-mentionable');
-        }
-        const data = {
-            name: name[0],
-            color: color[0],
-            permissions: perms,
-            hoist: hoist,
-            mentionable: mentionable,
-            position: 0,
-        };
-        // Evaluación
-        var hrolepos = 0;
-        var lrolepos = 0;
-        if (hroleinput) {
-            var hrole = RoleFinder.getRole(msg, hroleinput);
-            if (!hrole){msg.reply('el rol superior no pudo ser encontrado');return;}
-            hrolepos = hrole.position;
-        }
-        if(lroleinput){
-            var lrole = RoleFinder.getRole(msg, lroleinput);
-            if(!lrole) {msg.reply('el rol inferior no pudo ser encontrado');return;}
-            lrolepos = lrole.position;
-        }
-        if(hrolepos > 0) data.position = hrolepos - 1;
-		if(lrolepos > 0) data.position = lrolepos + 1;
+		// nuevo código
+		const arg = args.join(' ')
+		const data = stringify(arg)
+    
 		if (data.position >= bot.roles.highest.position) {
 			msg.reply('el rol que vas a crear está igual o más alto que todos mis roles juntos, así que hasta aquí hemos llegado')
 			return
@@ -87,5 +45,52 @@ export class CreateRoleCommand implements ArgCommand{
 			console.error(error)
 		});
 	}
-	
+	stringify(str:string):RoleData {
+	  if(!str.startsWith('{') && !str.endsWith('}')) return 'invalid_format'
+	  const body = str.slice(1,-1)
+	  if(!body || body.length < 6) return 'no_body'
+	  const map = body.split(',')
+	  const properties = new Map()
+	  map.forEach(s=>{
+	    const splits = s.trim().split(':')
+	    const key = splits[0].trim()
+	    if(key == 'hoist') splits[1] = 'true'
+	    if(key == 'mentionable') splits[1] = 'true'
+	    if (splits.length != 2) continue
+	    properties.set(key,splits[1].trim())
+	  });
+	  // Default Values
+	  var data: RoleData = {
+	    name: 'new role',
+	    position: 0,
+	    permissions: 0,
+	    color: 0,
+	    hoist: false,
+	    mentionable: false
+	  };
+	  // Setting values
+	  for (const [key,value] of properties) {
+	    switch (key.toLowerCase()) {
+	      case 'name':
+	        data.name = value
+	        break
+        case 'color':
+          data.color = value
+          break
+        case 'permissions': case 'perms':
+          data.permissions = parseInt(value,16)
+          break
+        case 'position':
+          data.position = value
+          break
+        case 'hoist':
+          if(value == 'true') data.hoist =true
+          break
+        case 'mentionable':
+          if(value == 'true') data.mentionable =true
+          break
+	    }
+	  }
+	  return data
+	}
 }
