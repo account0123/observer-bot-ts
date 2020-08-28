@@ -1,11 +1,9 @@
 import dotenv from "dotenv";
 
-const result = dotenv.config({ path: ".env" })
+dotenv.config({ path: ".env" })
 
-export const DISCORD_TOKEN = process.env["token"];
-if (result.error) {
-  console.error(result.error)
-}
+export const DISCORD_TOKEN = process.env["TOKEN"];
+
 if (!DISCORD_TOKEN) {
   console.error("No 'discord token' provided in .env file.");
 }
