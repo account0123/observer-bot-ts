@@ -1,5 +1,5 @@
 import { Message, Guild, GuildChannel } from "discord.js";
-export class MemberFinder {
+export class ChannelFinder {
   /**
    * 
    * @param {Message} message 
