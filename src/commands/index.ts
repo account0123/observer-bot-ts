@@ -16,3 +16,4 @@ export * from "./avatarCommand";
 export * from "./activityCheckCommand"
 export * from "./banCommand"
 export * from "./createRoleCommand"
+export * from "./sayCommand"
