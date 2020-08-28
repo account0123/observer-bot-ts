@@ -1,22 +1,30 @@
 import { Message } from "discord.js";
-import { GreetCommand, TimeCommand } from "./commands";
+import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
+import ArgCommand from "./commands/commandArgInterface";
 
 export default class CommandHandler {
 
   private commands: Command[];
+  private argCommands: ArgCommand[]
 
   private readonly prefix: string;
 
   constructor(prefix: string) {
     // Clases aquí
     const commandClasses = [
-      GreetCommand,
-      TimeCommand
+      StopCommand,
+      ActivitycheckCommand
+    ];
+    const argCommandClasses = [
+      AvatarCommand,
+      BanCommand,
+      CreateRoleCommand
     ];
 
     this.commands = commandClasses.map(commandClass => new commandClass());
+    this.argCommands = argCommandClasses.map(c=>new c())
     this.prefix = prefix;
   }
 
@@ -26,14 +34,32 @@ export default class CommandHandler {
       return;
     }
 
-    message.reply(`Comando '${this.echoMessage(message)}' ejecutado por ${message.author.tag}`);
+    console.log(`Comando '${this.echoMessage(message)}' ejecutado por ${message.author.tag}`);
 
     const commandParser = new CommandParser(message, this.prefix);
 
-    const matchedCommand = this.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName));
+    const matchedCommand = this.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
+    const matchedArgCommand = this.argCommands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
 
     if(matchedCommand) {
+      if (message.channel.type == "dm" && matchedCommand.guildExclusive) {
+        message.reply(`este comando solo puede ejecutarse en servidores`)
+        return
+      }
       await matchedCommand.run(message).catch(error => {
+        message.reply(`'${this.echoMessage(message)}' falló por ${error}`);
+      });
+    }
+    if (matchedArgCommand) {
+      if (message.channel.type == "dm" && matchedArgCommand.guildExclusive) {
+        message.reply(`este comando solo puede ejecutarse en servidores`)
+        return
+      }
+      if (commandParser.args.length < matchedArgCommand.requiredArgs) {
+        message.reply(`no pude hacer nada por falta de argumentos. El uso correcto del comando sería \`${this.prefix}${commandParser.parsedCommandName} ${matchedArgCommand.usage}\``);
+        return
+      }
+      await matchedArgCommand.run(message,commandParser.args).catch(error => {
         message.reply(`'${this.echoMessage(message)}' falló por ${error}`);
       });
     }

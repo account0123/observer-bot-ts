@@ -7,6 +7,7 @@ export default interface Command {
    */
   readonly commandNames: string[];
 
+  readonly guildExclusive: boolean;
   /** Usage documentation. */
   help(commandPrefix: string): string;
 

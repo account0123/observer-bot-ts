@@ -4,10 +4,11 @@ import { DISCORD_TOKEN } from './config/secrets';
 import CommandHandler from './commandHandler';
 import config from './config/botConfig';
 
-const PORT = parseInt(process.argv[0]) || 5000;
+const PORT = parseInt(process.argv[2]) || 5000;
 
 const app = express();
 const client = new Discord.Client();
+
 
 //////////////////////////////////////////////////////////////////
 //             EXPRESS SERVER SETUP FOR UPTIME ROBOT            //
@@ -29,5 +30,5 @@ client.on("ready", () => { console.log("Hive Greeter has started"); });
 client.on("message", (message: Message) => { commandHandler.handleMessage(message); });
 client.on("error", e => { console.error("Discord client error!", e); });
 
-client.login(DISCORD_TOKEN);
+client.login(DISCORD_TOKEN).catch(e=>console.error(e));
 app.listen(PORT, () => console.log(`Server started on port ${PORT}!`));

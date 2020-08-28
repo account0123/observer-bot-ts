@@ -11,5 +11,8 @@
  * DO NOT export command classes using default
  */
 
-export * from "./greetCommand";
-export * from "./timeCommand";
+export * from "./stopCommand";
+export * from "./avatarCommand";
+export * from "./activityCheckCommand"
+export * from "./banCommand"
+export * from "./createRoleCommand"
