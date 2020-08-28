@@ -5,7 +5,7 @@ export class ChannelFinder {
    * @param {Message} message 
    * @param {String} mention 
    */
-  static getMember(message: Message, mention: string): GuildChannel | undefined {
+  static getChannel(message: Message, mention: string): GuildChannel | undefined {
     const g: Guild = message.guild!
 
       // Verifica que la variable sea una mención
