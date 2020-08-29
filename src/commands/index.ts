@@ -11,10 +11,12 @@
  * DO NOT export command classes using default
  */
 
-export * from "./stopCommand";
-export * from "./avatarCommand";
 export * from "./activityCheckCommand"
+export * from "./addRoleCommand"
+export * from "./avatarCommand";
 export * from "./banCommand"
 export * from "./createRoleCommand"
-export * from "./sayCommand"
+export * from "./editRoleCommand"
 export * from "./deleteChannelCommand"
+export * from "./sayCommand"
+export * from "./stopCommand";
