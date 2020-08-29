@@ -15,24 +15,24 @@ export class MemberFinder {
             matches = mention.match(/\d{17,19}/)
             if (!matches) {
                 if (mention.startsWith('@')) {
-                    mention = mention.slice(1)
+                    mention = mention.slice(1).toLowerCase()
                 }
                 const split = mention.split('#',2)
                 if (split.length == 1) {
                     for (const member of g.members.cache.values()) {
-                        if (mention.toLowerCase() == member.user.username || mention.toLowerCase() == member.nickname) {
+                        if (mention == member.user.username.toLowerCase() || mention == member.nickname?.toLocaleLowerCase()) {
                             return member
                         }
                     }
                 }else if(split.length == 2){
                     for (const member of g.members.cache.values()) {
-                        if ((split[0] == member.user.username || split[0] == member.nickname) && split[1] == member.user.discriminator) {
+                        const nick = member.nickname || member.displayName
+                        if ((split[0] == member.user.username.toLowerCase() || split[0] == nick.toLowerCase()) && split[1] == member.user.discriminator) {
                             return member
                         }
                     }
                 }
-
-            
+                return undefined
             }
             const id:string = matches![0]
             return g.members.cache.get(id)

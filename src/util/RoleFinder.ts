@@ -16,8 +16,9 @@ export class RoleFinder {
 			 matches = mention.match(/\d{17,19}/)
 			 if (!matches) {
 				 for (const role of g.roles.cache.values()) {
-					if (mention.toLowerCase() == role.name) return role
+					if (mention.toLowerCase() == role.name.toLowerCase()) return role
 					}
+				return undefined
 			 }
 			 const id:string = matches![0]
 			 return g.roles.cache.get(id)

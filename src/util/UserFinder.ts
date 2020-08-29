@@ -15,24 +15,23 @@ export class UserFinder {
             matches = mention.match(/\d{17,19}/)
             if (!matches) {
                 if (mention.startsWith('@')) {
-                    mention = mention.slice(1)
+                    mention = mention.slice(1).toLowerCase()
                 }
                 const split = mention.split('#',2)
                 if (split.length == 1) {
                     for (const user of c.users.cache.values()) {
-                        if (mention.toLowerCase() == user.username) {
+                        if (mention == user.username.toLowerCase()) {
                             return user;
                         }
                     }
                 }else if(split.length == 2){
                     for (const user of c.users.cache.values()) {
-                        if (split[0] == user.username && split[1] == user.discriminator) {
+                        if (split[0] == user.username.toLowerCase() && split[1] == user.discriminator) {
                             return user
                         }
                     }
                 }
-
-            
+                return undefined
             }
             const id:string = matches![0]
             return c.users.cache.get(id) || undefined

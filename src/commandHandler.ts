@@ -67,7 +67,10 @@ export default class CommandHandler {
         return
       }
       await matchedArgCommand.checkPermissions(message).then(b=>{
-       if(b) matchedArgCommand.run(message,commandParser.args).catch(error => console.error(`"${this.echoMessage(message)}" falló por "${error}"`))});
+       if(b) matchedArgCommand.run(message,commandParser.args).catch(error => {
+         message.channel.send('Ocurrió un rror inesperado :thinking: ¿?')
+         console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
+      })});
     }
   }
 
