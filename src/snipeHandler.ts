@@ -1,3 +1,4 @@
+/// <reference path="../node_modules/@types/mysql/index.d.ts" />
 import * as MySQL from "mysql"
 import {Message, PartialMessage} from 'discord.js'
 import { Connection } from "mysql";
