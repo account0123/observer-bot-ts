@@ -20,7 +20,8 @@ export class MemberFinder {
                 const split = mention.split('#',2)
                 if (split.length == 1) {
                     for (const member of g.members.cache.values()) {
-                        if (mention == member.user.username.toLowerCase() || mention == member.nickname?.toLocaleLowerCase()) {
+                        const nick = member.nickname || member.displayName
+                        if (mention == member.user.username.toLowerCase() || mention == nick.toLocaleLowerCase()) {
                             return member
                         }
                     }
