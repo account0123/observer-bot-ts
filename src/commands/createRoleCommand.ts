@@ -9,15 +9,6 @@ export class CreateRoleCommand implements ArgCommand{
 	guildExclusive: boolean = true
 	async run(msg: Message, args: string[]): Promise<void> {
 		const bot = msg.guild!.member(msg.client.user!)!
-		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			msg.reply('no tengo el permiso de gestionar roles, así que tampoco puedo crearlos')
-			return
-		}
-		const mod = msg.guild!.members.cache.get(msg.author!.id)!
-		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-		  msg.reply('no tienes permiso para crear roles')
-		  return
-		}
 		// nuevo código
 		const arg = args.join(' ')
 		const data = createData(arg)
@@ -31,7 +22,7 @@ export class CreateRoleCommand implements ArgCommand{
 		}
 		console.log('Creando rol ' + data.toString())
         // Ejecución
-        msg.guild!.roles.create({data: data, reason: `Comando ejecutado por ${mod.user.tag}`}).then((role) => {
+        msg.guild!.roles.create({data: data, reason: `Comando ejecutado por ${msg.author.tag}`}).then((role) => {
             const embed = new MessageEmbed().setTitle('Detalles:').setColor(data.color || 0)
                 .addFields(
                     { name: 'Color:', value: role.hexColor, inline: true},
@@ -44,6 +35,19 @@ export class CreateRoleCommand implements ArgCommand{
 			msg.reply('Error inesperado!!!')
 			console.error(error)
 		});
+	}
+	async checkPermissions(msg: Message): Promise<boolean> {
+		const mod = msg.guild!.member(msg.author)!
+		const bot = msg.guild!.member(msg.client.user!)!
+		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+			msg.reply('no tengo el permiso para crear roles.')
+			return false
+		}
+		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+			msg.reply('no tienes permiso de crear roles.')
+			return false
+		}
+		return true
 	}
 }
 

@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed, Permissions } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 
 export class BanCommand implements ArgCommand {
@@ -9,17 +9,16 @@ export class BanCommand implements ArgCommand {
 	examples: string[] = ['@usuario#1234 por alguna razón', '123456789987654321 uso de multicuentas'];
 	usage: string = '<usuario> [razón]';
 	async run(msg: Message, args: string[]): Promise<void> {
-		const id = msg.author.id;
-		const mod = msg.guild!.members.cache.get(id)!
-		if(!(mod.hasPermission('BAN_MEMBERS'))){ 
-			msg.reply(`no tienes el permiso para banear`)
-			return
-		}
-		const mention = args.splice(0,1).toString();
+		const mod = msg.guild!.member(msg.author)!
+		const mention = args.splice(0,1).toString()
 		const reason = args.join(' ');
 		const member = MemberFinder.getMember(msg, mention);
 		if(!member){
 			msg.reply('el usuario mencionado no es válido')
+			return
+		}
+		if(!member.bannable){
+			msg.reply('no puedes banear al miembro')
 			return
 		}
 		await member.ban({reason: reason}).then(banned => {
@@ -30,9 +29,20 @@ export class BanCommand implements ArgCommand {
 				.setFooter(`Admin: ${mod.user.tag}`);
 			banned.send(embed);
 		}).catch(error => {
-			if(!member.bannable) msg.reply('no puedes banear al miembro');
 			if(error.code == 40007) msg.reply('el miembro ya fue baneado.')
 		});
 	}
-	
+	async checkPermissions(msg: Message): Promise<boolean> {
+		const mod = msg.guild!.member(msg.author)!
+		const bot = msg.guild!.member(msg.client.user!)!
+		if (!bot.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) {
+			msg.reply('no tengo el permiso para banear.')
+			return false
+		}
+		if (!mod.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) {
+			msg.reply('no tienes permiso para banear.')
+			return false
+		}
+		return true
+	}
 }

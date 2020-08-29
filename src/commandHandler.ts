@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand } from "./commands";
+import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
@@ -24,7 +24,10 @@ export default class CommandHandler {
       SayCommand,
       DeleteChannelCommand,
       EditRoleCommand,
-      AddRoleCommand
+      AddRoleCommand,
+      CleanCommand,
+      DemoteCommand,
+      RemoveRoleCommand
     ];
 
     this.commands = commandClasses.map(commandClass => new commandClass());
@@ -63,9 +66,8 @@ export default class CommandHandler {
         message.reply(`no pude hacer nada por falta de argumentos. El uso correcto del comando sería \`${this.prefix}${commandParser.parsedCommandName} ${matchedArgCommand.usage}\``);
         return
       }
-      await matchedArgCommand.run(message,commandParser.args).catch(error => {
-        console.error(`"${this.echoMessage(message)}" falló por "${error}"`);
-      });
+      await matchedArgCommand.checkPermissions(message).then(b=>{
+       if(b) matchedArgCommand.run(message,commandParser.args).catch(error => console.error(`"${this.echoMessage(message)}" falló por "${error}"`))});
     }
   }
 

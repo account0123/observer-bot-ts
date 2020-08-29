@@ -2,6 +2,9 @@ import ArgCommand from "./commandArgInterface";
 import { Message } from "discord.js";
 
 export class SayCommand implements ArgCommand {
+	async checkPermissions(msg: Message): Promise<boolean> {
+		return true
+	}
 	commandNames: string[] = ['say', 'tell', 'speak']
 	requiredArgs: number = 1
 	examples: string[] = ['Hola mundo!!!','Hay pelotudos y luego estás tú']

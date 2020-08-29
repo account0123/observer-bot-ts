@@ -13,10 +13,13 @@
 
 export * from "./activityCheckCommand"
 export * from "./addRoleCommand"
-export * from "./avatarCommand";
+export * from "./avatarCommand"
 export * from "./banCommand"
+export * from "./cleanCommand"
 export * from "./createRoleCommand"
-export * from "./editRoleCommand"
 export * from "./deleteChannelCommand"
+export * from "./demoteCommand"
+export * from "./editRoleCommand"
+export * from "./removeRoleCommand"
 export * from "./sayCommand"
-export * from "./stopCommand";
+export * from "./stopCommand"

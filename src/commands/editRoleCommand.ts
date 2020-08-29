@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, Role, RoleData } from "discord.js";
+import { Message, Role, RoleData, Permissions } from "discord.js";
 import { RoleFinder } from "../util/RoleFinder";
 
 export class EditRoleCommand implements ArgCommand {
@@ -85,6 +85,19 @@ export class EditRoleCommand implements ArgCommand {
 			return
 		}
 		role.edit(data,`Comando ejecutado por ${msg.author.tag}`).then(r=>msg.channel.send(`Rol **${r.name}** modificado correctamente`))
+	}
+	async checkPermissions(msg: Message): Promise<boolean> {
+		const mod = msg.guild!.member(msg.author)!
+		const bot = msg.guild!.member(msg.client.user!)!
+		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+			msg.reply('no tengo el permiso para editar roles.')
+			return false
+		}
+		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+			msg.reply('no tienes permiso de editar roles.')
+			return false
+		}
+		return true
 	}
 }
 function createData(str:string, oldRole:Role):RoleData | undefined {

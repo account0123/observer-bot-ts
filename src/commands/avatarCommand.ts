@@ -3,6 +3,9 @@ import ArgCommand from "./commandArgInterface"
 import { UserFinder } from "../util/UserFinder"
 
 export class AvatarCommand implements ArgCommand {
+  async checkPermissions(msg: Message): Promise<boolean> {
+	  return true
+  }
   guildExclusive: boolean = false
   examples: string[] = ['', '@usuario#1234', '123456789987654321']
   requiredArgs: number = 0

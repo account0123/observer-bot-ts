@@ -20,4 +20,7 @@ export default interface ArgCommand {
 
   /** Execute the command. */
  run(msg: Message, args: string[]): Promise<void>
+
+ /** Verifica que el permiso se pueda ejecutar */
+ checkPermissions(msg: Message): Promise<boolean>
 }
