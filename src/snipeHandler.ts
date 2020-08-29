@@ -1,10 +1,12 @@
-import mysql, { Connection } from 'mysql';
+/// <reference path="../node_modules/@types/mysql/index.d.ts"/>
+import * as MySQL from "mysql"
 import {Message, PartialMessage} from 'discord.js'
+import { Connection } from "mysql";
 export default class SnipeHandler {
   
   private connection: Connection
   constructor(){
-    const connection = mysql.createConnection(process.env.JAWSDB_MARIA_URL!);
+    const connection = MySQL.createConnection(process.env.JAWSDB_MARIA_URL!);
 
     connection.connect();
     this.connection = connection
