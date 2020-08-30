@@ -10,7 +10,6 @@ export default class SnipeHandler {
 
     connection.connect();
     this.connection = connection
-    this.test()
   }
   saveMessage(msg: Message| PartialMessage):void{
     const author = msg.author || new User(msg.client,{username: 'Unknown',discriminator:'0000',id:'123456789987654321',locale:'es',bot:false,avatar:null,flags: new UserFlags(0),system:false});
@@ -23,15 +22,6 @@ export default class SnipeHandler {
     this.connection.query('CREATE TABLE deleted(content varchar(2000),username varchar(32),discriminator varchar(4))', function(err: any, rows: { content:string,username:string,discriminator:string }[], fields: any) {
       if (err) throw err;
       console.log('Mensaje guardado')
-    })
-  }
-  test() {
-    this.connection.query('SELECT 1 + 1 AS solution', function(err: any, rows: { solution: number; }[], fields: any) {
-      if (err) throw err;
-
-      console.log('The solution is: ', rows[0].solution);
     });
-
-    this.connection.end();
   }
 }
