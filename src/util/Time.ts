@@ -1,12 +1,18 @@
 import { SnowflakeUtil } from "discord.js"
 
 export class Time {
-	private readonly date: Date
-	constructor(snowflake: string){
-		this.date = SnowflakeUtil.deconstruct(snowflake).date
-
+	private readonly date: Date | null
+	constructor(snowflake: string| Date| null){
+		if (typeof snowflake == 'string') {
+			this.date = SnowflakeUtil.deconstruct(snowflake).date
+		}else{
+			this.date = snowflake
+		}
 	}
 	toString(): string{
+		if (this.date === null) {
+			return '*Fecha desconocida*'
+		}
 		return this.getDay(this.date.getDay()) + ', ' + this.date.getDate() + ' de ' + this.getMonth(this.date.getMonth()) + ' del ' + this.date.getFullYear + ', a las ' + this.date.toTimeString()
 	}
 	private getDay(day:number):string{
