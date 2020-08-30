@@ -2,9 +2,16 @@ import ArgCommand from "./commandArgInterface";
 import { Message, Permissions, MessageEmbed, RoleData} from "discord.js";
 
 export class CreateRoleCommand implements ArgCommand{
+	shortdescription: string = 'Crea un rol con datos opcionales'
+	fulldescription: string = 'Crea un rol con todos los datos opcionales. Los datos son:\n' + 
+	'`name` - El nombre del nuevo rol\n' +
+	'`color` - El color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n' + 
+	'`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a incluir en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n' + 
+	'`hoist` - Si se incluye, el rol será visible en la lista de miembros\n' +
+	'`mentionable` - Si se incluye, el rol puede mencionarse por cualquier miembro. Útil para roles de ayuda.';
 	commandNames: string[] = ['createrole', 'cr']
 	requiredArgs: number = 1
-	examples: string[] = ['rojo fuerte #ff0000 !verde oscuro', 'Admin #ffff00 0x7ffffff ^@Mods -hoist -mentionable', 'usuarios -hoist']
+	examples: string[] = ['{name:rojo fuerte, color: #ff0000}', '{ name:Admin, color:ffff00, permissions:0x7fffffff,hoist, mentionable}', '{name: usuarios, hoist}']
 	usage:string = '{ [name:valor], [color:valor], [perms:valor], [position:valor], [hoist], [mentionable]}'
 	guildExclusive: boolean = true
 	async run(msg: Message, args: string[]): Promise<void> {
@@ -13,7 +20,20 @@ export class CreateRoleCommand implements ArgCommand{
 		const arg = args.join(' ')
 		const data = createData(arg)
 		if (!data) {
-			msg.reply('el formato ingresado no es válido. El formato correcto es { dato:valor, dato:valor, *...* }')
+			msg.guild!.roles.create({data: {name: arg,permissions:Permissions.DEFAULT,color:'RANDOM'}, reason: `Comando ejecutado por ${msg.author.tag}`}).then((role) => {
+				const embed = new MessageEmbed().setTitle('Detalles:').setColor(role.color || 0)
+					.addFields(
+						{ name: 'Nombre:'  , value: role.name,     inline: true},
+						{ name: 'Color:'   , value: role.hexColor, inline: true},
+						{ name: 'Posición' , value: role.position, inline: true},
+						{ name: 'Permisos:', value: role.permissions.toJSON()}
+						)
+					.setTimestamp();
+				msg.reply(`el rol ${role} fue creado sin problemas.`, embed)
+			}).catch( (error) => {
+				msg.reply('Error inesperado!!!')
+				console.error(error)
+			});
 			return
 		}
 		if (data.position! >= bot.roles.highest.position) {
@@ -23,10 +43,11 @@ export class CreateRoleCommand implements ArgCommand{
 		console.log('Creando rol ' + data.toString())
         // Ejecución
         msg.guild!.roles.create({data: data, reason: `Comando ejecutado por ${msg.author.tag}`}).then((role) => {
-            const embed = new MessageEmbed().setTitle('Detalles:').setColor(data.color || 0)
+			const embed = new MessageEmbed().setTitle('Detalles:').setColor(data.color || 0)
                 .addFields(
-                    { name: 'Color:', value: role.hexColor, inline: true},
-					{ name: 'Posición', value: role.position, inline: true},
+					{ name: 'Nombre:'  , value: role.name,     inline: true},
+                    { name: 'Color:'   , value: role.hexColor, inline: true},
+					{ name: 'Posición' , value: role.position, inline: true},
                     { name: 'Permisos:', value: role.permissions.toJSON()}
                     )
                 .setTimestamp();

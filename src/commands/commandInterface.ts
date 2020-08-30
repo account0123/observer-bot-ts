@@ -2,15 +2,23 @@ import { Message } from "discord.js";
 
 export default interface Command {
   /**
-   * List of aliases for the command.
-   * The first name in the list is the primary command name.
+   * Lista de alias. El nombre principal debe ir primero
    */
-  readonly commandNames: string[];
+  readonly commandNames: string[]
 
-  readonly guildExclusive: boolean;
-  /** Usage documentation. */
-  help(commandPrefix: string): string;
+  /**
+   * Determina si el comando solo es utilizable en servidores y no en mensajes privados.
+   */
+  readonly guildExclusive: boolean
 
-  /** Execute the command. */
-  run(parsedUserCommand: Message): Promise<void>;
+  /** Descripción corta */
+  readonly shortdescription: string
+
+  /** Descripción detallada del comando. 
+   * Si no hay una, se debe utilizar `this.shortdescription` como valor 
+   */
+  readonly fulldescription: string
+
+  /** Ejecución del comando. La función debe ser asincrónica. */
+  run(parsedUserCommand: Message): Promise<void>
 }

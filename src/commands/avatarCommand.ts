@@ -3,6 +3,8 @@ import ArgCommand from "./commandArgInterface"
 import { UserFinder } from "../util/UserFinder"
 
 export class AvatarCommand implements ArgCommand {
+  shortdescription: string = 'Muestra tu foto (o gif) de perfil'
+  fulldescription: string = this.shortdescription
   async checkPermissions(msg: Message): Promise<boolean> {
 	  return true
   }

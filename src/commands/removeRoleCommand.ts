@@ -4,6 +4,8 @@ import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 
 export class RemoveRoleCommand implements ArgCommand {
+	shortdescription: string = 'Remueve el rol indicado al miembro indicado.'
+	fulldescription: string = this.shortdescription
 	commandNames: string[] = ['remrole','removerole'];
 	requiredArgs: number = 2
 	examples: string[] = ['123456789987654321 @Mods', '@usuario#1234 admin de prueba'];
@@ -13,7 +15,7 @@ export class RemoveRoleCommand implements ArgCommand {
 		const member = MemberFinder.getMember(msg,args.shift()!)
 		const role = RoleFinder.getRole(msg,args.join(' '))
 		if (!member) {
-			msg.reply('el miembro no es válido')
+			msg.reply('el miembro no es válido. Por si acaso el orden es `<usuario> <rol>`.')
 			return
 		}
 		if (!role) {

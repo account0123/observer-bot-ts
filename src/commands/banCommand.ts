@@ -3,6 +3,8 @@ import { Message, MessageEmbed, Permissions } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 
 export class BanCommand implements ArgCommand {
+	shortdescription: string = 'Banea a un miembro del servidor con o sin razón.'
+	fulldescription: string = this.shortdescription
 	guildExclusive: boolean = true
 	commandNames: string[] = ['ban'];
 	requiredArgs: number = 1;
@@ -14,7 +16,7 @@ export class BanCommand implements ArgCommand {
 		const reason = args.join(' ');
 		const member = MemberFinder.getMember(msg, mention);
 		if(!member){
-			msg.reply('el usuario mencionado no es válido')
+			msg.reply('el miembro mencionado no es válido.')
 			return
 		}
 		if(!member.bannable){

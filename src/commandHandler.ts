@@ -1,15 +1,15 @@
 import { Message } from "discord.js";
-import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand } from "./commands";
+import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
 
 export default class CommandHandler {
 
-  private commands: Command[];
-  private argCommands: ArgCommand[]
+  static commands: Command[];
+  static argCommands: ArgCommand[]
 
-  private readonly prefix: string;
+  static prefix: string;
 
   constructor(prefix: string) {
     // Clases aquí
@@ -27,12 +27,13 @@ export default class CommandHandler {
       AddRoleCommand,
       CleanCommand,
       DemoteCommand,
-      RemoveRoleCommand
+      RemoveRoleCommand,
+      HelpCommand
     ];
 
-    this.commands = commandClasses.map(commandClass => new commandClass());
-    this.argCommands = argCommandClasses.map(c=>new c())
-    this.prefix = prefix;
+    CommandHandler.commands = commandClasses.map(commandClass => new commandClass());
+    CommandHandler.argCommands = argCommandClasses.map(c=>new c())
+    CommandHandler.prefix = prefix;
   }
 
   /** Executes user commands contained in a message if appropriate. */
@@ -43,10 +44,10 @@ export default class CommandHandler {
 
     console.log(`Comando '${this.echoMessage(message)}' ejecutado por ${message.author.tag}`);
 
-    const commandParser = new CommandParser(message, this.prefix);
+    const commandParser = new CommandParser(message, CommandHandler.prefix);
 
-    const matchedCommand = this.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
-    const matchedArgCommand = this.argCommands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
+    const matchedCommand = CommandHandler.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
+    const matchedArgCommand = CommandHandler.argCommands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
 
     if(matchedCommand) {
       if (message.channel.type == "dm" && matchedCommand.guildExclusive) {
@@ -63,7 +64,7 @@ export default class CommandHandler {
         return
       }
       if (commandParser.args.length < matchedArgCommand.requiredArgs) {
-        message.reply(`no pude hacer nada por falta de argumentos. El uso correcto del comando sería \`${this.prefix}${commandParser.parsedCommandName} ${matchedArgCommand.usage}\``);
+        message.reply(`no pude hacer nada por falta de argumentos. El uso correcto del comando sería \`${CommandHandler.prefix}${commandParser.parsedCommandName} ${matchedArgCommand.usage}\``);
         return
       }
       await matchedArgCommand.checkPermissions(message).then(b=>{
@@ -76,11 +77,11 @@ export default class CommandHandler {
 
   /** Sends back the message content after removing the prefix. */
   echoMessage(message: Message): string {
-    return message.content.replace(this.prefix, "").trim();
+    return message.content.replace(CommandHandler.prefix, "").trim();
   }
 
   /** Determines whether or not a message is a user command. */
   private isCommand(message: Message): boolean {
-    return message.content.startsWith(this.prefix);
+    return message.content.startsWith(CommandHandler.prefix);
   }
 }

@@ -4,13 +4,14 @@ import { RemoveRoleCommand } from "./removeRoleCommand";
 import { MemberFinder } from "../util/MemberFinder";
 
 export class DemoteCommand implements ArgCommand {
+	shortdescription: string = 'Degrada al miembro indicado'
+	fulldescription: string = this.shortdescription
 	commandNames: string[] = ['demote']
 	requiredArgs: number = 1
 	examples: string[] = ['@usuario#1234 abuso de poder']
 	usage: string = '<usuario> [razón]'
 	guildExclusive: boolean = true
 	async run(msg: Message, args: string[]): Promise<void> {
-		const r = new RemoveRoleCommand()
 		const member = MemberFinder.getMember(msg,args.shift()!)
 		const mod = msg.guild!.member(msg.author)!
 		if(!member){

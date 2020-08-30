@@ -2,6 +2,8 @@ import ArgCommand from './commandArgInterface'
 import {ChannelFinder} from '../util/ChannelFinder'
 import {Message, Permissions, GuildChannel} from 'discord.js'
 export class DeleteChannelCommand implements ArgCommand{
+shortdescription: string = 'Borra un canal. Se requiere contraseña.'
+fulldescription: string = this.shortdescription
 commandNames:string[]=['deletechannel']
 guildExclusive:boolean=true
 requiredArgs:number=2

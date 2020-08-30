@@ -1,24 +1,32 @@
 import { Message, MessageEmbed } from "discord.js";
 
 export default interface ArgCommand {
-  /**
-   * List of aliases for the command.
-   * The first name in the list is the primary command name.
+  requiredArgs: number;
+   /**
+   * Lista de alias. El nombre principal debe ir primero
    */
   readonly commandNames: string[]
 
-  /** Argumentos mínimos */
-  readonly requiredArgs: number
+  /**
+   * Determina si el comando solo es utilizable en servidores y no en mensajes privados.
+   */
+  readonly guildExclusive: boolean
+  
+  /** Descripción corta */
+  readonly shortdescription: string
+  
+  /** Descripción detallada del comando. 
+   * Si no hay una, se usa `this.shortdescription` como valor 
+   */
+  readonly fulldescription: string
 
-  /** Ejemplos */
+  /** Formato de los argumentos del comando */
+  readonly usage: string
+
+  /** Ejemplos de los argumentos comando */
   readonly examples: string[]
 
-  /** Usage documentation. */
-  readonly usage: string
-  /** Determina si el comando no puede usarse en mensajes privados */
-  readonly guildExclusive: boolean
-
-  /** Execute the command. */
+  /** Ejecución del comando. La función debe ser asincrónica. */
  run(msg: Message, args: string[]): Promise<void>
 
  /** Verifica que el permiso se pueda ejecutar */

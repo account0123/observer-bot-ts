@@ -4,6 +4,8 @@ import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 
 export class AddRoleCommand implements ArgCommand {
+	shortdescription: string = 'Asigna un rol a un usuario.'
+	fulldescription: string = this.shortdescription
 	async checkPermissions(msg: Message): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
@@ -26,15 +28,15 @@ export class AddRoleCommand implements ArgCommand {
 		const member = MemberFinder.getMember(msg,args.shift()!)
 		const role = RoleFinder.getRole(msg,args.join(' '))
 		if (!member) {
-			msg.reply('el miembro no es válido')
+			msg.reply('el miembro no es válido. Por si acaso el orden es `<rol> <usuario>`.')
 			return
 		}
 		if (!role) {
-			msg.reply('el rol no es válido')
+			msg.reply('el rol no es válido.')
 			return
 		}
 		if(!member.manageable){
-			msg.reply('no puedo agregar roles al miembro porque me faltan porque está más alto que yo')
+			msg.reply('no puedo agregar roles al miembro porque me faltan porque está más alto que yo.')
 			return
 		}
 		await member.roles.add(role,`Comando ejecutado por ${msg.author.tag}`).then(m=>msg.channel.send(`Rol **${role.name}** asiganado a **${m.displayName}**.`)).catch(e=>{msg.reply(`No pude añadir el rol por el error \`${e}\``)

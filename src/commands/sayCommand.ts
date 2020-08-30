@@ -2,6 +2,8 @@ import ArgCommand from "./commandArgInterface";
 import { Message } from "discord.js";
 
 export class SayCommand implements ArgCommand {
+	shortdescription: string = 'El bot dice lo que quieras.'
+	fulldescription: string = this.shortdescription
 	async checkPermissions(msg: Message): Promise<boolean> {
 		return true
 	}
