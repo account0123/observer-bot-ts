@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand } from "./commands";
+import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
@@ -32,7 +32,9 @@ export default class CommandHandler {
       HelpCommand,
       GetPassCommand,
       KickCommand,
-      RoleInfoCommand
+      RoleInfoCommand,
+      ResetAllRolesCommand,
+      UserInfoCommand
     ];
 
     CommandHandler.commands = commandClasses.map(commandClass => new commandClass());

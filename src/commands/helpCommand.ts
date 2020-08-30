@@ -53,13 +53,14 @@ function createHelpEmbed(commandName:string):MessageEmbed | undefined {
 			}
 		}
 		const name = argCommand.commandNames.shift()
-		return new MessageEmbed().setTitle(`Comando ${name}`).setDescription(argCommand.fulldescription)
-		.addField('Alias',argCommand.commandNames.join(', '),true)
-		.addField('Uso',`${CommandHandler.prefix}${name} \`${argCommand.usage}\``,true)
+		const embed = new MessageEmbed().setTitle(`Comando ${name}`).setDescription(argCommand.fulldescription)
+		if(argCommand.commandNames.length > 0) embed.addField('Alias',argCommand.commandNames.join(', '),true)
+		embed.addField('Uso',`${CommandHandler.prefix}${name} \`${argCommand.usage}\``,true)
 		.addField('Permisos necesarios',buildField(),true)
 		.addField('Ejemplos',argCommand.examples.map(e=>`${CommandHandler.prefix}${name} \`${e}\``))
 		.setFooter('<> = obligatorio | [] = opcional. | No incluyas estos símbolos al momento de ejecutar el comando.')
 		.setTimestamp();
+		return embed
 	}
 	return undefined
 }
