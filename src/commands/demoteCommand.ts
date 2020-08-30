@@ -1,10 +1,10 @@
 import ArgCommand from "./commandArgInterface";
 import { Message, Permissions } from "discord.js";
-import { RemoveRoleCommand } from "./removeRoleCommand";
 import { MemberFinder } from "../util/MemberFinder";
 
 export class DemoteCommand implements ArgCommand {
-	shortdescription: string = 'Degrada al miembro indicado'
+	permission: string = 'Gestionar roles'
+	shortdescription: string = 'Degrada al miembro indicado.'
 	fulldescription: string = this.shortdescription
 	commandNames: string[] = ['demote']
 	requiredArgs: number = 1

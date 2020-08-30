@@ -3,6 +3,7 @@ import { Message, Role, RoleData, Permissions } from "discord.js";
 import { RoleFinder } from "../util/RoleFinder";
 
 export class EditRoleCommand implements ArgCommand {
+	permission: string = 'Gestionar roles'
 	shortdescription: string = 'Edita un rol.'
 	fulldescription: string = 'Edita un dato o varios datos del rol indicado...'
 	commandNames: string[] = ['editrole','er']

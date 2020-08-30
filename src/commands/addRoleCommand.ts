@@ -4,7 +4,8 @@ import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 
 export class AddRoleCommand implements ArgCommand {
-	shortdescription: string = 'Asigna un rol a un usuario.'
+	permission: string = 'Gestionar roles'
+	shortdescription: string = 'Asigna al miembro indicado un rol.'
 	fulldescription: string = this.shortdescription
 	async checkPermissions(msg: Message): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!

@@ -2,8 +2,8 @@ import Command from "./commandInterface"
 import { Message } from "discord.js"
 
 export class ActivitycheckCommand implements Command {
-  shortdescription: string = 'Muestra los estados de actividad de los miembros del servidor.'
-  fulldescription: string = this.shortdescription
+  shortdescription: string = 'Muestra los estados de actividad.'
+  fulldescription: string = 'Muestra los estados de actividad de los miembros del servidor en general.'
   guildExclusive: boolean = true
   commandNames = ['activitycheck','statuscheck']
   async run(message: Message): Promise<void> {

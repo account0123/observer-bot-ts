@@ -2,6 +2,7 @@ import ArgCommand from "./commandArgInterface";
 import { Message, Permissions } from "discord.js";
 
 export class CleanCommand implements ArgCommand {
+	permission: string = 'Gestionar mensajes'
 	shortdescription: string = 'Limpia la cantidad de mensajes indicada'
 	fulldescription: string = this.shortdescription
 	commandNames: string[] = ['clean', 'purge', 'prune']

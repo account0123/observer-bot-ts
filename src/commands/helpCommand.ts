@@ -3,6 +3,7 @@ import { Message, MessageEmbed } from "discord.js";
 import CommandHandler from "../commandHandler";
 
 export class HelpCommand implements ArgCommand {
+	permission: string = ''
 	shortdescription: string = 'Comando de ayuda.'
 	fulldescription: string = 'Muestra una lista de todos los comando al no haber argumentos, o la ayuda detallada del comando indicado.'
 	commandNames: string[] = ['help', 'h']
@@ -27,8 +28,8 @@ export class HelpCommand implements ArgCommand {
 	
 }
 function createCommandList():MessageEmbed {
-	const array = CommandHandler.commands.map(c=>c.commandNames[0]).concat(CommandHandler.argCommands.map(c=>c.commandNames[0])).sort()
-	return new MessageEmbed().setTitle('Todos los comandos de Observador').setDescription(array.map(c=>`**${c}**`)).setFooter(`Usa ${CommandHandler.prefix}help <comando> para ver cómo usar el comando`).setTimestamp()
+	const array = CommandHandler.commands.map(c=>`**${c.commandNames[0]}** - ${c.shortdescription}`).concat(CommandHandler.argCommands.map(c=>`**${c.commandNames[0]}** - ${c.shortdescription}`)).sort()
+	return new MessageEmbed().setTitle('Todos los comandos de Observador').setDescription(array).setFooter(`Usa ${CommandHandler.prefix}help <comando> para ver cómo usar el comando`).setTimestamp()
 }
 function createHelpEmbed(commandName:string):MessageEmbed | undefined {
 	const command = CommandHandler.commands.find(command => command.commandNames.includes(commandName.toLowerCase()))
@@ -41,11 +42,21 @@ function createHelpEmbed(commandName:string):MessageEmbed | undefined {
 		.setTimestamp();
 	}
 	if (argCommand) {
+		const buildField = () => {
+			switch (argCommand.permission) {
+				case '':
+					return '*No se necesitan permisos*'
+				case 'Administrador':
+					return 'Administrador'
+				default:
+					return argCommand.permission + ' o Administrador'
+			}
+		}
 		const name = argCommand.commandNames.shift()
-		return new MessageEmbed().setTitle(`Comando ${name}`)
+		return new MessageEmbed().setTitle(`Comando ${name}`).setDescription(argCommand.fulldescription)
 		.addField('Alias',argCommand.commandNames.join(', '),true)
 		.addField('Uso',`${CommandHandler.prefix}${name} \`${argCommand.usage}\``,true)
-		.addField('Permisos necesarios',`${argCommand} o Administrador`,true)
+		.addField('Permisos necesarios',buildField(),true)
 		.addField('Ejemplos',argCommand.examples.map(e=>`${CommandHandler.prefix}${name} \`${e}\``))
 		.setFooter('<> = obligatorio | [] = opcional. | No incluyas estos símbolos al momento de ejecutar el comando.')
 		.setTimestamp();

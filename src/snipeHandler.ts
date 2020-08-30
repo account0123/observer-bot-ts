@@ -16,7 +16,7 @@ export default class SnipeHandler {
     
   }
   test() {
-    this.connection.query('SELECT 1 + 1 AS solution', function(err: any, rows: { solution: any; }[], fields: any) {
+    this.connection.query('SELECT 1 + 1 AS solution', function(err: any, rows: { solution: number; }[], fields: any) {
       if (err) throw err;
 
       console.log('The solution is: ', rows[0].solution);

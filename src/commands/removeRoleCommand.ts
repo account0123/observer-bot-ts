@@ -4,7 +4,8 @@ import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 
 export class RemoveRoleCommand implements ArgCommand {
-	shortdescription: string = 'Remueve el rol indicado al miembro indicado.'
+	permission: string = 'Gestionar roles'
+	shortdescription: string = 'Remueve al miembro indicado un rol.'
 	fulldescription: string = this.shortdescription
 	commandNames: string[] = ['remrole','removerole'];
 	requiredArgs: number = 2

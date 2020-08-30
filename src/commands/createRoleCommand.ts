@@ -2,7 +2,8 @@ import ArgCommand from "./commandArgInterface";
 import { Message, Permissions, MessageEmbed, RoleData} from "discord.js";
 
 export class CreateRoleCommand implements ArgCommand{
-	shortdescription: string = 'Crea un rol con datos opcionales'
+	permission: string = 'Gestionar roles'
+	shortdescription: string = 'Crea un rol con datos opcionales.'
 	fulldescription: string = 'Crea un rol con todos los datos opcionales. Los datos son:\n' + 
 	'`name` - El nombre del nuevo rol\n' +
 	'`color` - El color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n' + 

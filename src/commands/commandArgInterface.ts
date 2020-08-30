@@ -26,6 +26,8 @@ export default interface ArgCommand {
   /** Ejemplos de los argumentos comando */
   readonly examples: string[]
 
+  /** El permiso necesario (además de administrador) para utilizar el comando */
+  readonly permission: string
   /** Ejecución del comando. La función debe ser asincrónica. */
  run(msg: Message, args: string[]): Promise<void>
 
