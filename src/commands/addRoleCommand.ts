@@ -37,7 +37,7 @@ export class AddRoleCommand implements ArgCommand {
 			return
 		}
 		if(!member.manageable){
-			msg.reply('no puedo agregar roles al miembro porque me faltan porque está más alto que yo.')
+			msg.reply('no puedo agregar roles al miembro porque está al mismo nivel o más alto que yo o que tú.')
 			return
 		}
 		await member.roles.add(role,`Comando ejecutado por ${msg.author.tag}`).then(m=>msg.channel.send(`Rol **${role.name}** asiganado a **${m.displayName}**.`)).catch(e=>{msg.reply(`No pude añadir el rol por el error \`${e}\``)
