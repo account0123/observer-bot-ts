@@ -4,12 +4,11 @@ import {Message, PartialMessage, User, UserFlags} from 'discord.js'
 import { Connection } from "mysql";
 export default class SnipeHandler {
   
-  private connection: Connection
+  static connection: Connection
   constructor(){
-    const connection = MySQL.createConnection(process.env.JAWSDB_MARIA_URL!);
-
+    const connection = MySQL.createConnection(process.env.JAWSDB_MARIA_URL!)
     connection.connect();
-    this.connection = connection
+    SnipeHandler.connection = connection
   }
   saveMessage(msg: Message| PartialMessage):void{
     const author = msg.author || new User(msg.client,{username: 'Unknown',discriminator:'0000',id:'123456789987654321',locale:'es',bot:false,avatar:null,flags: new UserFlags(0),system:false});
@@ -17,11 +16,10 @@ export default class SnipeHandler {
     if(!content) return
     const g = msg.guild
     if(!g) return
-    const c = msg.channel
     const time = msg.createdTimestamp
-    this.connection.query('CREATE TABLE deleted(content varchar(2000),username varchar(32),discriminator varchar(4))', function(err: any, rows: { content:string,username:string,discriminator:string }[], fields: any) {
+    SnipeHandler.connection.query('INSERT INTO deleted VALUES (?, ?, ?, ?, ?, ?, ?)',[content, author.username, author.discriminator, author.avatarURL({dynamic:true}), g.id, msg.channel.id,time], function(err: any, row: { content:string,username:string,discriminator:string, avatar_url: string,guild:string, channel:string,time:number}, fields: any) {
       if (err) throw err;
-      console.log('Mensaje guardado')
+      console.log(`Mensaje guardado: ${row.username}#${row.discriminator} borró un mensaje que decía "${row.content}" en el canal '${row.channel}' del servidor '${row.guild}'`)
     });
   }
 }
