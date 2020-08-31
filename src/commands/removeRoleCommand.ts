@@ -23,10 +23,6 @@ export class RemoveRoleCommand implements ArgCommand {
 			msg.reply('el rol no es válido')
 			return
 		}
-		if(!member.manageable){
-			msg.reply('no puedo agregar roles al miembro porque está más alto que yo')
-			return
-		}
 		await member.roles.remove(role,`Comando ejecutado por ${msg.author.tag}`).then(m=>msg.channel.send(`Rol **${role.name}** removido a **${m.displayName}**.`)).catch(e=>{msg.reply(`No pude quitar el rol por el error \`${e}\``)
 		console.error(`Se intento eliminar el rol **${role.name}** a ${member.displayName} pero falló por`)
 		console.error()
