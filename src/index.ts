@@ -4,6 +4,7 @@ import { DISCORD_TOKEN } from './config/secrets';
 import CommandHandler from './commandHandler';
 import SnipeHandler from './snipeHandler';
 import config from './config/botConfig';
+import { Connections } from './config/connections';
 
 const PORT = parseInt(process.argv[2]) || 5000;
 
@@ -28,9 +29,13 @@ const sniper = new SnipeHandler();
 //////////////////////////////////////////////////////////////////
 // Discord Events: https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-channelCreate
 
-client.on("ready", () => { console.log("Observer has started"); });
+client.on("ready", () => { 
+  console.log("Observer has started");
+  new Connections()}
+  );
 client.on("message", (message: Message) => { commandHandler.handleMessage(message); });
-client.on('messageDelete',(deleted: Message | PartialMessage)=>{sniper.saveMessage(deleted);});
+client.on('messageDelete',(deleted: Message| PartialMessage)=>sniper.saveDeletedMessage(deleted))
+client.on('messageUpdate',(old: Message | PartialMessage)=>sniper.saveEditedMessage(old))
 client.on("error", e => { console.error("Discord client error!", e); });
 
 client.login(DISCORD_TOKEN).catch(e=>console.error(e));
