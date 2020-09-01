@@ -1,5 +1,6 @@
 import Command from "./commandInterface"
 import { Message } from "discord.js"
+import { Connections } from "../config/connections"
 
 export class StopCommand implements Command {
   shortdescription: string = 'Me apago. *Uso exclusivo de mi creador*.'
@@ -8,6 +9,7 @@ export class StopCommand implements Command {
   commandNames = ["stop","off","shutdown"]
   async run(message: Message): Promise<void> {
     if(message.author.id != '283763804993486849') message.reply('Solo el creador puede usar ese comando')
+    Connections.connection.end()
     await message.channel.send('`Deteniendo...`').then( msg => msg.client.destroy());  
     }
 }

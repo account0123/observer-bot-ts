@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from "discord.js"
 import ArgCommand from "./commandArgInterface"
 import { UserFinder } from "../util/UserFinder"
+import { Lang } from "./lang/Lang"
 
 export class AvatarCommand implements ArgCommand {
   permission: string = ''
@@ -20,16 +21,17 @@ export class AvatarCommand implements ArgCommand {
     return 'Muestra tu foto de perfil o la de alguien más'
   }
   async run(msg: Message, args: string[]): Promise<void> {
+  const lang = new Lang(msg.guild!.id)
 	if (args.length > 0) {
 		const mention = args[0]
 		const user = UserFinder.getUser(msg,mention)!
 		if(!user) return
-		const e = new MessageEmbed().setDescription(`Avatar de **${user.username}**:`).setImage(user.avatarURL({dynamic:true})!).setFooter('¡Que hermoso sujeto!')
+		const e = new MessageEmbed().setDescription(lang.translate('info.avatar.user',user.username)).setImage(user.avatarURL({dynamic:true})!).setFooter('¡Que hermoso sujeto!')
 		msg.channel.send(e).then(m => console.log(`Avatar de ${user.id} entergado`)).catch(err=>console.error(err))
 	}else{
 		const user = UserFinder.getUser(msg,msg.author.id)
 		if(!user) return
-		const e = new MessageEmbed().setDescription(`**${user.username}**, aquí va tu avatar:`).setImage(user.avatarURL({dynamic:true})!).setFooter('¡Que hermoso sujeto!')
+		const e = new MessageEmbed().setDescription(lang.translate('info.avatar.own',user.username)).setImage(user.avatarURL({dynamic:true})!).setFooter('¡Que hermoso sujeto!')
 		msg.channel.send(e).then(m => console.log(`Avatar de ${user.id} entergado`)).catch(err=>console.error(err))
 	}}
 }

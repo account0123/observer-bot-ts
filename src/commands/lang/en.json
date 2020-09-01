@@ -1,0 +1,37 @@
+{
+    "info": {
+        "language": "the actual language is english (en)",
+        "activity": {
+            "success": "Connected: {connected}/{total}\nIdle: {idle}/{total}\nDo Not Disturb: {dnd}/{total}\nOffline: {offline}/{total}\nThis server is {isActive}.",
+            "dead": "ded",
+            "alive": "active!!! Let's party!!!!"
+        },
+        "addrole": {
+            "success": "The role was added to **{member.user.tag}** successfully!",
+            "error": "I couldn''t add the role to {member}."
+        },
+        "avatar": {
+            "own": "{message.author.username}, here's your avatar:",
+            "user": "${user.username}'s avatar:"
+        }
+    },
+    "perms": {
+        "kick_members": "Kick Members",
+        "ban_members": "Ban Members",
+        "manage_roles": "Manage Roles"
+    },
+    "errors": {
+        "invalid-user": "i couldn't do anyhing beacuse the user is invalid",
+        "lower-roles": "'i can't add/remove/edit/delete a role if it's lower than my highest role '",
+        "no-args": "You didn't submit any argument, {message.author}.",
+        "no-dms": "I can't use this kind of commands in DMs!",
+        "not-enough-args": "i couldn't do anything due to lack of arguments",
+        "perms": {
+            "bot_manage_roles": "i don't have `MANAGE_ROLES` permission to do that.",
+            "mod_kick_members": "you can't kick anyone if you don't have`Kick Members` nor `Administrator` permission.",
+            "mod_ban_members": "you can't ban anyone if you don't have `Ban Members` nor `Administrator` permission.",
+            "mod_manage_roles": "you can't add roles beacuse you don't have `Manage Roles` nor 'Administrator' permission."
+        }, 
+        "unknown": "an error has been throwed when this command was executed."
+    }
+}

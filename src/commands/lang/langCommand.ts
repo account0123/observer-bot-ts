@@ -29,8 +29,21 @@ export class LangCommand implements ArgCommand {
 						break
 					case 'en':
 						msg.reply('the actual language is english')
+						break
 				}
 			});
+		}else{
+			const language = args[0].toLowerCase().trim()
+			switch (language) {
+				case 'es':
+					sql.query('UPDATE guilds SET lang=\'es\'')
+					msg.channel.send('Ahora mi idioma es español, ostia')
+					break;
+				case 'en':
+					sql.query('UPDATE guilds SET lang=\'en\'')
+					msg.channel.send('My language is english rn, nice')
+					break;
+			}
 		}
 	}
 	async checkPermissions(msg: Message): Promise<boolean> {

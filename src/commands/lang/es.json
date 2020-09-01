@@ -1,0 +1,39 @@
+{
+    "info": {
+        "language": "el idioma actual es españoll (es)",
+        "activity": {
+            "success": "Conectados: {connected}/{total}\nAusentes: {idle}/{total}\nOcupados: {dnd}/{total}\nDesconectados: {offline}/{total}\nEste servidor está {isActive}.",
+            "dead": "muerto",
+            "alive": "activo!!! Parece una fiesta!!!!"
+        },
+        "addrole": {
+            "success": "Rol asignado a **{member.user.tag}** exitosamente!",
+            "error": "No se pudo asignar el rol a {member}."
+        },
+        "avatar": {
+            "own": "{message.author.username}, este es tu avatar:",
+            "user": "El avatar de ${user.username}:"
+        }
+    },
+    "perms": {
+        "kick_members": "Expulsar miembros",
+        "ban_members": "Banear miembros",
+        "manage_roles": "Gestionar roles"
+    },
+    "errors": {
+        "invalid-duration": "por favor, ingrese una duración válida en el formato `7d5h30m5s` siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida",
+        "invalid-user": "no pude ejecutar el comando porque el usuario no es válido",
+        "lower-roles": "'no puedo asignar, quitar, eliminar o editar un rol que está por encima de los míos.'",
+        "no-args": "No diste ningún argumento, {message.author}.",
+        "no-dms": "no puedo utilizar este comando en DMs!",
+        "not-enough-args": "no se pudo ejecutar el comando por falta de argumentos",
+        "perms": {
+            "bot_manage_roles": "no tengo suficientes permisos para hacer eso.",
+            "mod_kick_members": "no puedes expulsar sin el permiso de `Expulsar miembros` o `Administrador`.",
+            "mod_ban_members": "no puedes banear sin el permiso de `Banear miembros` o `Administrador`.",
+            "mod_manage_roles": "no puedes asignar roles porque no tienes permiso de `Gestionar Roles` o `Administrador`."
+        },
+        "unknown": "hubo un error desconocido al ejecutar este comando.",
+        "unsafe_integer": "el tiempo es tan largo que casi provoca un agujero en el espacio-tiempo... o casi sobrecargaste la memoria, que es casi lo mismo. El tiempo máximo posible es de `104.249.991 días` que equivale a `285.616 años terrestres`. Seguro que no prefieres banear, ya sabes... sin tiempo ni nada?"
+    }
+}
