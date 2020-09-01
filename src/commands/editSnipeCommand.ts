@@ -1,12 +1,19 @@
 import Command from "./commandInterface";
 import { Message, MessageEmbed } from "discord.js";
 import { Connections } from "../config/connections";
+import { Lang } from "./lang/Lang";
 
 export class EditSnipeCommand implements Command {
 	commandNames: string[] = ['editsnipe']
 	guildExclusive: boolean = true
 	shortdescription: string = 'Muestra el mensaje editado.'
 	fulldescription: string = 'Muestra el último mensaje editado de este canal'
+	lang:Lang
+  constructor(guild_id: string){
+    const lang = new Lang(guild_id)
+    this.lang = lang
+    this.shortdescription = this.fulldescription =  lang.translate('info.avatar.description')
+  }
 	async run(msg: Message): Promise<void> {
 		const bot = msg.guild!.member(msg.client.user!)!
 		const color = bot.displayColor

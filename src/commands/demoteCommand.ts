@@ -1,6 +1,7 @@
 import ArgCommand from "./commandArgInterface";
 import { Message, Permissions } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
+import { Lang } from "./lang/Lang";
 
 export class DemoteCommand implements ArgCommand {
 	permission: string = 'Gestionar roles'
@@ -11,6 +12,12 @@ export class DemoteCommand implements ArgCommand {
 	examples: string[] = ['@usuario#1234 abuso de poder']
 	usage: string = '<usuario> [razón]'
 	guildExclusive: boolean = true
+	lang:Lang
+  constructor(guild_id: string){
+    const lang = new Lang(guild_id)
+    this.lang = lang
+    this.shortdescription = this.fulldescription =  lang.translate('info.avatar.description')
+  }
 	async run(msg: Message, args: string[]): Promise<void> {
 		const member = MemberFinder.getMember(msg,args.shift()!)
 		const mod = msg.guild!.member(msg.author)!

@@ -1,7 +1,8 @@
 {
     "info": {
-        "language": "el idioma actual es españoll (es)",
         "activity": {
+            "description": "Muestra los estados de actividad.",
+            "fulldescription": "Muestra los estados de actividad de los miembros del servidor en general.",
             "success": "Conectados: {connected}/{total}\nAusentes: {idle}/{total}\nOcupados: {dnd}/{total}\nDesconectados: {offline}/{total}\nEste servidor está {isActive}.",
             "dead": "muerto",
             "alive": "activo!!! Parece una fiesta!!!!"
@@ -11,8 +12,32 @@
             "error": "No se pudo asignar el rol a {member}."
         },
         "avatar": {
+            "description": "Muestra tu foto (o gif) de perfil.",
             "own": "{message.author.username}, este es tu avatar:",
-            "user": "El avatar de ${user.username}:"
+            "user": "El avatar de {user.username}:",
+            "footer": "¡Que hermoso sujeto!"
+        },
+        "help": {
+            "description": "Comando de ayuda.",
+            "fulldescription": "Muestra una lista de todos los comando al no haber argumentos, o la ayuda detallada del comando indicado.",
+            "general":{
+                "title": "Todos los comandos de Observador",
+                "footer": "Usa {prefix}help <comando> para ver cómo usar el comando"
+            },
+            "about":{
+                "title": "Detalles de {commandName}",
+                "aliases": "Alias",
+                "usage": "Uso",
+                "required": "Permisos necesarios",
+                "examples": "Ejemplos",
+                "footer": "<> = obligatorio | [] = opcional. | No incluyas estos símbolos al momento de ejecutar el comando."
+            },
+            "default":{
+                "no_usage": "*Solo pones el comando y ya*",
+                "no_permissions": "*No se necesitan permisos*",
+                "permission_or_admin": "{permission} o Administrador",
+                "admin_exclusive": "Administrador"
+            }
         }
     },
     "perms": {

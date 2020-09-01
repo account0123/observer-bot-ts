@@ -1,5 +1,6 @@
 import ArgCommand from "./commandArgInterface";
 import { Message, Permissions, MessageEmbed, RoleData} from "discord.js";
+import { Lang } from "./lang/Lang";
 
 export class CreateRoleCommand implements ArgCommand{
 	permission: string = 'Gestionar roles'
@@ -15,6 +16,12 @@ export class CreateRoleCommand implements ArgCommand{
 	examples: string[] = ['{name:rojo fuerte, color: #ff0000}', '{ name:Admin, color:ffff00, permissions:0x7fffffff,hoist, mentionable}', '{name: usuarios, hoist}']
 	usage:string = '{ [name:valor], [color:valor], [perms:valor], [position:valor], [hoist], [mentionable]}'
 	guildExclusive: boolean = true
+	lang:Lang
+  constructor(guild_id: string){
+    const lang = new Lang(guild_id)
+    this.lang = lang
+    this.shortdescription = this.fulldescription =  lang.translate('info.avatar.description')
+  }
 	async run(msg: Message, args: string[]): Promise<void> {
 		const bot = msg.guild!.member(msg.client.user!)!
 		// nuevo código

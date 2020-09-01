@@ -11,14 +11,14 @@ export default interface Command {
    */
   readonly guildExclusive: boolean
 
-  /** Descripción corta */
+  /** Ruta (info.comando.description) a la descripción corta */
   readonly shortdescription: string
 
-  /** Descripción detallada del comando. 
+  /** Ruta (info.comando.fulldescription) a la descripción detallada del comando. 
    * Si no hay una, se debe utilizar `this.shortdescription` como valor 
    */
   readonly fulldescription: string
 
   /** Ejecución del comando. La función debe ser asincrónica. */
-  run(parsedUserCommand: Message): Promise<void>
+  run(msg: Message): Promise<void>
 }

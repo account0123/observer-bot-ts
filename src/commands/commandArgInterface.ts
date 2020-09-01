@@ -1,4 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
+import { Lang } from "./lang/Lang";
 
 export default interface ArgCommand {
   requiredArgs: number;
@@ -28,6 +29,10 @@ export default interface ArgCommand {
 
   /** El permiso necesario (además de administrador) para utilizar el comando */
   readonly permission: string
+
+  /** Se inicializa el Lang*/
+  readonly lang:Lang
+  
   /** Ejecución del comando. La función debe ser asincrónica. */
  run(msg: Message, args: string[]): Promise<void>
 

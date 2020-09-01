@@ -1,11 +1,13 @@
-import { fstat } from "fs/promises";
-
 import fs from 'fs'
 import { Connections } from "../../config/connections";
 import { Message } from "discord.js";
 export class Lang {
 	private lang:string
 	constructor(guild_id: string){
+		if(!guild_id){
+			this.lang = 'es'
+			 return
+		}
 		Connections.connection.query('SELECT lang FROM guilds WHERE guild=?',[guild_id],(err,rows,fields) =>{
 			if(err) throw err
 			if(rows.length === 0) {
@@ -39,7 +41,7 @@ export class Lang {
             throw e;
         }
 		var script:string = obj
-		const data = script.match(/\{.+\}/g)
+		const data = script.match(/\{.+\}/gm)
 		if(!data){
 			msg.channel.send(script)
 			return
@@ -69,7 +71,7 @@ export class Lang {
             throw e;
         }
 		var script:string = obj
-		const data = script.match(/\{.+\}/)
+		const data = script.match(/\{.+\}/gm)
 		if(!data){
 			msg.reply(script)
 			return
@@ -99,7 +101,7 @@ export class Lang {
             throw e;
 		}
 		var script:string = obj
-		const data = script.match(/\{.+\}/)
+		const data = script.match(/\{.+\}/gm)
 		if(!data){
 			return script
 		}

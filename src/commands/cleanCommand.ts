@@ -1,5 +1,6 @@
 import ArgCommand from "./commandArgInterface";
 import { Message, Permissions } from "discord.js";
+import { Lang } from "./lang/Lang";
 
 export class CleanCommand implements ArgCommand {
 	permission: string = 'Gestionar mensajes'
@@ -10,6 +11,12 @@ export class CleanCommand implements ArgCommand {
 	examples: string[] = ['30']
 	usage: string= '<cantidad de mensajes a borrar>'
 	guildExclusive: boolean = true
+	lang:Lang
+  constructor(guild_id: string){
+    const lang = new Lang(guild_id)
+    this.lang = lang
+    this.shortdescription = this.fulldescription =  lang.translate('info.avatar.description')
+  }
 	async run(msg: Message, args: string[]): Promise<void> {
 		const n = parseInt(args[0])
 		if (isNaN(n)) {

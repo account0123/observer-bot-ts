@@ -3,6 +3,7 @@ import { Message, Permissions } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 import { CleanCommand } from "./cleanCommand";
+import { Lang } from "./lang/Lang";
 
 export class AddRoleCommand implements ArgCommand {
 	permission: string = 'Gestionar roles'
@@ -26,6 +27,12 @@ export class AddRoleCommand implements ArgCommand {
 	examples: string[] = ['@usuario#1234 1234567899878654321', '123456789987654321 @Mod']
 	usage: string = '<usuario> <rol>'
 	guildExclusive: boolean = true
+	lang:Lang
+  constructor(guild_id: string){
+    const lang = new Lang(guild_id)
+    this.lang = lang
+    this.shortdescription = this.fulldescription =  lang.translate('info.avatar.description')
+  }
 	async run(msg: Message, args: string[]): Promise<void> {
 		const g = msg.guild!
 		const role = RoleFinder.getRole(msg,args.join(' '))
