@@ -91,6 +91,6 @@ export default class CommandHandler {
 
   /** Determines whether or not a message is a user command. */
   private isCommand(message: Message): boolean {
-    return message.content.startsWith(CommandHandler.prefix);
+    return message.content.startsWith(CommandHandler.prefix || '<@685645806069612621> ' || '<@!685645806069612621> ');
   }
 }

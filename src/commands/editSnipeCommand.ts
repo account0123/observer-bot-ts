@@ -11,7 +11,7 @@ export class EditSnipeCommand implements Command {
 		const bot = msg.guild!.member(msg.client.user!)!
 		const color = bot.displayColor
 		const connection = Connections.connection
-		connection.query('SELECT * FROM edited WHERE ? and ?',[msg.channel.id, msg.guild!.id],function (err:any, rows) {
+		connection.query('SELECT * FROM edited WHERE channel=? and guild=?',[msg.channel.id, msg.guild!.id],function (err:any, rows) {
 			if(err) throw err
 			if(rows.length == 0) {
 				msg.channel.send('*No hay mensajes que mostrar*')

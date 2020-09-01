@@ -2,6 +2,7 @@ import ArgCommand from "./commandArgInterface";
 import { Message, Permissions } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
+import { CleanCommand } from "./cleanCommand";
 
 export class AddRoleCommand implements ArgCommand {
 	permission: string = 'Gestionar roles'
@@ -26,14 +27,33 @@ export class AddRoleCommand implements ArgCommand {
 	usage: string = '<usuario> <rol>'
 	guildExclusive: boolean = true
 	async run(msg: Message, args: string[]): Promise<void> {
-		const member = MemberFinder.getMember(msg,args.shift()!)
+		const g = msg.guild!
 		const role = RoleFinder.getRole(msg,args.join(' '))
-		if (!member) {
-			msg.reply('el miembro no es válido. Por si acaso el orden es `<rol> <usuario>`.')
-			return
-		}
 		if (!role) {
 			msg.reply('el rol no es válido.')
+			return
+		}
+		// Si pones !!addrole @rol @everyone pasa esto
+		if(args[1] == ('@everyone' || 'everyone')) {
+			// El bot dice "@usuario, añadiendo el rol @rol a todos"
+			msg.reply(`añadiendo el rol **${role.name}** a todos.`)
+			var count = 0
+			// Si falla en alguien dice "Omitiendo..."
+			g.members.cache.each(m=>m.roles.add(role).then(()=>count++).catch(()=>msg.channel.send(`No se pudo agregar el rol a **${m.displayName}**. Omitiendo..`)))
+			if(count==0){
+		// Si falla en TODOS dice
+				msg.channel.send('Vaya, 0 miembros... mejor limpio')
+				// Ejecuta !!clean <cantidad de miembros>
+				new CleanCommand().run(msg,[`${g.memberCount}`])
+				// Si falla en eso dice....
+				.catch(()=>msg.channel.send('Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Chocolat o algún bot de esos.'));
+			}
+			msg.channel.send(`Rol **${role.name}** agregado a ${count} miembros.`)
+			return
+		}
+		const member = MemberFinder.getMember(msg,args.shift()!)
+		if (!member) {
+			msg.reply('el miembro no es válido. Por si acaso el orden es `<rol> <usuario>`.')
 			return
 		}
 		await member.roles.add(role,`Comando ejecutado por ${msg.author.tag}`).then(m=>msg.channel.send(`Rol **${role.name}** asiganado a **${m.displayName}**.`)).catch(e=>{msg.reply(`No pude añadir el rol por el error \`${e}\``)
