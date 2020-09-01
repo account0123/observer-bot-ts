@@ -13,12 +13,6 @@ export class DeleteChannelCommand implements ArgCommand{
 	requiredArgs:number=2
 	usage:string='<canal> <contraseña>'
 	examples:string[]=['123456789987654321 1234', 'canal-nuevo 1234']
-	lang:Lang
-  constructor(guild_id: string){
-    const lang = new Lang(guild_id)
-    this.lang = lang
-    this.shortdescription = this.fulldescription =  lang.translate('info.avatar.description')
-  }
 	async run(msg:Message,args:string[]){
 		const encryptedBytes = utils.hex.toBytes(args[1])
 		const aesCbc = new ModeOfOperation.cbc(GetPassCommand.key,GetPassCommand.iv)

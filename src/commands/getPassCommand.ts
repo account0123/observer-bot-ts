@@ -15,12 +15,6 @@ export class GetPassCommand implements ArgCommand {
 	fulldescription: string = 'Crea una clave de seguridad personal para utilizar ciertos comandos administrativos.'
 	static readonly key = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ]
 	static readonly iv = [ 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114,115, 116 ]
-	lang:Lang
-  constructor(guild_id: string){
-    const lang = new Lang(guild_id)
-    this.lang = lang
-    this.shortdescription = this.fulldescription =  lang.translate('info.avatar.description')
-  }
 	async run(msg: Message, args: string[]): Promise<void> {
 		const aesCbc = new ModeOfOperation.cbc(GetPassCommand.key, GetPassCommand.iv)
 		if (args.length == 0) {

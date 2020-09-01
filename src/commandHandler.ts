@@ -3,6 +3,7 @@ import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, Ban
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
+import { Lang } from "./commands/lang/Lang";
 
 export default class CommandHandler {
 
@@ -57,10 +58,12 @@ export default class CommandHandler {
 
     const matchedCommand = CommandHandler.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
     const matchedArgCommand = CommandHandler.argCommands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
-
+    var lang: Lang
+    if (message.guild) lang = new Lang(message.guild.id)
+    else lang = new Lang(message.author.locale)
     if(matchedCommand) {
       if (message.channel.type == "dm" && matchedCommand.guildExclusive) {
-        message.reply(`este comando solo puede ejecutarse en servidores`)
+        lang.reply('errors.no_dms', message)
         return
       }
       await matchedCommand.run(message).catch(error => {
@@ -69,16 +72,16 @@ export default class CommandHandler {
     }
     if (matchedArgCommand) {
       if (message.channel.type == "dm" && matchedArgCommand.guildExclusive) {
-        message.reply(`este comando solo puede ejecutarse en servidores`)
+        lang.reply('errors.no_dms', message)
         return
       }
       if (commandParser.args.length < matchedArgCommand.requiredArgs) {
-        message.reply(`no pude hacer nada por falta de argumentos. El uso correcto del comando sería \`${CommandHandler.prefix}${commandParser.parsedCommandName} ${matchedArgCommand.usage}\``);
+        lang.reply('errors.not_enough_args',message,CommandHandler.prefix,commandParser.parsedCommandName,matchedArgCommand.usage)
         return
       }
       await matchedArgCommand.checkPermissions(message).then(b=>{
        if(b) matchedArgCommand.run(message,commandParser.args).catch(error => {
-         message.channel.send('Ocurrió un rror inesperado :thinking: ¿?')
+         lang.send('errors.unknown', message)
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
       })});
     }

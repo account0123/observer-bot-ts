@@ -46,19 +46,32 @@
         "manage_roles": "Gestionar roles"
     },
     "errors": {
-        "invalid-duration": "por favor, ingrese una duración válida en el formato `7d5h30m5s` siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida",
-        "invalid-user": "no pude ejecutar el comando porque el usuario no es válido",
-        "lower-roles": "'no puedo asignar, quitar, eliminar o editar un rol que está por encima de los míos.'",
-        "no-args": "No diste ningún argumento, {message.author}.",
-        "no-dms": "no puedo utilizar este comando en DMs!",
-        "not-enough-args": "no se pudo ejecutar el comando por falta de argumentos",
-        "perms": {
-            "bot_manage_roles": "no tengo suficientes permisos para hacer eso.",
-            "mod_kick_members": "no puedes expulsar sin el permiso de `Expulsar miembros` o `Administrador`.",
-            "mod_ban_members": "no puedes banear sin el permiso de `Banear miembros` o `Administrador`.",
-            "mod_manage_roles": "no puedes asignar roles porque no tienes permiso de `Gestionar Roles` o `Administrador`."
+        "invalid_duration": "por favor, ingrese una duración válida en el formato `7d5h30m5s` siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida",
+        "invalid_user": "no pude ejecutar el comando porque el usuario no es válido",
+        "lower_roles": "'no puedo asignar, quitar, eliminar o editar un rol que está por encima de los míos.",
+        "no_dms": "este comando solo puede ejecutarse en servidores.",
+        "not_enough_args": "no pude hacer nada por falta de argumentos. El uso correcto del comando sería{prefix}{commandName} {usage}",
+        "botperms": {
+            "add_role": "no tengo permiso para asignar roles. ||Permiso faltante: Gestionar roles||",
+            "ban": "no tengo permiso para banear. ||Permiso faltante: Gestionar mensajes||",
+            "clean": "no tengo permiso para limpiar este chat. ||Permiso faltante: Banear miembros||",
+            "create_role": "no tengo permiso para crear roles. ||Permiso faltante: Gestionar roles||",
+            "delete_channel": "no tengo permiso para borrar canales. ||Permiso faltante: Gestionar canales||",
+            "edit_role": "no tengo permiso para editar roles. ||Permiso faltante: Gestionar roles||",
+            "kick": "no tengo permiso para expulsar. ||Permiso faltante: Expulsar miembros||",
+            "remove_role": "no tengo permiso para retirar roles. ||Permiso faltante: Gestionar roles||"
         },
-        "unknown": "hubo un error desconocido al ejecutar este comando.",
+        "modperms":{
+            "add_role": "no tienes permiso para asignar roles. ||Necesitas: Gestionar roles||",
+            "ban": "no tienes permiso para banear. ||Necesitas: Gestionar mensajes||",
+            "clean": "no tienes permiso para limpiar este chat. ||Necesitas: Banear miembros||",
+            "create_role": "no tienes permiso para crear roles. ||Necesitas: Gestionar roles||",
+            "delete_channel": "no tienes permiso para borrar canales. ||Necesitas: Gestionar canales||",
+            "edit_role": "no tienes permiso para editar roles. ||Necesitas: Gestionar roles||",
+            "kick": "no tienes permiso para expulsar. ||Necesitas: Expulsar miembros||",
+            "remove_role": "no tienes permiso para retirar roles. ||Necesitas: Gestionar roles||"
+        },
+        "unknown": "hubo un error desconocido al ejecutar este comando :thinking:",
         "unsafe_integer": "el tiempo es tan largo que casi provoca un agujero en el espacio-tiempo... o casi sobrecargaste la memoria, que es casi lo mismo. El tiempo máximo posible es de `104.249.991 días` que equivale a `285.616 años terrestres`. Seguro que no prefieres banear, ya sabes... sin tiempo ni nada?"
     }
 }

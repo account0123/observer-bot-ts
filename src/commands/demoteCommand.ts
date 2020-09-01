@@ -12,12 +12,6 @@ export class DemoteCommand implements ArgCommand {
 	examples: string[] = ['@usuario#1234 abuso de poder']
 	usage: string = '<usuario> [razón]'
 	guildExclusive: boolean = true
-	lang:Lang
-  constructor(guild_id: string){
-    const lang = new Lang(guild_id)
-    this.lang = lang
-    this.shortdescription = this.fulldescription =  lang.translate('info.avatar.description')
-  }
 	async run(msg: Message, args: string[]): Promise<void> {
 		const member = MemberFinder.getMember(msg,args.shift()!)
 		const mod = msg.guild!.member(msg.author)!

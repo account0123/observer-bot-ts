@@ -4,9 +4,13 @@ import { Message } from "discord.js";
 export class Lang {
 	private lang:string
 	constructor(guild_id: string){
-		if(!guild_id){
-			this.lang = 'es'
-			 return
+		switch(guild_id){
+			case '': case 'es':
+				this.lang = 'es'
+				return
+			case 'en':
+				this.lang = 'en'
+				return
 		}
 		Connections.connection.query('SELECT lang FROM guilds WHERE guild=?',[guild_id],(err,rows,fields) =>{
 			if(err) throw err

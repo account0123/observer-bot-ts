@@ -9,7 +9,7 @@ export class AddRoleCommand implements ArgCommand {
 	permission: string = 'Gestionar roles'
 	shortdescription: string = 'Asigna al miembro indicado un rol.'
 	fulldescription: string = this.shortdescription
-	async checkPermissions(msg: Message): Promise<boolean> {
+	async checkPermissions(msg: Message,l:Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
@@ -27,12 +27,6 @@ export class AddRoleCommand implements ArgCommand {
 	examples: string[] = ['@usuario#1234 1234567899878654321', '123456789987654321 @Mod']
 	usage: string = '<usuario> <rol>'
 	guildExclusive: boolean = true
-	lang:Lang
-  constructor(guild_id: string){
-    const lang = new Lang(guild_id)
-    this.lang = lang
-    this.shortdescription = this.fulldescription =  lang.translate('info.avatar.description')
-  }
 	async run(msg: Message, args: string[]): Promise<void> {
 		const g = msg.guild!
 		const role = RoleFinder.getRole(msg,args.join(' '))
