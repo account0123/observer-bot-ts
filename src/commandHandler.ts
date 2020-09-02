@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanEveryoneCommand } from "./commands";
+import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanEveryoneCommand, CallCommand, LangCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
@@ -38,7 +38,9 @@ export default class CommandHandler {
       KickCommand,
       RoleInfoCommand,
       ResetAllRolesCommand,
-      UserInfoCommand
+      UserInfoCommand,
+      CallCommand,
+      LangCommand
     ];
 
     CommandHandler.commands = commandClasses.map(commandClass => new commandClass());
@@ -79,7 +81,7 @@ export default class CommandHandler {
         lang.reply('errors.not_enough_args',message,CommandHandler.prefix,commandParser.parsedCommandName,matchedArgCommand.usage)
         return
       }
-      await matchedArgCommand.checkPermissions(message).then(b=>{
+      await matchedArgCommand.checkPermissions(message,lang).then(b=>{
        if(b) matchedArgCommand.run(message,commandParser.args).catch(error => {
          lang.send('errors.unknown', message)
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)

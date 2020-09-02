@@ -12,7 +12,7 @@ export class Lang {
 				this.lang = 'en'
 				return
 		}
-		Connections.connection.query('SELECT lang FROM guilds WHERE guild=?',[guild_id],(err,rows,fields) =>{
+		Connections.db.query('SELECT language FROM guilds WHERE id=?',[guild_id],(err,rows,fields) =>{
 			if(err) throw err
 			if(rows.length === 0) {
 				console.error('COULDN\'T FIND GUILD ' + guild_id + ' PLEASE UPADTE')

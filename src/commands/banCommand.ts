@@ -11,13 +11,7 @@ export class BanCommand implements ArgCommand {
 	commandNames: string[] = ['ban'];
 	requiredArgs: number = 1;
 	examples: string[] = ['@usuario#1234 por alguna razón', '123456789987654321 uso de multicuentas'];
-	usage: string = '<usuario> [razón]';
-	lang:Lang
-  constructor(guild_id: string){
-    const lang = new Lang(guild_id)
-    this.lang = lang
-    this.shortdescription = this.fulldescription =  lang.translate('info.avatar.description')
-  }
+	usage: string = '<usuario> [razón]'
 	async run(msg: Message, args: string[]): Promise<void> {
 		const mod = msg.guild!.member(msg.author)!
 		const mention = args.splice(0,1).toString()

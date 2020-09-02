@@ -12,23 +12,22 @@ export class LangCommand implements ArgCommand {
 	examples: string[] = ['', 'es']
 	permission: string = 'Administrador'
 	async run(msg: Message, args: string[]): Promise<void> {
-		const sql = Connections.connection
+		const sql = Connections.db
 		const g = msg.guild!
 		if (args.length == 0) {
-			sql.query('SELECT lang FROM guilds WHERE guild=?',[g.id],function(err,rows,fields){
+			sql.query('SELECT language FROM guilds WHERE id=?',[g.id],function(err,rows,fields){
 				if(err) throw err
 				if(rows.length === 0) {
-					sql.query('INSERT INTO guilds VALUES (?, ?, ?, ?)', [g.id, g.name, '!!', 'es'],undefined)
-					msg.reply('el lenguaje actual es español')
+					msg.reply('el idioma actual es español')
 					return
 				}
 				const row = rows[0]
-				switch (row.lang) {
+				switch (row.language) {
 					case 'es':
-						msg.reply('el lenguaje actual es español')
+						msg.reply('el lenguaje actual es español.')
 						break
 					case 'en':
-						msg.reply('the actual language is english')
+						msg.reply('the actual language is english.')
 						break
 				}
 			});
@@ -36,12 +35,12 @@ export class LangCommand implements ArgCommand {
 			const language = args[0].toLowerCase().trim()
 			switch (language) {
 				case 'es':
-					sql.query('UPDATE guilds SET lang=\'es\'')
-					msg.channel.send('Ahora mi idioma es español, ostia')
+					sql.query('UPDATE guilds SET language=\'es\'')
+					msg.channel.send('Ahora mi idioma es español, ostia.')
 					break;
 				case 'en':
-					sql.query('UPDATE guilds SET lang=\'en\'')
-					msg.channel.send('My language is english rn, nice')
+					sql.query('UPDATE guilds SET language=\'en\'')
+					msg.channel.send('My language is english rn, nice.')
 					break;
 			}
 		}

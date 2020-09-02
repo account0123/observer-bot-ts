@@ -11,7 +11,7 @@ export class SnipeCommand implements Command {
 	async run(msg: Message): Promise<void> {
 		const bot = msg.guild!.member(msg.client.user!)!
 		const color = bot.displayColor
-		const connection = Connections.connection
+		const connection = Connections.db
 		connection.query('SELECT * FROM deleted WHERE channel=? and guild=?',[msg.channel.id, msg.guild!.id],function (err:any, rows) {
 			if(err) throw err
 			if(rows.length == 0) {

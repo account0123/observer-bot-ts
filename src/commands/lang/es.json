@@ -69,6 +69,7 @@
             "delete_channel": "no tienes permiso para borrar canales. ||Necesitas: Gestionar canales||",
             "edit_role": "no tienes permiso para editar roles. ||Necesitas: Gestionar roles||",
             "kick": "no tienes permiso para expulsar. ||Necesitas: Expulsar miembros||",
+            "massmention": "no tienes permiso para mencionar en masa ||Necesitas: Mencionar `@everyone`, `@here` y todos los roles||",
             "remove_role": "no tienes permiso para retirar roles. ||Necesitas: Gestionar roles||"
         },
         "unknown": "hubo un error desconocido al ejecutar este comando :thinking:",

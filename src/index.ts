@@ -31,7 +31,7 @@ const sniper = new SnipeHandler();
 
 client.on("ready", () => { 
   console.log("Observer has started");
-  new Connections()}
+  new Connections(client)}
   );
 client.on("message", (message: Message) => { commandHandler.handleMessage(message); });
 client.on('messageDelete',(deleted: Message| PartialMessage)=>sniper.saveDeletedMessage(deleted))

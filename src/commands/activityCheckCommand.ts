@@ -3,17 +3,10 @@ import { Message } from "discord.js"
 import { Lang } from "./lang/Lang"
 
 export class ActivitycheckCommand implements Command {
-  shortdescription: string
-  fulldescription: string
+  shortdescription: string= 'info.activity.description'
+  fulldescription: string = this.shortdescription
   guildExclusive: boolean = true
   commandNames = ['activitycheck','statuscheck']
-  lang:Lang
-  constructor(guild_id: string){
-    const lang = new Lang(guild_id)
-    this.lang = lang
-    this.shortdescription = lang.translate('info.activity.description')
-    this.fulldescription = lang.translate('info.activity.fulldescription')
-  }
   async run(message: Message): Promise<void> {
         var connected:number = 0
         var idle :number = 0
@@ -36,10 +29,11 @@ export class ActivitycheckCommand implements Command {
                     offline++;
             }
         }
+        const lang = new Lang(message.guild!.id)
         const total:number = connected + idle + dnd + offline;
-        this.lang.send('info.activity.success',message,'' + connected,'' + total,'' + idle,'' + total,'' + dnd,'' + total,'' + offline,'' + total,this.isActive(offline,total))
+        lang.send('info.activity.success',message,'' + connected,'' + total,'' + idle,'' + total,'' + dnd,'' + total,'' + offline,'' + total,this.isActive(offline,total))
   }
   isActive(o:number,t:number): string{
-    return o > (t /4) ? this.lang.translate('info.activity.dead') : this.lang.translate('info.activity.alive')
+    return o > (t /4) ? 'muerto' : 'activo'
   }
 }

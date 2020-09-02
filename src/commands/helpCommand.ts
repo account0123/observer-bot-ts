@@ -14,6 +14,8 @@ export class HelpCommand implements ArgCommand {
 	guildExclusive: boolean = false
 	lang:Lang = new Lang('')
 	async run(msg: Message, args: string[]): Promise<void> {
+		msg.channel.send('Comando no disponible por reparaciones')
+		return
 		this.lang = new Lang(msg.guild!.id)
 		var embed
 		const bot = msg.client.user!
