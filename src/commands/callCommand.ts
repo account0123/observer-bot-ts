@@ -6,10 +6,10 @@ export class CallCommand implements ArgCommand {
 	requiredArgs: number = 1
 	commandNames: string[] = ['call', 'summon']
 	guildExclusive: boolean = true
-	shortdescription: string = 'Menciona en masa usando IDs'
-	fulldescription: string = 'Utiliza la herramienta de búsqueda de usuarios para mencionarlos en CADA PALABRA DE LOS ARGUMENTOS'
-	usage: string = '<usuario> [usuario]...'
-	examples: string[] = ['@usuario#1234 @usuario2#3221', '12335684247853234 987654321213456789 9583726421']
+	shortdescription: string = ''
+	fulldescription: string = ''
+	usage: string = '<user> [user]...'
+	examples: string[] = ['@user#1234 @user2#3221', '12335684247853234 987654321213456789 958372642132422']
 	permission: string = 'Mencionar @everyone @here y todos los roles'
 	async run(msg: Message, args: string[]): Promise<void> {
 		const users = args.map(arg=>'<@'+arg+'>')

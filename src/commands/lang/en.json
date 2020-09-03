@@ -1,37 +1,107 @@
 {
     "info": {
-        "language": "the actual language is english (en)",
         "activity": {
+            "description":"Shows activity status",
+            "fulldescription": "Shows guild members' activity status in a general view",
             "success": "Connected: {connected}/{total}\nIdle: {idle}/{total}\nDo Not Disturb: {dnd}/{total}\nOffline: {offline}/{total}\nThis server is {isActive}.",
             "dead": "ded",
             "alive": "active!!! Let's party!!!!"
         },
         "addrole": {
-            "success": "The role was added to **{member.user.tag}** successfully!",
-            "error": "I couldn''t add the role to {member}."
+            "success": "The role **{role}** was added to **{member}** successfully!",
+            "error": "I couldn't add the role **{role}** to **{member}**."
         },
         "avatar": {
-            "own": "{message.author.username}, here's your avatar:",
-            "user": "${user.username}'s avatar:"
+            "description": "Shows your profile picture (or gif).",
+            "own": "{author.username}, here's your avatar:",
+            "user": "**{user.username}'s** avatar:",
+            "footer": "Omg! You're beautiful? handsome?... beautisome!"
         }
     },
-    "perms": {
-        "kick_members": "Kick Members",
-        "ban_members": "Ban Members",
-        "manage_roles": "Manage Roles"
+    "help": {
+        "description": "Help command.",
+        "fulldescription": "Show all commands list if there's not arguments, or detailed command help from the command argued",
+        "general":{
+            "title": "All Observador's commands",
+            "footer": "Use {prefix}help `command` to see how to use a command"
+        },
+        "about":{
+            "title": "{commandName} details",
+            "aliases": "Aliases",
+            "usage": "Usage",
+            "required": "Required Permissions",
+            "examples": "Examples",
+            "footer": "<> = required | [] = optional. | Don't include these symbols when you're typing the command."
+        },
+        "default":{
+            "no_usage": "*Just type the command name and that's all*",
+            "no_permissions": "*There're no required permissions*",
+            "permission_or_admin": "{permission} or Administrator",
+            "admin_exclusive": "Administrator"
+        }
+    },
+    "permissions": {
+        "CREATE_INSTANT_INVITE": "Create Invite",
+        "KICK_MEMBERS": "Kick Members",
+        "BAN_MEMBERS": "Ban Members",
+        "ADMINISTRATOR": "Administrator",
+        "MANAGE_CHANNELS": "Manage Channels",
+        "MANAGE_GUILD": "Manage Server",
+        "ADD_REACTIONS": "Add Reactions",
+        "VIEW_AUDIT_LOG": "View Audit Log",
+        "PRIORITY_SPEAKER": "Priority Speaker",
+        "STREAM": "Video",
+        "VIEW_CHANNEL": "Read Text Channels & See Voice Channels",
+        "SEND_MESSAGES": "Send Messages",
+        "SEND_TTS_MESSAGES": "Send TTS Messages",
+        "MANAGE_MESSAGES": "Manage Messages",
+        "EMBED_LINKS": "Embed Links",
+        "ATTACH_FILES": "Attach Files",
+        "READ_MESSAGE_HISTORY": "Read Message History",
+        "MENTION_EVERYONE": "Mention @everyone, @here and All Roles",
+        "USE_EXTERNAL_EMOJIS": "Use External Emojis",
+        "VIEW_GUILD_INSIGHTS": "VIEW_GUILD_INSIGHTS",
+        "CONNECT": "Connect",
+        "SPEAK": "Speak",
+        "MUTE_MEMBERS": "Mute Members",
+        "DEAFEN_MEMBERS": "Deafen Members",
+        "MOVE_MEMBERS": "Move Members",
+        "USE_VAD": "Use Voice Activity",
+        "CHANGE_NICKNAME": "Change Nickname",
+        "MANAGE_NICKNAMES": "Manage Nicknames",
+        "MANAGE_ROLES": "Manage Roles",
+        "MANAGE_WEBHOOKS": "Manage Webhooks",
+        "MANAGE_EMOJIS": "Manage Emojis"
     },
     "errors": {
-        "invalid-user": "i couldn't do anyhing beacuse the user is invalid",
-        "lower-roles": "'i can't add/remove/edit/delete a role if it's lower than my highest role '",
-        "no-args": "You didn't submit any argument, {message.author}.",
-        "no-dms": "I can't use this kind of commands in DMs!",
-        "not-enough-args": "i couldn't do anything due to lack of arguments",
-        "perms": {
-            "bot_manage_roles": "i don't have `MANAGE_ROLES` permission to do that.",
-            "mod_kick_members": "you can't kick anyone if you don't have`Kick Members` nor `Administrator` permission.",
-            "mod_ban_members": "you can't ban anyone if you don't have `Ban Members` nor `Administrator` permission.",
-            "mod_manage_roles": "you can't add roles beacuse you don't have `Manage Roles` nor 'Administrator' permission."
+        "invalid_duration": "please, send a valid duration time on format `ndnhnmns` being `nd` n days, `nh` n hours, `nm` n minutes and `ns` n seconds. I require at least one time unit to valid the duration",
+        "invalid_user": "i couldn't do anyhing beacuse the user {mention} isn't valid",
+        "invalid_member": "i couldn't do anything because the member {mention} either isn't valid or isn't in the server anymore",
+        "invalid_role": "i couldn't do anything because the role {mention} is invalid",
+        "lower_roles": "'i can't manage a role if that's higher or equal than my highest role",
+        "no_dms": "I can't use this kind of commands in DMs!",
+        "not_enough_args": "i couldn't do anything due to lack of arguments. The right usage for that command is {prefix}{commandName} {usage}",
+        "botperms": {
+            "add_role": "i don't have permission to add roles. ||Missing Permission: Manage roles||",
+            "ban": "i don't have permission to ban. ||Missing Permission: Manage Messages||",
+            "clean": "i don't have permission to clean this chat. ||Missing Permission: Manage Messages||",
+            "create_role": "i don't have permission to create roles. ||Missing Permission: Manage roles||",
+            "delete_channel": "i don't have permission to delete channels. ||Missing Permission: Manage Channels||",
+            "edit_role": "i don't have permission to edit roles. ||Missing Permission: Manage roles||",
+            "kick": "i don't have permission to kick. ||Missing Permission: Kick members||",
+            "remove_role": "i don't have permission to remove roles. ||Missing Permission: Manage roles||"
+        },
+        "modperms":{
+            "add_role": "you don't have permission to add roles. ||You need: Manage roles||",
+            "ban": "you don't have permission to ban. ||You need: Manage Messages||",
+            "clean": "you don't have permission to clean this chat. ||You need: Manage Messages||",
+            "create_role": "you don't have permission to create roles. ||You need: Manage roles||",
+            "delete_channel": "you don't have permission to delete channels. ||You need: Manage Channels||",
+            "edit_role": "you don't have permission to edit roles. ||You need: Manage roles||",
+            "kick": "you don't have permission to kick. ||You need: Kick members||",
+            "massmention": "you don't have permission to massmention ||You need: Mention @everyone, @here and All Roles||",
+            "remove_role": "you don't have permission to remove roles. ||You need: Manage roles||"
         }, 
-        "unknown": "an error has been throwed when this command was executed."
+        "unknown": "an error has been thrown when this command was executed."
     }
 }

@@ -5,20 +5,20 @@ import { inflateSync } from "zlib";
 import { Lang } from "./lang/Lang";
 
 export class EditRoleCommand implements ArgCommand {
-	permission: string = 'Gestionar roles'
-	shortdescription: string = 'Edita un rol.'
-	fulldescription: string = 'Edita un dato o varios datos del rol indicado...'
+	permission: string = 'MANAGE_ROLES'
+	shortdescription: string = 'info.editrole.description'
+	fulldescription: string = 'info.editrole.fulldescription'
 	commandNames: string[] = ['editrole','er']
 	requiredArgs: number = 1
-	examples: string[] = ['123456789987654321 pos: 10', '@cualquier nombre {name:otro nombre,color:RED}', '"mod" +manage_roles']
-	usage: string = '<rol> <dato:valor> [dato:valor]... [+/-alterno]....'
+	examples: string[] = ['123456789987654321 pos: 10', '@any rolename {name:another name,color:RED}', '"mod" +manage_roles']
+	usage: string = 'info.editrole.usage'
 	guildExclusive: boolean = true
 	async run(msg: Message, args: string[]): Promise<void> {
 		const botposition = msg.guild!.member(msg.client.user!)!.roles.highest.position
 		// Se asume a la mención de rol como la primera palabra de los argumentos
 		var mention = args[0]
 		// Se busca el patrón donde el nombre de rol puede estar
-		const regex = args.join(' ').match(/([^{]+) {?.+}?/)
+		const regex = args.join(' ').match(/"?([^{]+)"? {?.+}?/)
 		// Si hay match el nombre de rol es lo señalado en el patrón
 		if (regex) mention = regex[1]
 		// En caso de no existir el nombre en el patrón, se resatura al valor anterior
@@ -82,7 +82,7 @@ export class EditRoleCommand implements ArgCommand {
 								if(action==='remove'){
 									permission = <PermissionString> flag
 									role.permissions.remove(permission)
-									await msg.reply(`**${role.name}** ahora tiene el permiso **${flag}** agregado.`)
+									await msg.reply(`**${role.name}** ahora no tiene el permiso **${flag}**.`)
 									return
 								}
 							}
@@ -108,7 +108,7 @@ export class EditRoleCommand implements ArgCommand {
 					case 'perms': case 'permissions':
 						const perms = parseInt(value,16)
 						if(isNaN(perms)){
-							msg.reply('el número en hexadecimal no es válido, tiene que ser la suma en binario de todos los permisos a poner en el rol. Si solo quieres agregar o quitar un permiso usa el argumento \`+permiso\` o \`-permiso\`. Ejemplo: +ban_members')
+							msg.reply('el número en hexadecimal no es válido, tiene que ser la suma en binario de todos los permisos a poner en el rol. Si solo quieres agregar o quitar un permiso usa el argumento `+permiso` o `-permiso`. Ejemplo: +ban_members')
 							return
 						}
 						await role.setPermissions(perms,`Comando ejecutado por ${msg.author!.tag}`).then(r=>msg.reply(`**${role.name}** ahora tiene los permisos \`${r.permissions.toArray().toString()}\``)).catch(err=>{
@@ -173,15 +173,15 @@ export class EditRoleCommand implements ArgCommand {
 		}
 		await role.edit(data,`Comando ejecutado por ${msg.author.tag}`).then(r=>msg.channel.send(`Rol **${r.name}** modificado correctamente`))
 	}
-	async checkPermissions(msg: Message): Promise<boolean> {
+	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			msg.reply('no tengo el permiso para editar roles.')
+			l.reply('errors.botperms.edit_role',msg)
 			return false
 		}
 		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			msg.reply('no tienes permiso de editar roles.')
+			l.reply('errors.modperms.edit_role',msg)
 			return false
 		}
 		return true

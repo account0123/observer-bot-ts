@@ -7,25 +7,25 @@ import { Lang } from "./lang/Lang";
 
 export class AddRoleCommand implements ArgCommand {
 	permission: string = 'Gestionar roles'
-	shortdescription: string = 'Asigna al miembro indicado un rol.'
+	shortdescription: string = 'info.addrole.description'
 	fulldescription: string = this.shortdescription
 	async checkPermissions(msg: Message,l:Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			msg.reply('no tengo el permiso para asignar roles.')
+			l.reply('errors.botperms.add_role',msg)
 			return false
 		}
 		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			msg.reply('no tienes permiso de asiganr roles.')
+			l.reply('errors.modperms.add_role',msg)
 			return false
 		}
 		return true
 	}
 	commandNames: string[] = ['addrole']
 	requiredArgs: number = 2
-	examples: string[] = ['@usuario#1234 1234567899878654321', '123456789987654321 @Mod']
-	usage: string = '<usuario> <rol>'
+	examples: string[] = ['@user#1234 1234567899878654321', '123456789987654321 @Mod']
+	usage: string = '<user> <role>'
 	guildExclusive: boolean = true
 	async run(msg: Message, args: string[]): Promise<void> {
 		const g = msg.guild!
@@ -59,7 +59,7 @@ export class AddRoleCommand implements ArgCommand {
 		}
 		await member.roles.add(role,`Comando ejecutado por ${msg.author.tag}`).then(m=>msg.channel.send(`Rol **${role.name}** asiganado a **${m.displayName}**.`)).catch(e=>{msg.reply(`No pude añadir el rol por el error \`${e}\``)
 		console.error(`Se intento añadir el rol **${role.name}** a ${member.displayName} pero falló por`)
-		console.error()
+		console.error(e.stack)
 		})
 	}
 	

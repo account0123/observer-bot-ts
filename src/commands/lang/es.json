@@ -8,18 +8,118 @@
             "alive": "activo!!! Parece una fiesta!!!!"
         },
         "addrole": {
-            "success": "Rol asignado a **{member.user.tag}** exitosamente!",
-            "error": "No se pudo asignar el rol a {member}."
+            "description": "Asigna al miembro indicado un rol.",
+            "massrole-start": "Añadiendo el rol **{role}** a todos.",
+            "usage": "<usuario> <rol>",
+            "massrole-error": "No se pudo agregar el rol a **{member}**. Omitiendo..",
+            "massrole-no-hit": "Vaya, 0 miembros... mejor limpio",
+            "massrole-no-hit-error": "Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Chocolat o algún bot de esos.",
+            "success": "¡Rol **{role}** asignado a **{member}** exitosamente!",
+            "error": "No pude asignar el rol **{role}** a **{member}** por el error `{error}`."
         },
         "avatar": {
             "description": "Muestra tu foto (o gif) de perfil.",
+            "usage": "[usuario]",
             "own": "{message.author.username}, este es tu avatar:",
             "user": "El avatar de {user.username}:",
             "footer": "¡Que hermoso sujeto!"
         },
+        "ban":{
+            "description": "Banea a un miembro del servidor con o sin razón.",
+            "usage": "<usuario> [razón]",
+            "embed":{
+                "title": "¡Fuiste baneado de {guild}!",
+                "reason": "Razón",
+                "default_reason": "*No hubo una razón específica, pero seguro fue por algo malo*"
+            }
+        },
+        "call":{
+            "description": "Menciona en masa usando IDs.",
+            "fulldescription": "Utiliza la herramienta de búsqueda de usuarios para mencionarlos en masa, asumiendo que cada ID/nombre/tag está separado por espacios",
+            "usage": "<usuario> [usuario]...",
+            "start": "***Invocando a "
+        },
+        "clean":{
+            "description": "Limpia la cantidad de mensajes indicada",
+            "success": "{msgs} mensajes borrados",
+            "error": "No se pudieron borrar los mensajes por un error."
+        },
+        "createrole":{
+            "description": "Crea un rol con datos opcionales.",
+            "fulldescription": "Crea un rol con todos los datos opcionales. Los datos son:\n`name` - El nombre del nuevo rol\n`color` - El color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a incluir en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n`hoist` - Si se incluye, el rol será visible en la lista de miembros\n`mentionable` - Si se incluye, el rol puede mencionarse por cualquier miembro. Útil para roles de ayuda.",
+            "usage": "<nombre> o <{dato:valor[,dato:valor]...}>",
+            "success": "el rol ${role} fue creado sin problemas.",
+            "embed":{
+                "title": "Detalles:",
+                "name": "Nombre",
+                "position": "Posición",
+                "permissions": "Permisos",
+                "hoist": "Destacado",
+                "mentionable": "Mentionable"
+            }
+        },
+        "deletechannel":{
+            "description": "Borra un canal.",
+            "fulldescription": "Borra un canal. La contraseña se adquiere con el comando `getpass` invocado por cualquier administrador.",
+            "usage": "<canal> <constraseña>",
+            "success": "Canal **{channel}** borrado sin problemas."
+        },
+        "demote":{
+            "description": "Degrada al miembro indicado.",
+            "usage": "<usuario> [razón]",
+            "asbuddy": "no puedes degradar a un compañero o superior, que malo.",
+            "success": "Rol **{role}** removido a **{member}**. Ahora es **{member.highest}.**",
+            "error": "No pude quitar el rol por el error `{error}`"
+        },
+        "editrole":{
+            "description": "Edita un rol.",
+            "fulldescription": "Edita un dato o varios datos del rol indicado. Los datos son:\n`name` - El nuevo nombre del rol\n`color` - El nuevo color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a cambiar en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n**Alternos:**\nA los alternos no se les asigna un valor, sino que se les antepone un `-` para quitarlo o un `+` para agregarlo.\n`hoist` - Determina si el rol será visible (+) o no (-) en la lista de miembros\n`mentionable` - Determina si el rol puede mencionarse por cualquier miembro (+), útil para roles de ayuda, o *solo* quienes tengan el permiso de mencionar a todos los roles (-).\n`cualquier_permiso` - Si solo quieres agregar (+) o quitar (-) un permiso solo basta con prefijar con un signo y poner el [nombre oficial](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) del permiso. Ejemplo: +manage_roles",
+            "usage": "<rol> <dato:valor> [dato:valor]... [+/-alterno].... o <rol> dato: valor",
+            "not_found": "el rol {mention} no pudo ser encontrado, intente con la ID o poniendo el nombre entre comillas",
+            "invalid_format": "el formato ingresado no es válido. El formato correcto es { dato:valor, dato:valor, *...* }",
+            "no_changes": "*No hay cambios.*",
+            "success": "Rol **{role}** modificado correctamente",
+            "warn_highposition": "Advertencia: No puedo cambiar la posición del rol si es igual o mayor a mi rol más alto",
+            "error_highposition": "no puedo cambiar la posición del rol si es igual o mayor a mi rol más alto",
+            "position_NaN": "el valor asignado en position {position} no es un número",
+            "name_change":{
+                "success": "**{role.name}** ahora se llama **${r.name}**",
+                "error": "no pude renombrar al rol como {value}."
+            },
+            "color_change":{
+                "success": "**{role.name}** ahora es color **{r.hexColor}**",
+                "error": "no pude ponerle el color {value} al rol."
+            },
+            "position_change":{
+                "success": "**{role.name}** ahora está en la posición `${r.position}`",
+                "error": "no pude cambiar la posición del rol a {value}.",
+                "invalid_lower_role": "el rol inferior no es válido.",
+                "invalid_higher_role": "el rol superior no es válido."
+            },
+            "permissions_change":{
+                "success": "**{role.name}** ahora tiene los permisos `{r.permissions.toArray()}`",
+                "error": "no pude cambiarle los permisos a {value} al rol. Quizás estás poniendo más permisos de los que puedo permitir.",
+                "NaN" : "el número en hexadecimal no es válido, tiene que ser la suma en binario de todos los permisos a poner en el rol. Si solo quieres agregar o quitar un permiso usa el argumento `+permiso` o `-permiso`. Ejemplo: +ban_members",
+                "add_success": "**{role}** ahora tiene el permiso **{flag}** agregado.",
+                "remove_success": "**{role}** ahora no tiene el permiso **{flag}**."
+            },
+            "hoist_change":{
+                "add_success": "**${role}** ahora **se muestra**",
+                "add_error": "no pude cambiar el rol a **destacado**.",
+                "remove_success": "**{role}** ahora **no se muestra**",
+                "remove_error": "no pude cambiar el rol a **oculto**."
+            },
+            "mentionable_change":{
+                "add_success": "**${role}** ahora **es 100% mencionable**",
+                "add_error": "no pude cambiar el rol a **mencionable**.",
+                "remove_success": "**{role}** ahora **no es mencionable**(a menos que tengas el permiso de mencionar todos los roles)",
+                "remove_error": "no pude cambiar el rol a **no mencionable**."
+            }
+        },
         "help": {
             "description": "Comando de ayuda.",
-            "fulldescription": "Muestra una lista de todos los comando al no haber argumentos, o la ayuda detallada del comando indicado.",
+            "fulldescription": "Muestra una lista de todos los comandos al no haber argumentos, o la ayuda detallada del comando indicado.",
+            "usage": "[comando]",
             "general":{
                 "title": "Todos los comandos de Observador",
                 "footer": "Usa {prefix}help <comando> para ver cómo usar el comando"
@@ -30,7 +130,7 @@
                 "usage": "Uso",
                 "required": "Permisos necesarios",
                 "examples": "Ejemplos",
-                "footer": "<> = obligatorio | [] = opcional. | No incluyas estos símbolos al momento de ejecutar el comando."
+                "footer": "<> = obligatorio | [] = opcional. | <> o <> = 2 usos posibles del mismo comando | []... = argumentos infinitos | No incluyas estos símbolos al momento de ejecutar el comando."
             },
             "default":{
                 "no_usage": "*Solo pones el comando y ya*",
@@ -40,21 +140,55 @@
             }
         }
     },
-    "perms": {
-        "kick_members": "Expulsar miembros",
-        "ban_members": "Banear miembros",
-        "manage_roles": "Gestionar roles"
+    "permissions": {
+        "CREATE_INSTANT_INVITE": "Crear invitación",
+        "KICK_MEMBERS": "Expulsar miembros",
+        "BAN_MEMBERS": "Banear miembros",
+        "ADMINISTRATOR": "Administrador",
+        "MANAGE_CHANNELS": "Gestionar canales",
+        "MANAGE_GUILD": "Gestionar servidor",
+        "ADD_REACTIONS": "Añadir reacciones",
+        "VIEW_AUDIT_LOG": "Ver el registro de auditoría",
+        "PRIORITY_SPEAKER": "Prioridad de palabra",
+        "STREAM": "Vídeo",
+        "VIEW_CHANNEL": "Leer canales de texto y ver canales de voz",
+        "SEND_MESSAGES": "Enviar mensajes",
+        "SEND_TTS_MESSAGES": "Enviar mensajes de texto a voz",
+        "MANAGE_MESSAGES": "Gestionar mensajes",
+        "EMBED_LINKS": "Insertar enlaces",
+        "ATTACH_FILES": "Adjuntar archivos",
+        "READ_MESSAGE_HISTORY": "Leer el historial de mensajes",
+        "MENTION_EVERYONE": "Mencionar @everyone, @here y todos los roles",
+        "USE_EXTERNAL_EMOJIS": "Usar emojis externos",
+        "VIEW_GUILD_INSIGHTS": "VIEW_GUILD_INSIGHTS",
+        "CONNECT": "Conectar",
+        "SPEAK": "Hablar",
+        "MUTE_MEMBERS": "Silenciar miembros",
+        "DEAFEN_MEMBERS": "Ensordecer Miembros",
+        "MOVE_MEMBERS": "Mover miembros",
+        "USE_VAD": "Usar Actividad de voz",
+        "CHANGE_NICKNAME": "Cambiar apodo",
+        "MANAGE_NICKNAMES": "Gestionar apodos",
+        "MANAGE_ROLES": "Gestionar roles",
+        "MANAGE_WEBHOOKS": "Gestionar webhooks",
+        "MANAGE_EMOJIS": "Gestionar emojis"
     },
     "errors": {
+        "incorrect_password": "Contraseña incorrecta.",
         "invalid_duration": "por favor, ingrese una duración válida en el formato `7d5h30m5s` siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida",
-        "invalid_user": "no pude ejecutar el comando porque el usuario no es válido",
-        "lower_roles": "'no puedo asignar, quitar, eliminar o editar un rol que está por encima de los míos.",
+        "invalid_channel": "no pude identificar el canal",
+        "invalid_user": "no pude hacer nada porque el usuario {mention} no es válido",
+        "invalid_member": "no pude hacer nada porque el miembro {mention} no es válido o ya no está aquí como miembro",
+        "invalid_role": "no pude hacer nada porque el rol {mention} no es válido",
+        "lower_bot": "no puedo hacerle nada a un miembro que esté a mi nivel o más arriba que yo",
+        "lower_roles": "no puedo modificar un rol si está más arriba o es igual que mi rol más alto.",
         "no_dms": "este comando solo puede ejecutarse en servidores.",
+        "NaN": "el número que ingresaste no es un número válido",
         "not_enough_args": "no pude hacer nada por falta de argumentos. El uso correcto del comando sería{prefix}{commandName} {usage}",
         "botperms": {
             "add_role": "no tengo permiso para asignar roles. ||Permiso faltante: Gestionar roles||",
-            "ban": "no tengo permiso para banear. ||Permiso faltante: Gestionar mensajes||",
-            "clean": "no tengo permiso para limpiar este chat. ||Permiso faltante: Banear miembros||",
+            "ban": "no tengo permiso para banear. ||Permiso faltante: Banear miembros||",
+            "clean": "no tengo permiso para limpiar este chat. ||Permiso faltante: Gestionar mensajes||",
             "create_role": "no tengo permiso para crear roles. ||Permiso faltante: Gestionar roles||",
             "delete_channel": "no tengo permiso para borrar canales. ||Permiso faltante: Gestionar canales||",
             "edit_role": "no tengo permiso para editar roles. ||Permiso faltante: Gestionar roles||",
@@ -63,8 +197,8 @@
         },
         "modperms":{
             "add_role": "no tienes permiso para asignar roles. ||Necesitas: Gestionar roles||",
-            "ban": "no tienes permiso para banear. ||Necesitas: Gestionar mensajes||",
-            "clean": "no tienes permiso para limpiar este chat. ||Necesitas: Banear miembros||",
+            "ban": "no tienes permiso para banear. ||Necesitas: Banear miembros||",
+            "clean": "no tienes permiso para limpiar este chat. ||Necesitas: Gestionar mensajes||",
             "create_role": "no tienes permiso para crear roles. ||Necesitas: Gestionar roles||",
             "delete_channel": "no tienes permiso para borrar canales. ||Necesitas: Gestionar canales||",
             "edit_role": "no tienes permiso para editar roles. ||Necesitas: Gestionar roles||",
@@ -74,5 +208,8 @@
         },
         "unknown": "hubo un error desconocido al ejecutar este comando :thinking:",
         "unsafe_integer": "el tiempo es tan largo que casi provoca un agujero en el espacio-tiempo... o casi sobrecargaste la memoria, que es casi lo mismo. El tiempo máximo posible es de `104.249.991 días` que equivale a `285.616 años terrestres`. Seguro que no prefieres banear, ya sabes... sin tiempo ni nada?"
-    }
+    },
+    "reason": "Comando ejecutado por {author}",
+    "yes": "Sí",
+    "no": "No"
 }

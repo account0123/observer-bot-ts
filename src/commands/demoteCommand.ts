@@ -5,12 +5,12 @@ import { Lang } from "./lang/Lang";
 
 export class DemoteCommand implements ArgCommand {
 	permission: string = 'Gestionar roles'
-	shortdescription: string = 'Degrada al miembro indicado.'
+	shortdescription: string = 'info.demote.description'
 	fulldescription: string = this.shortdescription
 	commandNames: string[] = ['demote']
 	requiredArgs: number = 1
 	examples: string[] = ['@usuario#1234 abuso de poder']
-	usage: string = '<usuario> [razón]'
+	usage: string = 'info.demote.usage'
 	guildExclusive: boolean = true
 	async run(msg: Message, args: string[]): Promise<void> {
 		const member = MemberFinder.getMember(msg,args.shift()!)
@@ -28,20 +28,20 @@ export class DemoteCommand implements ArgCommand {
 			msg.reply('no puedes degradar a un compañero o superior, que malo.')
 			return
 		}
-		await member.roles.remove(role,args.join(' ') || `Comando ejecutado por ${msg.author.tag}`).then(m=>msg.channel.send(`Rol **${role.name}** removido a **${m.displayName}**. Ahora es **${m.roles.highest.name}**`)).catch(e=>{msg.reply(`No pude quitar el rol por el error \`${e}\``)
+		await member.roles.remove(role,args.join(' ') || `Comando ejecutado por ${msg.author.tag}`).then(m=>msg.channel.send(`Rol **${role.name}** removido a **${m.displayName}**. Ahora es **${m.roles.highest.name}.**`)).catch(e=>{msg.reply(`No pude quitar el rol por el error \`${e}\``)
 		console.error(`Se intento eliminar el rol **${role.name}** a ${member.displayName} pero falló por`)
-		console.error()
+		console.error(e.stack)
 		})
 	}
-	async checkPermissions(msg: Message): Promise<boolean> {
+	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			msg.reply('no tengo el permiso para desasignar roles.')
+			l.reply('errors.botperms.remove_role',msg)
 			return false
 		}
 		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			msg.reply('no tienes permiso de desasignar roles.')
+			l.reply('errors.modperms.remove_role',msg)
 			return false
 		}
 		return true
