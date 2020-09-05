@@ -8,7 +8,7 @@
             "alive": "activo!!! Parece una fiesta!!!!"
         },
         "addrole": {
-            "description": "Asigna al miembro indicado un rol.",
+            "description": "Asigna a un miembro un rol.",
             "massrole-start": "Añadiendo el rol **{role}** a todos.",
             "usage": "<usuario> <rol>",
             "massrole-error": "No se pudo agregar el rol a **{member}**. Omitiendo..",
@@ -68,8 +68,8 @@
             "description": "Degrada al miembro indicado.",
             "usage": "<usuario> [razón]",
             "asbuddy": "no puedes degradar a un compañero o superior, que malo.",
-            "success": "Rol **{role}** removido a **{member}**. Ahora es **{member.highest}.**",
-            "error": "No pude quitar el rol por el error `{error}`"
+            "success": "**{author}** ha degradado a **{member}**, ahora ya no es **{role}**. Ahora es **{member.highest}.**",
+            "error": "No pude degradar por el error `{error}`"
         },
         "editrole":{
             "description": "Edita un rol.",

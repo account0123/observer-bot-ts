@@ -8,37 +8,143 @@
             "alive": "active!!! Let's party!!!!"
         },
         "addrole": {
-            "success": "The role **{role}** was added to **{member}** successfully!",
-            "error": "I couldn't add the role **{role}** to **{member}**."
+            "description": "Adds a role to a member.",
+            "massrole-start": "Adding **{role}** role to everyone.",
+            "usage": "<member> <role>",
+            "massrole-error": "I couldn't add that role to **{member}**. Skipping..",
+            "massrole-no-hit": "Ok, 0 members.. i better clean",
+            "massrole-no-hit-error": "I'm sorry... i don't think I can clean up this mess either. You should use Dyno or a bot of those.",
+            "success": "**{role}** role added to **{member}** successfully!",
+            "error": "I couldn't add **{role}** role to **{member}** because that error: `{error}`."
         },
         "avatar": {
             "description": "Shows your profile picture (or gif).",
             "own": "{author.username}, here's your avatar:",
             "user": "**{user.username}'s** avatar:",
             "footer": "Omg! You're beautiful? handsome?... beautisome!"
-        }
-    },
-    "help": {
-        "description": "Help command.",
-        "fulldescription": "Show all commands list if there's not arguments, or detailed command help from the command argued",
-        "general":{
-            "title": "All Observador's commands",
-            "footer": "Use {prefix}help `command` to see how to use a command"
         },
-        "about":{
-            "title": "{commandName} details",
-            "aliases": "Aliases",
-            "usage": "Usage",
-            "required": "Required Permissions",
-            "examples": "Examples",
-            "footer": "<> = required | [] = optional. | Don't include these symbols when you're typing the command."
+        "ban":{
+            "description": "Bans a member from this server with(out) a(ny) reason.",
+            "usage": "<user> [reason]",
+            "embed":{
+                "title": "¡You got banned from {guild}!",
+                "reason": "Reason",
+                "default_reason": "*There wasn't a specific reason, but you had to do something bad*"
+            }
         },
-        "default":{
-            "no_usage": "*Just type the command name and that's all*",
-            "no_permissions": "*There're no required permissions*",
-            "permission_or_admin": "{permission} or Administrator",
-            "admin_exclusive": "Administrator"
-        }
+        "call":{
+            "description": "Massmentions using IDs/tags/names.",
+            "fulldescription": "Uses my user search tool to mention them in a message, assuming each ID/name/tag is separated by spaces",
+            "usage": "<user> [user]...",
+            "start": "***Summoning to "
+        },
+		"clean":{
+            "description": "Cleans up the requested amount of messages",
+			"usage": "<amount of messages to delete>",
+            "success": "{msgs} messages deleted.",
+            "error": "I couldn't clean up these messages due this error `{error}`"
+        },
+		"createrole":{
+            "description": "Creates a role with at least a value.",
+            "fulldescription": "Creates a role with a name or at least a value in `key:value` format. The keys are:\n
+			`name` - Name of new role\n
+			`color` - Color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n
+			`permissions` - The sum of [the permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna include on the role [as hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) 
+			(eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n
+			`hoist` - when included, the role will be visible in members list\n`mentionable` - When included, the role is mentionable by any member. Useful for helper roles.",
+            "usage": "<name> or <{key:value[,key:value]...}>",
+            "success":{role} role was created successfully!",
+            "embed":{
+                "title": "Details:",
+                "name": "Name",
+                "position": "Position",
+                "permissions": "Permissions",
+                "hoist": "Hoist",
+                "mentionable": "Mentionable"
+            }
+        },
+        "deletechannel":{
+            "description": "Deletes a channel.",
+            "fulldescription": "Deletes a channel. The password is got using `getpass` command, command only allowed for administrators.",
+            "usage": "<channel> <password>",
+            "success": "**#{channel}** channel deleted successfully!"
+        },
+        "demote":{
+            "description": "Demotes a member with(out) a(ny) reason.",
+            "usage": "<user> [reason]",
+            "asbuddy": "you can't demote a buddy or superior, you're evil.",
+            "success": "**{author}** has demoted to **{member}**, they aren't **{role}** anymore. Now they're **{member.highest}.**",
+            "error": "I couldn't demote because this error: `{error}`"
+        },
+        "editrole":{
+            "description": "Edits a role.",
+            "fulldescription": "Edits a single property or various properties of chosen role in `property:value` format. Properties are:\n`name` - New role name\n`color` - New color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - The sum of [the permissions]
+			(https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna change as [hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n
+			**Togglables:**\nA togglable property hasn't a value associated, instead you use a `-` prefix to remove it or `+` prefix to add it.\n
+			`hoist` - Wheter the role is visible in member list (+) or not (-)\n`mentionable` - Wheter the role is mentionable by any member (+), useful for helper roles, or not (-).\n`any_permission` - If you wanna add (+) or remove (-) a single permission, just need to use either of the signs as prefix and type the [official permission name](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal). Eg: +manage_roles",
+            "usage": "<role> <property:value> [property:value]... [+/-togglable]....` or `<role> property: value",
+            "not_found": "i couldn't find {mention} role, try again using ID or quoting the role name",
+            "invalid_format": "the input has an invalid syntax. The right syntax is { property:value, property:value, *...* }",
+            "no_changes": "*Role without changes.*",
+            "success": "**{role}** role has changed successfully!",
+            "warn_highposition": "Warning: I can't change the position if is higher or equal than my highest role.\nPosition value skipped.",
+            "error_highposition": "i couldn't change the position if is higher or equal than my highest role",
+            "position_NaN": "Position value: `{position}` isn't even a number.",
+            "name_change":{
+                "success": "**{role.name}** has been renamed to **${r.name}**",
+                "error": "i couldn't rename the role to {value}."
+            },
+            "color_change":{
+                "success": "**{role.name}**'s color is **{r.hexColor}** now, an original name for a color",
+                "error": "i couldn't set {value} color to the role. Are you sure {value} is a color?"
+            },
+            "position_change":{
+                "success": "**{role.name}** now is at position #`${r.position}`",
+                "error": "i couldn't change the role position to {value} .",
+                "invalid_lower_role": "lower reference role is invalid.",
+                "invalid_higher_role": "higher reference role is invalid."
+            },
+            "permissions_change":{
+                "success": "**{role.name}** now has the following permissions: `{r.permissions.toArray()}`",
+                "error": "i couldn't set {value} bitfield permission to role. Maybe you are asking for more permissions i can give.",
+                "NaN" : "hex number permission isn't valid, it must be the binary sum of all permissions to set on role. If you just wanna add/remove a single permission you can use `+permission` o `-permission` in the command args. Eg: +ban_members",
+                "add_success": "**{role}** now has **{flag}** added.",
+                "remove_success": "**{role}** now hasn't **{flag}** anymore."
+            },
+            "hoist_change":{
+                "add_success": "**${role}** now **is hoisted**.",
+                "add_error": "i couldn't **hoist** the role.",
+                "remove_success": "**{role}** now **is hidden**.",
+                "remove_error": "i couldn't **hide** the role."
+            },
+            "mentionable_change":{
+                "add_success": "**${role}** now **is 100% mencionable**",
+                "add_error": "i couldn't make the role **mencionable**.",
+                "remove_success": "**{role}** now **isn't mencionable**(unless you have Mention All Roles permission)",
+                "remove_error": "i couldn't set the role as **not mencionable**."
+            }
+        },
+		"help": {
+			"description": "Help command.",
+			"fulldescription": "Show all commands list if there's not arguments, or detailed command help from the command argued",
+			"general":{
+				"title": "All Observador's commands",
+				"footer": "Use {prefix}help `command` to see how to use a command"
+			},
+			"about":{
+				"title": "{commandName} details",
+				"aliases": "Aliases",
+				"usage": "Usage",
+				"required": "Required Permissions",
+				"examples": "Examples",
+				"footer": "<> = required | [] = optional. | Don't include these symbols when you're typing the command."
+			},
+			"default":{
+				"no_usage": "*Just type the command name and that's all*",
+				"no_permissions": "*There're no required permissions*",
+				"permission_or_admin": "{permission} or Administrator",
+				"admin_exclusive": "Administrator"
+			}			
     },
     "permissions": {
         "CREATE_INSTANT_INVITE": "Create Invite",
@@ -103,5 +209,8 @@
             "remove_role": "you don't have permission to remove roles. ||You need: Manage roles||"
         }, 
         "unknown": "an error has been thrown when this command was executed."
-    }
+    },
+    "reason": "Commad executed by {author}",
+    "yes": "Yes",
+    "no": "No"
 }
