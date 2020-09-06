@@ -46,14 +46,9 @@
         },
 		"createrole":{
             "description": "Creates a role with at least a value.",
-            "fulldescription": "Creates a role with a name or at least a value in `key:value` format. The keys are:\n
-			`name` - Name of new role\n
-			`color` - Color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n
-			`permissions` - The sum of [the permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna include on the role [as hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) 
-			(eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n
-			`hoist` - when included, the role will be visible in members list\n`mentionable` - When included, the role is mentionable by any member. Useful for helper roles.",
+            "fulldescription": "Creates a role with a name or at least a value in `key:value` format. The keys are:\n`name` - Name of new role\n`color` - Color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - The sum of [the permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna include on the role [as hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n`hoist` - when included, the role will be visible in members list\n`mentionable` - When included, the role is mentionable by any member. Useful for helper roles.",
             "usage": "<name> or <{key:value[,key:value]...}>",
-            "success":{role} role was created successfully!",
+            "success":"{role} role was created successfully!",
             "embed":{
                 "title": "Details:",
                 "name": "Name",
@@ -78,10 +73,7 @@
         },
         "editrole":{
             "description": "Edits a role.",
-            "fulldescription": "Edits a single property or various properties of chosen role in `property:value` format. Properties are:\n`name` - New role name\n`color` - New color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - The sum of [the permissions]
-			(https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna change as [hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n
-			**Togglables:**\nA togglable property hasn't a value associated, instead you use a `-` prefix to remove it or `+` prefix to add it.\n
-			`hoist` - Wheter the role is visible in member list (+) or not (-)\n`mentionable` - Wheter the role is mentionable by any member (+), useful for helper roles, or not (-).\n`any_permission` - If you wanna add (+) or remove (-) a single permission, just need to use either of the signs as prefix and type the [official permission name](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal). Eg: +manage_roles",
+            "fulldescription": "Edits a single property or various properties of chosen role in `property:value` format. Properties are:\n`name` - New role name\n`color` - New color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - The sum of [the permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna change as [hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n**Togglables:**\nA togglable property hasn't a value associated, instead you use a `-` prefix to remove it or `+` prefix to add it.\n`hoist` - Wheter the role is visible in member list (+) or not (-)\n`mentionable` - Wheter the role is mentionable by any member (+), useful for helper roles, or not (-).\n`any_permission` - If you wanna add (+) or remove (-) a single permission, just need to use either of the signs as prefix and type the [official permission name](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags). Eg: +manage_roles",
             "usage": "<role> <property:value> [property:value]... [+/-togglable]....` or `<role> property: value",
             "not_found": "i couldn't find {mention} role, try again using ID or quoting the role name",
             "invalid_format": "the input has an invalid syntax. The right syntax is { property:value, property:value, *...* }",
@@ -107,7 +99,7 @@
             "permissions_change":{
                 "success": "**{role.name}** now has the following permissions: `{r.permissions.toArray()}`",
                 "error": "i couldn't set {value} bitfield permission to role. Maybe you are asking for more permissions i can give.",
-                "NaN" : "hex number permission isn't valid, it must be the binary sum of all permissions to set on role. If you just wanna add/remove a single permission you can use `+permission` o `-permission` in the command args. Eg: +ban_members",
+                "NaN" : "hex number permission isn't valid, it must be the hexadecimal sum of all permissions to set on role. If you just wanna add/remove a single permission you can use `+permission` o `-permission` in the command args. Eg: +ban_members",
                 "add_success": "**{role}** now has **{flag}** added.",
                 "remove_success": "**{role}** now hasn't **{flag}** anymore."
             },
@@ -145,6 +137,7 @@
 				"permission_or_admin": "{permission} or Administrator",
 				"admin_exclusive": "Administrator"
 			}			
+        }
     },
     "permissions": {
         "CREATE_INSTANT_INVITE": "Create Invite",

@@ -3,7 +3,7 @@ import { Message } from "discord.js"
 import { Connections } from "../config/connections"
 
 export class StopCommand implements Command {
-  shortdescription: string = 'Me apago. *Uso exclusivo de mi creador*.'
+  shortdescription: string = 'info.stop.description'
   fulldescription: string = this.shortdescription
   guildExclusive: boolean = false
   commandNames = ["stop","off","shutdown"]

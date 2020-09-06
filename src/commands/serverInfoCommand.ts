@@ -5,17 +5,23 @@ import { Time } from "../util/Time";
 export class ServerInfoCommand implements Command {
 	commandNames: string[] = ['server', 'serverinfo', 'si']
 	guildExclusive: boolean = true
-	shortdescription: string = 'Información del servidor'
-	fulldescription: string = 'Envía información del servidor'
+	shortdescription: string = 'info.serverinfo.description'
+	fulldescription: string = 'info.serverinfo.fulldescriptions'
 	g!: Guild;
 	async run(msg: Message): Promise<void> {
 		this.g = msg.guild!
 		const channels = this.g.channels.cache.array().length;
 		const channelCount = this.countChannels();
 		const serverEmbed = new MessageEmbed()
-			.setColor('#F3800B')
+			.setColor('#D0D0D0')
 			.setAuthor(`${this.g.name} (ID: ${this.g.id})`,this.g.iconURL() || undefined);
 		const url = this.g.vanityURLCode
+		const intro = 'Cada usuario debe:\n'
+		const none = 'Divertirse, todos son bienvenidos'
+		const email = '1. Tener correo vertificado'
+		const fivemin = '\n2. Estar 5 minutos registrado'
+		const tenmin = '\n3. Estar 10 minutos en el servidor'
+		const phone = '\n4. Tener el número verificado'
 		if (url) serverEmbed.addField('Invitación oficial',url,true)
 		serverEmbed.addFields(
 			{name: 'Región', value:this.g.region,inline: true},
@@ -23,8 +29,8 @@ export class ServerInfoCommand implements Command {
 			{ name: 'Miembros' , value: this.g.memberCount, inline: true},
 			{ name: 'Canales'  , value: `${channels} (${channelCount})`,inline: true},
 			{ name: 'Emojis', value: this.g.emojis.cache.size, inline:true},
-			{name: 'Nivel de seguridad', value: this.g.verificationLevel, inline:true},
-			{ name: 'Factor de seguridada activado?', value: ()=> this.g.mfaLevel == 1 ? 'Sí' : 'No',inline: true},
+			{name: 'Nivel de seguridad', value: intro + (()=>{switch(this.g.verificationLevel){case 'NONE':return none;case 'LOW':return email;case 'MEDIUM':return email+fivemin;case 'HIGH':return email+fivemin+tenmin;case 'VERY_HIGH':return email+fivemin+tenmin+phone}}), inline:true},
+			{ name: 'Factor de seguridada activado?', value: (()=> this.g.mfaLevel == 1 ? 'Sí' : 'No'),inline: true},
 			{name: 'Nivel de boost', value: this.g.premiumTier,inline: true},
 			{ name: 'Creado el', value: new Time(this.g.id).toString()}
 		);

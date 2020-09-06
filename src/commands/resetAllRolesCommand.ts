@@ -3,14 +3,15 @@ import { Message, Permissions,Collection, Role} from "discord.js";
 import { utils, ModeOfOperation } from "aes-js";
 import { GetPassCommand } from ".";
 import console from "console";
+import { Lang } from "./lang/Lang";
 
 export class ResetAllRolesCommand implements ArgCommand {
 	requiredArgs: number = 1
 	commandNames: string[] = ['resetallroles']
 	guildExclusive: boolean = true
-	shortdescription: string = 'Reinicia todos los roles.'
-	fulldescription: string = 'Reinicia los permisos de todos los roles del servidor (a los que tengo acceso), en caso de que no quieras dejarlos en 0 también puedes incluir [la suma](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) de [los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) que van a tener esos roles. Requiere contraseña obtenida con el comando `getPass`.'
-	usage: string = '<contraseña> [permisos]'
+	shortdescription: string = 'info.resetallroles.description'
+	fulldescription: string = 'info.resetallroles.fulldescription'
+	usage: string = 'info.resetallroles.usage'
 	examples: string[] = ['832abc370fa879d2']
 	permission: string = 'Gestionar roles'
 	async run(msg: Message, args: string[]): Promise<void> {
@@ -44,9 +45,9 @@ export class ResetAllRolesCommand implements ArgCommand {
 		await msg.channel.send(`Reiniciando ${botposition - 1} roles con los permisos \`${new Permissions(perms).toArray()}\``)
 		msg.guild!.roles.cache.forEach(async r => {
 		})
-		const asyncForEach = async (array:Role[], callback: { (r: Role): Promise<void>; (arg0: Role, arg1: number, arg2: Role[]): any; }) => {
-		  for (let index = 0; index < array.length; index++) {
-			await callback(array[index], index, array)
+		const asyncForEach = async (a:Role[], callback: { (r: Role): Promise<void>; (arg0: Role, arg1: number, arg2: Role[]): any; }) => {
+		  for (let i = 0; i < a.length; i++) {
+			await callback(a[i], i, a)
 		  }
 		}
 		const restart = async () => {
@@ -61,15 +62,15 @@ export class ResetAllRolesCommand implements ArgCommand {
 		}
 		restart()
 	}
-	async checkPermissions(msg: Message): Promise<boolean> {
+	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)){
-			msg.reply('no tienes permiso para reiniciar los roles.')
+			l.reply('errors.botperms.edit_role',msg)
 			return false
 		}
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			msg.reply('no tengo permiso para reiniciar los roles.')
+			l.reply('errors.modperms.edit_role',msg)
 			return false
 		}
 		return true

@@ -45,7 +45,7 @@ export class Lang {
             throw e;
         }
 		var script:string = obj
-		const data = script.match(/\{.+\}/gm)
+		const data = script.match(/\{[\w.]+\}/gm)
 		if(!data){
 			msg.channel.send(script)
 			return
@@ -75,7 +75,7 @@ export class Lang {
             throw e;
         }
 		var script:string = obj
-		const data = script.match(/\{.+\}/gm)
+		const data = script.match(/\{[\w.]+\}/gm)
 		if(!data){
 			msg.reply(script)
 			return
@@ -105,7 +105,7 @@ export class Lang {
             throw e;
 		}
 		var script:string = obj
-		const data = script.match(/\{.+\}/gm)
+		const data = script.match(/\{[\w.]+\}/gm)
 		if(!data){
 			return script
 		}

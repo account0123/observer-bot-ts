@@ -12,8 +12,6 @@
             "massrole-start": "Añadiendo el rol **{role}** a todos.",
             "usage": "<usuario> <rol>",
             "massrole-error": "No se pudo agregar el rol a **{member}**. Omitiendo..",
-            "massrole-no-hit": "Vaya, 0 miembros... mejor limpio",
-            "massrole-no-hit-error": "Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Chocolat o algún bot de esos.",
             "success": "¡Rol **{role}** asignado a **{member}** exitosamente!",
             "error": "No pude asignar el rol **{role}** a **{member}** por el error `{error}`."
         },
@@ -45,9 +43,9 @@
             "error": "No se pudieron borrar los mensajes por un error."
         },
         "createrole":{
-            "description": "Crea un rol con datos opcionales.",
-            "fulldescription": "Crea un rol con todos los datos opcionales. Los datos son:\n`name` - El nombre del nuevo rol\n`color` - El color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a incluir en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n`hoist` - Si se incluye, el rol será visible en la lista de miembros\n`mentionable` - Si se incluye, el rol puede mencionarse por cualquier miembro. Útil para roles de ayuda.",
-            "usage": "<nombre> o <{dato:valor[,dato:valor]...}>",
+            "description": "Crea un rol con propiedades opcionales.",
+            "fulldescription": "Crea un rol con todas sus propiedades opcionales. Los propiedades son:\n`name` - El nombre del nuevo rol\n`color` - El color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a incluir en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n`hoist` - Si se incluye, el rol será visible en la lista de miembros\n`mentionable` - Si se incluye, el rol puede mencionarse por cualquier miembro. Útil para roles de ayuda.",
+            "usage": "<nombre>`  o `<{propiedad:valor[,propiedad:valor]...}>",
             "success": "el rol ${role} fue creado sin problemas.",
             "embed":{
                 "title": "Detalles:",
@@ -73,22 +71,22 @@
         },
         "editrole":{
             "description": "Edita un rol.",
-            "fulldescription": "Edita un dato o varios datos del rol indicado. Los datos son:\n`name` - El nuevo nombre del rol\n`color` - El nuevo color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a cambiar en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n**Alternos:**\nA los alternos no se les asigna un valor, sino que se les antepone un `-` para quitarlo o un `+` para agregarlo.\n`hoist` - Determina si el rol será visible (+) o no (-) en la lista de miembros\n`mentionable` - Determina si el rol puede mencionarse por cualquier miembro (+), útil para roles de ayuda, o *solo* quienes tengan el permiso de mencionar a todos los roles (-).\n`cualquier_permiso` - Si solo quieres agregar (+) o quitar (-) un permiso solo basta con prefijar con un signo y poner el [nombre oficial](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) del permiso. Ejemplo: +manage_roles",
+            "fulldescription": "Edita una propiedad o varias propeiedades del rol indicado en el formato `propiedad:nuevo valor`. Las propiedades son:\n`name` - El nuevo nombre del rol\n`color` - El nuevo color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a cambiar en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n**Alternos:**\nA los alternos no se les asigna un valor, sino que se les antepone un `-` para quitarlo o un `+` para agregarlo.\n`hoist` - Determina si el rol será visible (+) o no (-) en la lista de miembros\n`mentionable` - Determina si el rol puede mencionarse por cualquier miembro (+), útil para roles de ayuda, o *solo* quienes tengan el permiso de mencionar a todos los roles (-).\n`cualquier_permiso` - Si solo quieres agregar (+) o quitar (-) un permiso solo basta con prefijar con un signo y poner el [nombre oficial](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) del permiso. Ejemplo: +manage_roles",
             "usage": "<rol> <dato:valor> [dato:valor]... [+/-alterno].... o <rol> dato: valor",
             "not_found": "el rol {mention} no pudo ser encontrado, intente con la ID o poniendo el nombre entre comillas",
-            "invalid_format": "el formato ingresado no es válido. El formato correcto es { dato:valor, dato:valor, *...* }",
-            "no_changes": "*No hay cambios.*",
+            "invalid_format": "el formato ingresado no es válido. El formato correcto es { propiedad:valor, propiedad:valor, *...* }",
+            "no_changes": "*No hay cambios en el rol.*",
             "success": "Rol **{role}** modificado correctamente",
             "warn_highposition": "Advertencia: No puedo cambiar la posición del rol si es igual o mayor a mi rol más alto",
             "error_highposition": "no puedo cambiar la posición del rol si es igual o mayor a mi rol más alto",
-            "position_NaN": "el valor asignado en position {position} no es un número",
+            "position_NaN": "el valor asignado en position `{position}` no es un número",
             "name_change":{
                 "success": "**{role.name}** ahora se llama **${r.name}**",
                 "error": "no pude renombrar al rol como {value}."
             },
             "color_change":{
                 "success": "**{role.name}** ahora es color **{r.hexColor}**",
-                "error": "no pude ponerle el color {value} al rol."
+                "error": "no pude ponerle el color {value} al rol. ¿Seguro que {value} es un color?"
             },
             "position_change":{
                 "success": "**{role.name}** ahora está en la posición `${r.position}`",
@@ -99,7 +97,7 @@
             "permissions_change":{
                 "success": "**{role.name}** ahora tiene los permisos `{r.permissions.toArray()}`",
                 "error": "no pude cambiarle los permisos a {value} al rol. Quizás estás poniendo más permisos de los que puedo permitir.",
-                "NaN" : "el número en hexadecimal no es válido, tiene que ser la suma en binario de todos los permisos a poner en el rol. Si solo quieres agregar o quitar un permiso usa el argumento `+permiso` o `-permiso`. Ejemplo: +ban_members",
+                "NaN" : "el número en hexadecimal no es válido, tiene que ser la suma en hexadecimal de todos los permisos a poner en el rol. Si solo quieres agregar o quitar un permiso usa el argumento `+permiso` o `-permiso`. Ejemplo: +ban_members",
                 "add_success": "**{role}** ahora tiene el permiso **{flag}** agregado.",
                 "remove_success": "**{role}** ahora no tiene el permiso **{flag}**."
             },
@@ -115,6 +113,19 @@
                 "remove_success": "**{role}** ahora **no es mencionable**(a menos que tengas el permiso de mencionar todos los roles)",
                 "remove_error": "no pude cambiar el rol a **no mencionable**."
             }
+        },
+        "editsnipe":{
+            "description": "Muestra el mensaje editado.",
+            "fulldescription": "Muestra el último mensaje editado de este canal.",
+            "no_msg": "*No hay mensajes que mostrar*",
+            "success": "Mensaje editado.",
+            "error": "Hubo un error al enviar el editsnipe."
+        },
+        "getpass": {
+            "description": "Crea una clave de seguridad.",
+            "fulldescription": "Crea una clave de seguridad personal para utilizar ciertos comandos administrativos.",
+            "no_admin": "no tienes el permiso de administrador, pídele a un administrador que te cree la clave con {prefix}getpass {author}",
+            "success": ""
         },
         "help": {
             "description": "Comando de ayuda.",
@@ -137,6 +148,115 @@
                 "no_permissions": "*No se necesitan permisos*",
                 "permission_or_admin": "{permission} o Administrador",
                 "admin_exclusive": "Administrador"
+            }
+        },
+        "kick": {
+            "description": "Expulsa a un miembro del servidor con o sin razón.",
+            "usage": "<usuario> [razón]",
+            "embed":{
+                "title": "¡Fuiste expulsado de {guild}!",
+                "reason": "Razón",
+                "default_reason": "*No hubo una razón específica, pero seguro fue por algo malo*"
+            }
+        },
+        "removerole":{
+            "description": "Remueve al miembro indicado un rol.",
+            "usage": "<usuario> <rol>",
+            "success": "Rol **{role.name}** removido a **{m.displayName}**.",
+            "error": "No pude quitar el rol por el error: `{e}`"
+        },
+        "resetallroles":{
+            "description": "Reinicia todos los roles.",
+            "fulldescription": "Reinicia los permisos de todos los roles del servidor (a los que tengo acceso), en caso de que no quieras dejarlos en 0 también puedes incluir [la suma](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) de [los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) que van a tener esos roles. Requiere contraseña obtenida con el comando `getPass`.",
+            "usage": "<contraseña> [permisos]",
+            "permission_limit": "no puedo añadir los permisos `{permissions.array}`",
+            "start": "Reiniciando {count} roles con los permisos `{permissions.array}`",
+            "success": "Todos los roles reiniciados.",
+            "error": "Fallo al reiniciar **{r.name}**\nOmitiendo..."
+        },
+        "roleinfo":{
+            "description": "Información de un rol.",
+            "fulldescription": "Envía la información del rol indicado.",
+            "usage": "<rol>",
+            "embed":{
+                "title": "Detalles:",
+                "name": "Nombre",
+                "position": "Posición",
+                "permissions": "Permisos",
+                "hoist": "Destacado",
+                "mentionable": "Mentionable"
+            }
+        },
+        "say": {
+            "description": "El bot dice lo que quieras.",
+            "usage": "<palabra o frase>"
+        },
+        "serverinfo":{
+            "description": "Información del servidor.",
+            "fulldescription": "Envía información del servidor.",
+            "embed":{
+                "vanity": "Invitación oficial",
+                "region": "Región",
+                "owner": "Dueño",
+                "members": "Miembros",
+                "channels": "Canales",
+                "emojis": "Emojis",
+                "safety": "Nivel de seguridad",
+                "mfa": "¿Factor de seguridad activado?",
+                "boost": "Nivel de boost",
+                "created": "Fecha de creación",
+                "description": "Descripción"
+            },
+            "channels":{
+                "categories": "{count} categorías",
+                "text: ": "{count} de texto",
+                "voice": "{count} de voz",
+                "news": "{count} de anuncios",
+                "store": "{count} de venta"
+            },
+            "verification":{
+                "intro": "Cada usuario debe:\n",
+                "none" : "Divertirse, todos son bienvenidos",
+                "email" : "1. Tener correo vertificado",
+                "fivemin" : "\n2. Estar 5 minutos registrado",
+                "tenmin" : "\n3. Estar 10 minutos en el servidor",
+                "phone": "\n4. Tener el número verificado"
+            }
+        },
+        "snipe":{
+            "description": "Muestra el mensaje borrado.",
+            "fulldescription": "Muestra el último mensaje borrado de este canal.",
+            "no_msg": "*No hay mensajes que mostrar*",
+            "success": "Mensaje borrado.",
+            "error": "Hubo un error al enviar el snipe."
+        },
+        "stop":{
+            "description": "Me apago. *Uso exclusivo de mi creador*.",
+            "error": "Solo mi creador puede usar ese comando."
+        },
+        "unban":{
+            "description": "Desbanea al miembro seleccionado.",
+            "fulldescription": "Desbanea al miembro seleccionado con o sin razón usando solamente la ID, también puede desbanear a todos(`{prefix}unban everyone`) pero eso requiere contraseña obtenida por el comando `{prefix}getpass`",
+            "usage": "<id del usuario> [razón]` o `everyone <contraseña>",
+            "start": "Iniciando desbaneo masivo, pero los invitas vos eh?",
+            "massunban-success": "{count} miembros desbaneados.",
+            "massunban-error": "Error al desbanear a {user.tag}. Omitiendo...",
+            "success": "**{u.username}** está desbaneado de **{g.name}**.",
+            "10013": "Error 10013: No fue encontrado el usuario asociado a la susodicha ID.",
+            "10026": "Error 10026: El usuario no estaba baneado en primer lugar."
+        },
+        "userinfo":{
+            "description": "Muestra info de un miembro.",
+            "fulldescription": "Muestra toda la información del miembro indicado o de ti mismo si no hay parámetros.",
+            "usage": "[usuario]",
+            "embed":{
+                "nickname": "Apodo",
+                "name": "Nombre",
+                "discriminator": "Discriminador",
+                "created": "Fecha de creación",
+                "joined": "Fecha de cuando se unió acá",
+                "permissions": "Permisos",
+                "activity": "Actividad actual"
             }
         }
     },
@@ -174,16 +294,18 @@
         "MANAGE_EMOJIS": "Gestionar emojis"
     },
     "errors": {
-        "incorrect_password": "Contraseña incorrecta.",
-        "invalid_duration": "por favor, ingrese una duración válida en el formato `7d5h30m5s` siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida",
+        "clean_up_failed": "Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Chocolat o algún bot de esos.",
+        "dm_closed": "no pude enviarte un mensaje privado, quizás lo tienes cerrado o tienes desactivado los mensajes privados desde este servidor.",
+        "invalid_duration": "por favor, ingrese una duración válida en el formato `7d5h30m5s` siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida.",
         "invalid_channel": "no pude identificar el canal",
         "invalid_user": "no pude hacer nada porque el usuario {mention} no es válido",
         "invalid_member": "no pude hacer nada porque el miembro {mention} no es válido o ya no está aquí como miembro",
         "invalid_role": "no pude hacer nada porque el rol {mention} no es válido",
         "lower_bot": "no puedo hacerle nada a un miembro que esté a mi nivel o más arriba que yo",
         "lower_roles": "no puedo modificar un rol si está más arriba o es igual que mi rol más alto.",
+        "NaN": "lo que sea que ingresaste no es un número válido. ¿O me vas a decir que {value} es un número?",
         "no_dms": "este comando solo puede ejecutarse en servidores.",
-        "NaN": "el número que ingresaste no es un número válido",
+        "no_hit": "Vaya, 0 miembros... mejor limpio",
         "not_enough_args": "no pude hacer nada por falta de argumentos. El uso correcto del comando sería{prefix}{commandName} {usage}",
         "botperms": {
             "add_role": "no tengo permiso para asignar roles. ||Permiso faltante: Gestionar roles||",
@@ -193,7 +315,8 @@
             "delete_channel": "no tengo permiso para borrar canales. ||Permiso faltante: Gestionar canales||",
             "edit_role": "no tengo permiso para editar roles. ||Permiso faltante: Gestionar roles||",
             "kick": "no tengo permiso para expulsar. ||Permiso faltante: Expulsar miembros||",
-            "remove_role": "no tengo permiso para retirar roles. ||Permiso faltante: Gestionar roles||"
+            "remove_role": "no tengo permiso para retirar roles. ||Permiso faltante: Gestionar roles||",
+            "unban": "no tengo permiso para quitar baneos. ||Permiso faltante: Banear miembros||"
         },
         "modperms":{
             "add_role": "no tienes permiso para asignar roles. ||Necesitas: Gestionar roles||",
@@ -204,12 +327,16 @@
             "edit_role": "no tienes permiso para editar roles. ||Necesitas: Gestionar roles||",
             "kick": "no tienes permiso para expulsar. ||Necesitas: Expulsar miembros||",
             "massmention": "no tienes permiso para mencionar en masa ||Necesitas: Mencionar `@everyone`, `@here` y todos los roles||",
-            "remove_role": "no tienes permiso para retirar roles. ||Necesitas: Gestionar roles||"
+            "remove_role": "no tienes permiso para retirar roles. ||Necesitas: Gestionar roles||",
+            "unban": "no tienes permiso para quitar baneos. ||Necesitas: Banear miembros||"
         },
         "unknown": "hubo un error desconocido al ejecutar este comando :thinking:",
-        "unsafe_integer": "el tiempo es tan largo que casi provoca un agujero en el espacio-tiempo... o casi sobrecargaste la memoria, que es casi lo mismo. El tiempo máximo posible es de `104.249.991 días` que equivale a `285.616 años terrestres`. Seguro que no prefieres banear, ya sabes... sin tiempo ni nada?"
+        "unsafe_integer": "el número es tan largo que casi provoca un agujero en el espacio-tiempo... o casi sobrecargaste la memoria, que es casi lo mismo.",
+        "wrong_password": "Contraseña incorrecta."
     },
     "reason": "Comando ejecutado por {author}",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "cancelling": "Cancelando comando...",
+    "canceled": "Comando cancelado."
 }

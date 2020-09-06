@@ -8,10 +8,10 @@ export class UserInfoCommand implements ArgCommand {
 	requiredArgs: number = 0
 	commandNames: string[] = ['user', 'userinfo', 'memberinfo','aboutmember']
 	guildExclusive: boolean = true
-	shortdescription: string = 'Muestra info de un miembro.'
-	fulldescription: string = 'Muestra toda la información del miembro indicado o de ti mismo si no hay parámetros'
-	usage: string = '[usuario]'
-	examples: string[] = ['', '123456789987654321', '@usuario#1234', '@apodo#1234']
+	shortdescription: string = 'info.userinfo.description'
+	fulldescription: string = 'info.userinfo.fulldescription'
+	usage: string = 'info.userinfo.usage'
+	examples: string[] = ['', '123456789987654321', '@user#1234', '@nickname#1234']
 	permission: string = ''
 	async run(msg: Message, args: string[]): Promise<void> {
 		var embed: MessageEmbed
@@ -27,7 +27,7 @@ export class UserInfoCommand implements ArgCommand {
 		}else{
 			embed = userEmbed(msg.guild!.member(msg.author)!,details)
 		}
-		await msg.channel.send(embed.setFooter(`Pedido por ${msg.author.tag}`))
+		await msg.channel.send(embed)
 	}
 	async checkPermissions(msg: Message): Promise<boolean> {
 		return true
@@ -49,7 +49,7 @@ function userEmbed(member:GuildMember, showDetails:boolean) {
 	if (showDetails) {
 		embed.addFields(
 			{name: 'Roles', value: member.roles.cache.array(),inline: true},
-			{name: 'Permisos*', value: member.permissions.toArray()},
+			{name: 'Permisos', value: member.permissions.toArray()},
 			{name: 'Actividad actual', value: activity,inline: true}
 		);
 	}else{

@@ -7,9 +7,9 @@ export class RoleInfoCommand implements ArgCommand {
 	requiredArgs: number = 1
 	commandNames: string[] = ['roleinfo', 'ri']
 	guildExclusive: boolean = true
-	shortdescription: string = 'Información de un rol'
-	fulldescription: string = 'Envía la información del rol indicado'
-	usage: string = '<rol>'
+	shortdescription: string = 'info.roleinfo.description'
+	fulldescription: string = ''
+	usage: string = 'info.roleinfo.usage'
 	examples: string[] = ['123456789987654321', '@Mod', 'new role']
 	permission: string = ''
 	async run(msg: Message, args: string[]): Promise<void> {
@@ -31,16 +31,6 @@ export class RoleInfoCommand implements ArgCommand {
 		await msg.channel.send(embed).catch(e=>console.error(e.stack))
 	}
 	async checkPermissions(msg: Message): Promise<boolean> {
-		const mod = msg.guild!.member(msg.author)!
-		const bot = msg.guild!.member(msg.client.user!)!
-		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			msg.reply('no tengo el permiso para asignar roles.')
-			return false
-		}
-		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			msg.reply('no tienes permiso de asiganr roles.')
-			return false
-		}
 		return true
 	}
 	

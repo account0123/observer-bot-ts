@@ -39,9 +39,10 @@ export class AddRoleCommand implements ArgCommand {
 			// El bot dice "@usuario, añadiendo el rol @rol a todos"
 			msg.reply(`añadiendo el rol **${role.name}** a todos.`)
 			var count = 0
+			var errors = 0
 			// Si falla en alguien dice "Omitiendo..."
-			g.members.cache.each(m=>m.roles.add(role).then(()=>count++).catch(()=>msg.channel.send(`No se pudo agregar el rol a **${m.displayName}**. Omitiendo..`)))
-			if(count==0){
+			g.members.cache.each(m=>m.roles.add(role).then(()=>count++).catch(()=>{msg.channel.send(`No se pudo agregar el rol a **${m.displayName}**. Omitiendo..`);errors++}))
+			if(count==0 && errors > 5){
 		// Si falla en TODOS dice
 				msg.channel.send('Vaya, 0 miembros... mejor limpio')
 				// Ejecuta !!clean <cantidad de miembros>

@@ -6,8 +6,8 @@ import { Connections } from "../config/connections";
 export class SnipeCommand implements Command {
 	commandNames: string[] = ['snipe']
 	guildExclusive: boolean = true
-	shortdescription: string = 'Muestra el mensaje borrado.'
-	fulldescription: string = 'Muestra el último mensaje borrado de este canal'
+	shortdescription: string = 'info.snipe.description'
+	fulldescription: string = 'info.snipe.fulldescription'
 	async run(msg: Message): Promise<void> {
 		const bot = msg.guild!.member(msg.client.user!)!
 		const color = bot.displayColor
