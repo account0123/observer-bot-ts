@@ -9,7 +9,7 @@ export class UserActivity {
         }else{
             if (activities[0].type === 'CUSTOM_STATUS' && activities.length > 1) this.activity = activities[1];
             else this.activity = activities[0];
-        }    
+        }
 	}
 	toString(): string{
 		const a = this.activity;
@@ -20,13 +20,13 @@ export class UserActivity {
             case 'CUSTOM_STATUS':
                 return '*Estado personalizado*';
             case 'PLAYING':
-                return 'Jugando a ' + a.name;
+                return 'Jugando a' + ' ' + a.name;
             case 'STREAMING':
-                return "[Transmitiendo](" + (a.url || '') + ")";
+                return '[' + 'Transmitiendo' + ' ' + a.name + '](' + (a.url || '') + ')';
             case 'LISTENING':
-                return 'Escuchando ' + a.name;
+                return 'Escuchando' + ' ' + a.name;
             case 'WATCHING':
-                return 'Viendo ' + a.name;
+                return 'Viendo' + ' ' + a.name;
         }
 	}
 }

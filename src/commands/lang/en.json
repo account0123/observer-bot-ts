@@ -8,28 +8,27 @@
             "alive": "active!!! Let's party!!!!"
         },
         "addrole": {
-            "description": "Adds a role to a member.",
+            "description": "Adds to the given member the given role.",
             "massrole-start": "Adding **{role}** role to everyone.",
             "usage": "<member> <role>",
             "massrole-error": "I couldn't add that role to **{member}**. Skipping..",
-            "massrole-no-hit": "Ok, 0 members.. i better clean",
-            "massrole-no-hit-error": "I'm sorry... i don't think I can clean up this mess either. You should use Dyno or a bot of those.",
             "success": "**{role}** role added to **{member}** successfully!",
             "error": "I couldn't add **{role}** role to **{member}** because that error: `{error}`."
         },
         "avatar": {
             "description": "Shows your profile picture (or gif).",
-            "own": "{author.username}, here's your avatar:",
+			"usage": "[user]",
+            "own": "**{author.username}**, here's your avatar:",
             "user": "**{user.username}'s** avatar:",
             "footer": "Omg! You're beautiful? handsome?... beautisome!"
         },
         "ban":{
-            "description": "Bans a member from this server with(out) a(ny) reason.",
+            "description": "Bans a member from this server with(out) any reason.",
             "usage": "<user> [reason]",
             "embed":{
                 "title": "¡You got banned from {guild}!",
                 "reason": "Reason",
-                "default_reason": "*There wasn't a specific reason, but you had to do something bad*"
+                "default_reason": "*There wasn't a specific reason, but you had to do something really bad*"
             }
         },
         "call":{
@@ -45,9 +44,9 @@
             "error": "I couldn't clean up these messages due this error `{error}`"
         },
 		"createrole":{
-            "description": "Creates a role with at least a value.",
-            "fulldescription": "Creates a role with a name or at least a value in `key:value` format. The keys are:\n`name` - Name of new role\n`color` - Color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - The sum of [the permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna include on the role [as hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n`hoist` - when included, the role will be visible in members list\n`mentionable` - When included, the role is mentionable by any member. Useful for helper roles.",
-            "usage": "<name> or <{key:value[,key:value]...}>",
+            "description": "Creates a role with at least a property.",
+            "fulldescription": "Creates a role with a name or at least a property in `property:value` format, if you create a role with only the name, it'll have basic permissions({default}), neither color, nor will be hosited nor mentionable. The properties are:\n`name` - Name of new role\n`color` - Color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - The sum of [the permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna include on the role [as hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n`hoist` - when included, the role will be visible in members list\n`mentionable` - When included, the role is mentionable by any member. Useful for helper roles.",
+            "usage": "<only name> or <{key:value[,key:value]...}>",
             "success":"{role} role was created successfully!",
             "embed":{
                 "title": "Details:",
@@ -60,8 +59,8 @@
         },
         "deletechannel":{
             "description": "Deletes a channel.",
-            "fulldescription": "Deletes a channel. The password is got using `getpass` command, command only allowed for administrators.",
-            "usage": "<channel> <password>",
+            "fulldescription": "Deletes a channel. The secret key is got using `getpass` command, command only allowed for administrators.",
+            "usage": "<channel> <key>",
             "success": "**#{channel}** channel deleted successfully!"
         },
         "demote":{
@@ -69,12 +68,12 @@
             "usage": "<user> [reason]",
             "asbuddy": "you can't demote a buddy or superior, you're evil.",
             "success": "**{author}** has demoted to **{member}**, they aren't **{role}** anymore. Now they're **{member.highest}.**",
-            "error": "I couldn't demote because this error: `{error}`"
+            "error": "I couldn't demote because of this error: `{error}`"
         },
         "editrole":{
             "description": "Edits a role.",
             "fulldescription": "Edits a single property or various properties of chosen role in `property:value` format. Properties are:\n`name` - New role name\n`color` - New color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - The sum of [the permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna change as [hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n**Togglables:**\nA togglable property hasn't a value associated, instead you use a `-` prefix to remove it or `+` prefix to add it.\n`hoist` - Wheter the role is visible in member list (+) or not (-)\n`mentionable` - Wheter the role is mentionable by any member (+), useful for helper roles, or not (-).\n`any_permission` - If you wanna add (+) or remove (-) a single permission, just need to use either of the signs as prefix and type the [official permission name](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags). Eg: +manage_roles",
-            "usage": "<role> <property:value> [property:value]... [+/-togglable]....` or `<role> property: value",
+            "usage": "<role> {<property:value>[,property:value]...[,+/-togglable]...}` or `<role> property: value",
             "not_found": "i couldn't find {mention} role, try again using ID or quoting the role name",
             "invalid_format": "the input has an invalid syntax. The right syntax is { property:value, property:value, *...* }",
             "no_changes": "*Role without changes.*",
@@ -104,17 +103,32 @@
                 "remove_success": "**{role}** now hasn't **{flag}** anymore."
             },
             "hoist_change":{
-                "add_success": "**${role}** now **is hoisted**.",
+                "add_success": "**{role}** now **is hoisted**.",
                 "add_error": "i couldn't **hoist** the role.",
                 "remove_success": "**{role}** now **is hidden**.",
                 "remove_error": "i couldn't **hide** the role."
             },
             "mentionable_change":{
-                "add_success": "**${role}** now **is 100% mencionable**",
+                "add_success": "**{role}** now **is 100% mencionable**",
                 "add_error": "i couldn't make the role **mencionable**.",
                 "remove_success": "**{role}** now **isn't mencionable**(unless you have Mention All Roles permission)",
                 "remove_error": "i couldn't set the role as **not mencionable**."
             }
+        },
+        "editsnipe":{
+            "description": "Shows the last edited message.",
+            "fulldescription": "Shows the last message from this channel.",
+            "no_msg": "*There're no messages to show*",
+            "success": "Edited message.",
+            "error": "There was an error sending editsnipe."
+        },
+        "getpass": {
+            "description": "Sends you a security key",
+            "fulldescription": "Sends to your private channel an unique security key to use some administrative commands.",
+			"usage": "[user]",
+            "no_admin": "you don't have administrator permission, ask an admin to use\n> {prefix}getpass {author}\nand send you the generated key",
+            "own": "Your key to use some commands is:",
+			"user": "The key for `{user.id}` ({user.tag}) to use some commands is:"
         },
 		"help": {
 			"description": "Help command.",
@@ -129,7 +143,7 @@
 				"usage": "Usage",
 				"required": "Required Permissions",
 				"examples": "Examples",
-				"footer": "<> = required | [] = optional. | Don't include these symbols when you're typing the command."
+				"footer": "<> = required | [] = optional. |  <> o <> = 2 possible ways to use the command | []... = many arguments as possible | Don't include these symbols when you're typing the command."
 			},
 			"default":{
 				"no_usage": "*Just type the command name and that's all*",
@@ -137,6 +151,124 @@
 				"permission_or_admin": "{permission} or Administrator",
 				"admin_exclusive": "Administrator"
 			}			
+        }
+    },
+	"kick": {
+            "description": "Kicks a member from the server with(out) any reason.",
+            "usage": "<user> [reason]",
+            "embed":{
+                "title": "¡You got kicked from {guild}!",
+                "reason": "Reason",
+                "default_reason": "*There wasn't a specific reason, but you had to do something bad*"
+            }
+        },
+        "removerole":{
+            "description": "Removes from a given member the given role.",
+            "usage": "<user> <role>",
+            "success": "**{role.name}** role removed from **{m.displayName}**.",
+            "error": "I couldn't remove the role because of this error: `{e}`"
+        },
+        "resetallroles":{
+            "description": "Resets all roles.",
+            "fulldescription": "Resets all permissions of each role in the server (if i can), if you don't wanna set permissions to 0, you can include [the sum](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) of [permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna set all roles. Requires a secret key you can get using `getPass` command.",
+            "usage": "<key> [permissions]",
+            "permission_limit": "i can't set `{permissions.array}` permissions",
+            "start": "Resseting {count} roles with `{permissions.array}` permissions",
+            "success": "All roles resetted.",
+            "error": "I couldn't reset **{r.name}**\nSkipping..."
+        },
+        "roleinfo":{
+            "description": "Information about a role.",
+            "fulldescription": "Sends information about the given role.",
+            "usage": "<role>",
+            "embed":{
+                "title": "Detalls:",
+                "name": "Name",
+                "position": "Position",
+                "permissions": "Permissions",
+                "hoist": "Hoisted",
+                "mentionable": "Mentionable"
+            }
+        },
+        "say": {
+            "description": "I say whatever you want",
+            "usage": "<word or sentence>"
+        },
+        "serverinfo":{
+            "description": "Information about the server.",
+            "fulldescription": "Sends informations about this server.",
+            "embed":{
+                "vanity": "Vanity Invite",
+                "region": "Region",
+                "owner": "Owner",
+                "members": "Members",
+                "channels": "Channels",
+                "emojis": "Emojis",
+                "safety": "Verification Level",
+                "mfa": "Is 2FA for Mods required?",
+                "boost": "Boost Level",
+                "created": "Creation Date",
+                "description": "Description"
+            },
+            "channels":{
+                "categories": "{count} categories",
+                "text: ": "{count} text channels",
+                "voice": "{count} voice channels",
+                "news": "{count} news channels",
+                "store": "{count} store channels"
+            },
+            "verification":{
+                "intro": "All users must:\n",
+                "none" : "Have fun, everybody is welcome",
+                "email" : "1. Have a verified email",
+                "fivemin" : "\n2. Be 5 minutes registered",
+                "tenmin" : "\n3. Stay 10 minutes in the server",
+                "phone": "\n4. Have a verified phone"
+            }
+        },
+        "snipe":{
+            "description": "Shows the last deleted message.",
+            "fulldescription": "Shows the last deleted message in this channel",
+            "no_msg": "*There're no messages to show*",
+            "success": "Message deleted.",
+            "error": "There was an error sending the deletesnipe."
+        },
+		"status":{
+			"none": "*No activities*",
+			"custom_status": "*Custom status*",
+			"playing": "Playing at",
+			"streaming": "Streaming",
+			"listening": "Listening to",
+			"watching": "Watching at"
+		},
+        "stop":{
+            "description": "I turn off. *Command use exclusive to my creator*.",
+            "error": "Just my creator can use this command."
+        },
+        "unban":{
+            "description": "Unbans the user from the given ID.",
+            "fulldescription": "Unbans the user from the given ID with(out) any reason, you can also unban everyone(`{prefix}unban everyone`) but requires your secret key got by using `{prefix}getpass` command",
+            "usage": "<user id> [reason]` o `everyone <secret key>",
+            "start": "Starting massive unban, you invite them, ok?",
+            "massunban-success": "{count} unbanned members.",
+            "massunban-error": "There was an error unbanning {user.tag}. Skipping...",
+            "success": "**{u.username}** is unbanned from **{g.name}**.", 
+            "10013": "Error 10013: The user asocied to the given ID couldn't have found.",
+            "10026": "Error 10026: The user was not banned in the first place."
+        },
+        "userinfo":{
+            "description": "Shows information about a member.",
+            "fulldescription": "Shows information about the given member or yourself if you don't include arguments.",
+            "usage": "[member]",
+            "embed":{
+                "nickname": "Nickname",
+                "name": "Name",
+                "discriminator": "Discriminator",
+                "created": "Creation Date",
+                "joined": "Join Date",
+                "permissions": "Permissions",
+                "activity": "Present Activity"
+            }
         }
     },
     "permissions": {
@@ -173,37 +305,48 @@
         "MANAGE_EMOJIS": "Manage Emojis"
     },
     "errors": {
-        "invalid_duration": "please, send a valid duration time on format `ndnhnmns` being `nd` n days, `nh` n hours, `nm` n minutes and `ns` n seconds. I require at least one time unit to valid the duration",
+		"clean_up_error": "I'm sorry... i don't think I can clean up this mess either. You should use Dyno or a bot of those.",
+		"dm_closed": "i couldn't send you a private message, maybe you closed it or deactivated the private messages from this server.",
+		"invalid_channel": "i couldn't find {mention} channel",
+        "invalid_duration": "please, send a valid duration time on format `n`d`n`h`n`m`n`s being `nd` n days, `nh` n hours, `nm` n minutes and `ns` n seconds. I require at least one time unit to valid the duration",
         "invalid_user": "i couldn't do anyhing beacuse the user {mention} isn't valid",
         "invalid_member": "i couldn't do anything because the member {mention} either isn't valid or isn't in the server anymore",
         "invalid_role": "i couldn't do anything because the role {mention} is invalid",
+		"lower_bot": "i can do nothing to a member who is at my position or higher",
         "lower_roles": "'i can't manage a role if that's higher or equal than my highest role",
+		"NaN": "whatever you typed is not a valid number. Or are you gonna tell me {value} is a number?",
         "no_dms": "I can't use this kind of commands in DMs!",
         "not_enough_args": "i couldn't do anything due to lack of arguments. The right usage for that command is {prefix}{commandName} {usage}",
+		"no_hit": "Ok, 0 members.. i better clean",
         "botperms": {
             "add_role": "i don't have permission to add roles. ||Missing Permission: Manage roles||",
-            "ban": "i don't have permission to ban. ||Missing Permission: Manage Messages||",
+            "ban": "i don't have permission to ban. ||Missing Permission: Ban Members||",
             "clean": "i don't have permission to clean this chat. ||Missing Permission: Manage Messages||",
             "create_role": "i don't have permission to create roles. ||Missing Permission: Manage roles||",
             "delete_channel": "i don't have permission to delete channels. ||Missing Permission: Manage Channels||",
             "edit_role": "i don't have permission to edit roles. ||Missing Permission: Manage roles||",
             "kick": "i don't have permission to kick. ||Missing Permission: Kick members||",
-            "remove_role": "i don't have permission to remove roles. ||Missing Permission: Manage roles||"
+            "remove_role": "i don't have permission to remove roles. ||Missing Permission: Manage roles||",
+			"ban": "i don't have permission to remove bans. ||Missing Permission: Ban Members||",
         },
         "modperms":{
             "add_role": "you don't have permission to add roles. ||You need: Manage roles||",
-            "ban": "you don't have permission to ban. ||You need: Manage Messages||",
+            "ban": "you don't have permission to ban people. ||You need: Ban Members||",
             "clean": "you don't have permission to clean this chat. ||You need: Manage Messages||",
             "create_role": "you don't have permission to create roles. ||You need: Manage roles||",
             "delete_channel": "you don't have permission to delete channels. ||You need: Manage Channels||",
             "edit_role": "you don't have permission to edit roles. ||You need: Manage roles||",
-            "kick": "you don't have permission to kick. ||You need: Kick members||",
+            "kick": "you don't have permission to kick people. ||You need: Kick members||",
             "massmention": "you don't have permission to massmention ||You need: Mention @everyone, @here and All Roles||",
-            "remove_role": "you don't have permission to remove roles. ||You need: Manage roles||"
+            "remove_role": "you don't have permission to remove roles. ||You need: Manage roles||",
+			"unban": "you don't have permission to remove bans. ||You need: Ban Members||"
         }, 
-        "unknown": "an error has been thrown when this command was executed."
+        "unknown": "an error has been thrown when this command was executed.",
+		"wrong_password": "Contraseña incorrecta."
     },
-    "reason": "Commad executed by {author}",
+    "reason": "Command executed by {author}",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "cancelling": "Cancelling command...",
+    "canceled": "Command canceled."
 }

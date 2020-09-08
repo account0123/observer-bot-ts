@@ -13,6 +13,7 @@ export class Time {
 		if (this.date === null) {
 			return '*Fecha desconocida*'
 		}
+		// If english, pls use the official toString function from Date class
 		return this.getDay(this.date.getDay()) + ', ' + this.date.getDate() + ' de ' + this.getMonth(this.date.getMonth()) + ' del ' + this.date.getFullYear() + ', a las ' + this.date.toTimeString()
 	}
 	private getDay(day:number):string{

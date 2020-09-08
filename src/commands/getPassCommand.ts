@@ -7,7 +7,7 @@ import { Lang } from "./lang/Lang";
 export class GetPassCommand implements ArgCommand {
 	permission: string = 'ADMINISTRATOR'
 	requiredArgs: number = 0
-	usage: string = '[usuario]'
+	usage: string = 'info.getpass.usage'
 	examples: string[] = ['','123456789987654321', '@usuario#1234']
 	commandNames: string[] = ['getpass', 'getpassword','getsecret']
 	guildExclusive: boolean = false

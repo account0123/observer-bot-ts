@@ -18,12 +18,12 @@
         "avatar": {
             "description": "Muestra tu foto (o gif) de perfil.",
             "usage": "[usuario]",
-            "own": "{message.author.username}, este es tu avatar:",
-            "user": "El avatar de {user.username}:",
+            "own": "**{message.author.username}**, este es tu avatar:",
+            "user": "El avatar de **{user.username}**:",
             "footer": "¡Que hermoso sujeto!"
         },
         "ban":{
-            "description": "Banea a un miembro del servidor con o sin razón.",
+            "description": "Banea a un miembro del servidor por (ning)una razón.",
             "usage": "<usuario> [razón]",
             "embed":{
                 "title": "¡Fuiste baneado de {guild}!",
@@ -39,14 +39,15 @@
         },
         "clean":{
             "description": "Limpia la cantidad de mensajes indicada",
+			"usage": "<cantidad de mensajes a borrar>",
             "success": "{msgs} mensajes borrados",
-            "error": "No se pudieron borrar los mensajes por un error."
+            "error": "No se pudieron borrar los mensajes por este error: `{error}`."
         },
         "createrole":{
             "description": "Crea un rol con propiedades opcionales.",
-            "fulldescription": "Crea un rol con todas sus propiedades opcionales. Los propiedades son:\n`name` - El nombre del nuevo rol\n`color` - El color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a incluir en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n`hoist` - Si se incluye, el rol será visible en la lista de miembros\n`mentionable` - Si se incluye, el rol puede mencionarse por cualquier miembro. Útil para roles de ayuda.",
-            "usage": "<nombre>`  o `<{propiedad:valor[,propiedad:valor]...}>",
-            "success": "el rol ${role} fue creado sin problemas.",
+            "fulldescription": "Crea un rol con todas sus propiedades opcionales en el formato de `propiedad:valor`, en el caso de crear un rol con solo el nombre el nuevo rol tendrá los permisos básicos({default}), sin color, ni será destacado, ni mencionable. Los propiedades son:\n`name` - El nombre del nuevo rol\n`color` - El color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a incluir en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n`hoist` - Si se incluye, el rol será visible en la lista de miembros\n`mentionable` - Si se incluye, el rol puede mencionarse por cualquier miembro. Útil para roles de ayuda.",
+            "usage": "<solo el nombre>`  o `<{propiedad:valor[,propiedad:valor]...}>",
+            "success": "el rol {role} fue creado sin problemas.",
             "embed":{
                 "title": "Detalles:",
                 "name": "Nombre",
@@ -60,10 +61,10 @@
             "description": "Borra un canal.",
             "fulldescription": "Borra un canal. La contraseña se adquiere con el comando `getpass` invocado por cualquier administrador.",
             "usage": "<canal> <constraseña>",
-            "success": "Canal **{channel}** borrado sin problemas."
+            "success": "Canal **#{channel}** borrado sin problemas."
         },
         "demote":{
-            "description": "Degrada al miembro indicado.",
+            "description": "Degrada al miembro indicado por(ning)una razón.",
             "usage": "<usuario> [razón]",
             "asbuddy": "no puedes degradar a un compañero o superior, que malo.",
             "success": "**{author}** ha degradado a **{member}**, ahora ya no es **{role}**. Ahora es **{member.highest}.**",
@@ -72,12 +73,12 @@
         "editrole":{
             "description": "Edita un rol.",
             "fulldescription": "Edita una propiedad o varias propeiedades del rol indicado en el formato `propiedad:nuevo valor`. Las propiedades son:\n`name` - El nuevo nombre del rol\n`color` - El nuevo color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a cambiar en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n**Alternos:**\nA los alternos no se les asigna un valor, sino que se les antepone un `-` para quitarlo o un `+` para agregarlo.\n`hoist` - Determina si el rol será visible (+) o no (-) en la lista de miembros\n`mentionable` - Determina si el rol puede mencionarse por cualquier miembro (+), útil para roles de ayuda, o *solo* quienes tengan el permiso de mencionar a todos los roles (-).\n`cualquier_permiso` - Si solo quieres agregar (+) o quitar (-) un permiso solo basta con prefijar con un signo y poner el [nombre oficial](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) del permiso. Ejemplo: +manage_roles",
-            "usage": "<rol> <dato:valor> [dato:valor]... [+/-alterno].... o <rol> dato: valor",
+            "usage": "<rol> {<propiedad:valor>[,propiedad:valor]...[,+/-alterno]...}` o `<rol> propiedad: valor",
             "not_found": "el rol {mention} no pudo ser encontrado, intente con la ID o poniendo el nombre entre comillas",
             "invalid_format": "el formato ingresado no es válido. El formato correcto es { propiedad:valor, propiedad:valor, *...* }",
             "no_changes": "*No hay cambios en el rol.*",
             "success": "Rol **{role}** modificado correctamente",
-            "warn_highposition": "Advertencia: No puedo cambiar la posición del rol si es igual o mayor a mi rol más alto",
+            "warn_highposition": "Advertencia: No puedo cambiar la posición del rol si es igual o mayor a mi rol más alto\nValor de posición saltado.",
             "error_highposition": "no puedo cambiar la posición del rol si es igual o mayor a mi rol más alto",
             "position_NaN": "el valor asignado en position `{position}` no es un número",
             "name_change":{
@@ -102,13 +103,13 @@
                 "remove_success": "**{role}** ahora no tiene el permiso **{flag}**."
             },
             "hoist_change":{
-                "add_success": "**${role}** ahora **se muestra**",
+                "add_success": "**{role}** ahora **se muestra**",
                 "add_error": "no pude cambiar el rol a **destacado**.",
                 "remove_success": "**{role}** ahora **no se muestra**",
                 "remove_error": "no pude cambiar el rol a **oculto**."
             },
             "mentionable_change":{
-                "add_success": "**${role}** ahora **es 100% mencionable**",
+                "add_success": "**{role}** ahora **es 100% mencionable**",
                 "add_error": "no pude cambiar el rol a **mencionable**.",
                 "remove_success": "**{role}** ahora **no es mencionable**(a menos que tengas el permiso de mencionar todos los roles)",
                 "remove_error": "no pude cambiar el rol a **no mencionable**."
@@ -122,10 +123,12 @@
             "error": "Hubo un error al enviar el editsnipe."
         },
         "getpass": {
-            "description": "Crea una clave de seguridad.",
-            "fulldescription": "Crea una clave de seguridad personal para utilizar ciertos comandos administrativos.",
-            "no_admin": "no tienes el permiso de administrador, pídele a un administrador que te cree la clave con {prefix}getpass {author}",
-            "success": ""
+            "description": "Envía tu clave de seguridad.",
+            "fulldescription": "Envía a tu canal privado una clave de seguridad única para utilizar ciertos comandos administrativos.",
+			"usage": "[usuario]",
+            "no_admin": "no tienes el permiso de administrador, pídele a un administrador que escriba\n> {prefix}getpass {author}\ny te entregue la clave generada",
+            "own": "Tu clave para usar ciertos comandos es:",
+			"user": "La clave de `{user.id}` ({user.tag}) para usar ciertos comandos es:"
         },
         "help": {
             "description": "Comando de ayuda.",
@@ -141,7 +144,7 @@
                 "usage": "Uso",
                 "required": "Permisos necesarios",
                 "examples": "Ejemplos",
-                "footer": "<> = obligatorio | [] = opcional. | <> o <> = 2 usos posibles del mismo comando | []... = argumentos infinitos | No incluyas estos símbolos al momento de ejecutar el comando."
+                "footer": "<> = obligatorio | [] = opcional. | <> o <> = 2 formas de usar del mismo comando | []... = argumentos ilimitados | No incluyas estos símbolos al momento de ejecutar el comando."
             },
             "default":{
                 "no_usage": "*Solo pones el comando y ya*",
@@ -151,7 +154,7 @@
             }
         },
         "kick": {
-            "description": "Expulsa a un miembro del servidor con o sin razón.",
+            "description": "Expulsa a un miembro del servidor por (ning)una razón.",
             "usage": "<usuario> [razón]",
             "embed":{
                 "title": "¡Fuiste expulsado de {guild}!",
@@ -202,7 +205,7 @@
                 "channels": "Canales",
                 "emojis": "Emojis",
                 "safety": "Nivel de seguridad",
-                "mfa": "¿Factor de seguridad activado?",
+                "mfa": "¿Se requiere A2F para mods?",
                 "boost": "Nivel de boost",
                 "created": "Fecha de creación",
                 "description": "Descripción"
@@ -230,13 +233,42 @@
             "success": "Mensaje borrado.",
             "error": "Hubo un error al enviar el snipe."
         },
+		"status":{
+			"none": "*Sin actividades*",
+			"custom_status": "*Estado personalizado*",
+			"playing": "Jugando a ",
+			"streaming": "Transmitiendo",
+			"listening": "Escuchando",
+			"watching": "Viendo"
+		},
         "stop":{
             "description": "Me apago. *Uso exclusivo de mi creador*.",
             "error": "Solo mi creador puede usar ese comando."
         },
+		"time": {
+			"unknown": "*Fecha desconocido*",
+			"monday": "Lunes",
+			"tuesday": "Martes",
+			"wednesday": "Miércoles",
+			"thursday": "Jueves",
+			"Friday": "Viernes",
+			"Saturday": "Sábado",
+			"Sunday": "Domingo",
+			"jan": "enero",
+			"feb": "febrero",
+			"mar": "marzo",
+			"apr": "abril",
+			"may": "mayo",
+			"jun": "junio",
+			"jul": "julio",
+			"aug": "agosto",
+			"sep": "septiembre",
+			"nov": "noviembre",
+			"dec": "diciembre"
+		},
         "unban":{
-            "description": "Desbanea al miembro seleccionado.",
-            "fulldescription": "Desbanea al miembro seleccionado con o sin razón usando solamente la ID, también puede desbanear a todos(`{prefix}unban everyone`) pero eso requiere contraseña obtenida por el comando `{prefix}getpass`",
+            "description": "Desbanea al usuario dada su id.",
+            "fulldescription": "Desbanea al usuario dada su ID con o sin razón usando, también puede desbanear a todos(`{prefix}unban everyone`) pero eso requiere contraseña obtenida por el comando `{prefix}getpass`",
             "usage": "<id del usuario> [razón]` o `everyone <contraseña>",
             "start": "Iniciando desbaneo masivo, pero los invitas vos eh?",
             "massunban-success": "{count} miembros desbaneados.",
@@ -296,8 +328,8 @@
     "errors": {
         "clean_up_failed": "Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Chocolat o algún bot de esos.",
         "dm_closed": "no pude enviarte un mensaje privado, quizás lo tienes cerrado o tienes desactivado los mensajes privados desde este servidor.",
-        "invalid_duration": "por favor, ingrese una duración válida en el formato `7d5h30m5s` siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida.",
-        "invalid_channel": "no pude identificar el canal",
+        "invalid_channel": "no pude identificar el canal {mention}",
+		"invalid_duration": "por favor, ingrese una duración válida en el formato `n`d`n`h`n`m`n`s siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida.",
         "invalid_user": "no pude hacer nada porque el usuario {mention} no es válido",
         "invalid_member": "no pude hacer nada porque el miembro {mention} no es válido o ya no está aquí como miembro",
         "invalid_role": "no pude hacer nada porque el rol {mention} no es válido",

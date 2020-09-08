@@ -1,7 +1,6 @@
 import ArgCommand from "./commandArgInterface";
 import { Message, Role, RoleData, Permissions, PermissionString } from "discord.js";
 import { RoleFinder } from "../util/RoleFinder";
-import { inflateSync } from "zlib";
 import { Lang } from "./lang/Lang";
 
 export class EditRoleCommand implements ArgCommand {
