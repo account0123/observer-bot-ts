@@ -4,7 +4,7 @@ import { MemberFinder } from "../util/MemberFinder";
 import { Lang } from "./lang/Lang";
 
 export class DemoteCommand implements ArgCommand {
-	permission: string = 'Gestionar roles'
+	permission: string = 'MANAGE_ROLESS'
 	shortdescription: string = 'info.demote.description'
 	fulldescription: string = this.shortdescription
 	commandNames: string[] = ['demote']
@@ -12,23 +12,25 @@ export class DemoteCommand implements ArgCommand {
 	examples: string[] = ['@usuario#1234 abuso de poder']
 	usage: string = 'info.demote.usage'
 	guildExclusive: boolean = true
-	async run(msg: Message, args: string[]): Promise<void> {
-		const member = MemberFinder.getMember(msg,args.shift()!)
+	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
+		const mention = args.shift()!
+		const member = MemberFinder.getMember(msg,mention)
 		const mod = msg.guild!.member(msg.author)!
 		if(!member){
-			msg.reply('el usuario no es válido')
+			l.reply('errors.invalid_member',msg,mention)
 			return
 		}
 		if(!member.manageable){
-			msg.reply('no puedo agregar roles al miembro porque está más alto que yo')
+			l.reply('errors.lower_bot',msg)
 			return
 		}
 		const role = member.roles.highest
 		if(!(mod.roles.highest.position > role.position)){
-			msg.reply('no puedes degradar a un compañero o superior, que malo.')
+			l.reply('info.demote.asbuddy',msg)
 			return
 		}
-		await member.roles.remove(role,args.join(' ') || `Comando ejecutado por ${msg.author.tag}`).then(m=>msg.channel.send(`Rol **${role.name}** removido a **${m.displayName}**. Ahora es **${m.roles.highest.name}.**`)).catch(e=>{msg.reply(`No pude quitar el rol por el error \`${e}\``)
+		await member.roles.remove(role,args.join(' ') || l.translate('reason',msg.author.tag)).then(m=>l.send('info.demote.success',msg,role.name,member.displayName,m.roles.highest.name)).catch(e=>{
+		l.send('info.demote.error',msg,e)
 		console.error(`Se intento eliminar el rol **${role.name}** a ${member.displayName} pero falló por`)
 		console.error(e.stack)
 		})

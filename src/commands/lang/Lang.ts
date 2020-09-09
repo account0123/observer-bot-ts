@@ -31,7 +31,7 @@ export class Lang {
 		});
 		this.lang = 'es'
 	}
-	send(code:string,msg:Message,...values:string[]){
+	send(code:string,msg:Message,...values:string[]):Promise<Message>{
 		const content = fs.readFileSync(`./${this.lang}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
@@ -47,8 +47,7 @@ export class Lang {
 		var script:string = obj
 		const data = script.match(/\{[\w.]+\}/gm)
 		if(!data){
-			msg.channel.send(script)
-			return
+			return msg.channel.send(script)
 		}
 		if (!values) {
 			throw new Error('FALTAN ARGUMENTOS EN EL ENVIO DE DATOS')
@@ -59,9 +58,9 @@ export class Lang {
 			const value = values[i]
 			script = script.replace(marker,value)
 		}
-		msg.channel.send(script)
+		return msg.channel.send(script)
 	}
-	reply(code:string,msg:Message,...values:string[]){
+	reply(code:string,msg:Message,...values:string[]):Promise<Message>{
 		const content = fs.readFileSync(`./${this.lang}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
@@ -77,8 +76,7 @@ export class Lang {
 		var script:string = obj
 		const data = script.match(/\{[\w.]+\}/gm)
 		if(!data){
-			msg.reply(script)
-			return
+			return msg.reply(script)
 		}
 		if (!values) {
 			throw new Error('FALTAN ARGUMENTOS EN EL ENVIO DE DATOS')
@@ -89,7 +87,7 @@ export class Lang {
 			const value = values[i]
 			script = script.replace(marker,value)
 		}
-		msg.reply(script)
+		return msg.reply(script)
 	}
 	translate(code:string,...values:string[]):string{
 		const content = fs.readFileSync(`./${this.lang}.json`,{encoding: 'utf-8'})

@@ -12,6 +12,7 @@
             "massrole-start": "Adding **{role}** role to everyone.",
             "usage": "<member> <role>",
             "massrole-error": "I couldn't add that role to **{member}**. Skipping..",
+            "massrole-success": "**${role.name}** role added to ${count} members.",
             "success": "**{role}** role added to **{member}** successfully!",
             "error": "I couldn't add **{role}** role to **{member}** because that error: `{error}`."
         },
@@ -25,9 +26,12 @@
         "ban":{
             "description": "Bans a member from this server with(out) any reason.",
             "usage": "<user> [reason]",
+            "success": "**{member}** has been banned from **{guild}**",
+            "error": "I couldn't ban **{member}** because of this error: `{error}`.",
             "embed":{
                 "title": "¡You got banned from {guild}!",
                 "reason": "Reason",
+                "footer": "Banned by",
                 "default_reason": "*There wasn't a specific reason, but you had to do something really bad*"
             }
         },
@@ -41,13 +45,16 @@
             "description": "Cleans up the requested amount of messages",
 			"usage": "<amount of messages to delete>",
             "success": "{msgs} messages deleted.",
-            "error": "I couldn't clean up these messages due this error `{error}`"
+            "error": "I couldn't clean up these messages due this error `{error}`",
+            "50016": "Error 50016: Provided too few or too many messages to delete. Must provide at least 2 and fewer than 100 messages to delete"
         },
 		"createrole":{
             "description": "Creates a role with at least a property.",
             "fulldescription": "Creates a role with a name or at least a property in `property:value` format, if you create a role with only the name, it'll have basic permissions({default}), neither color, nor will be hosited nor mentionable. The properties are:\n`name` - Name of new role\n`color` - Color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - The sum of [the permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna include on the role [as hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n`hoist` - when included, the role will be visible in members list\n`mentionable` - When included, the role is mentionable by any member. Useful for helper roles.",
             "usage": "<only name> or <{key:value[,key:value]...}>",
             "success":"{role} role was created successfully!",
+            "high_position": "the role you're gonna create is at my position or higher than all my roles, so...\nCommand cancelled.",
+            "30005": "Error 30005: Maximum number of guild roles reached (250)",
             "embed":{
                 "title": "Details:",
                 "name": "Name",
@@ -151,9 +158,8 @@
 				"permission_or_admin": "{permission} or Administrator",
 				"admin_exclusive": "Administrator"
 			}			
-        }
-    },
-	"kick": {
+        },
+	    "kick": {
             "description": "Kicks a member from the server with(out) any reason.",
             "usage": "<user> [reason]",
             "embed":{
@@ -321,18 +327,18 @@
         "botperms": {
             "add_role": "i don't have permission to add roles. ||Missing Permission: Manage roles||",
             "ban": "i don't have permission to ban. ||Missing Permission: Ban Members||",
-            "clean": "i don't have permission to clean this chat. ||Missing Permission: Manage Messages||",
+            "clean": "i don't have permission to clean up this chat. ||Missing Permission: Manage Messages||",
             "create_role": "i don't have permission to create roles. ||Missing Permission: Manage roles||",
             "delete_channel": "i don't have permission to delete channels. ||Missing Permission: Manage Channels||",
             "edit_role": "i don't have permission to edit roles. ||Missing Permission: Manage roles||",
             "kick": "i don't have permission to kick. ||Missing Permission: Kick members||",
             "remove_role": "i don't have permission to remove roles. ||Missing Permission: Manage roles||",
-			"ban": "i don't have permission to remove bans. ||Missing Permission: Ban Members||",
+			"unban": "i don't have permission to remove bans. ||Missing Permission: Ban Members||"
         },
         "modperms":{
             "add_role": "you don't have permission to add roles. ||You need: Manage roles||",
             "ban": "you don't have permission to ban people. ||You need: Ban Members||",
-            "clean": "you don't have permission to clean this chat. ||You need: Manage Messages||",
+            "clean": "you don't have permission to clean up this chat. ||You need: Manage Messages||",
             "create_role": "you don't have permission to create roles. ||You need: Manage roles||",
             "delete_channel": "you don't have permission to delete channels. ||You need: Manage Channels||",
             "edit_role": "you don't have permission to edit roles. ||You need: Manage roles||",

@@ -12,6 +12,7 @@
             "massrole-start": "Añadiendo el rol **{role}** a todos.",
             "usage": "<usuario> <rol>",
             "massrole-error": "No se pudo agregar el rol a **{member}**. Omitiendo..",
+            "massrole-success": "Rol **{role.name}** agregado a ${count} miembros.",
             "success": "¡Rol **{role}** asignado a **{member}** exitosamente!",
             "error": "No pude asignar el rol **{role}** a **{member}** por el error `{error}`."
         },
@@ -25,9 +26,12 @@
         "ban":{
             "description": "Banea a un miembro del servidor por (ning)una razón.",
             "usage": "<usuario> [razón]",
+            "success": "**{member}** ha sido baneado de **{guild}**.",
+            "error": "No pude banear a **{member}** por el error `{error}`.",
             "embed":{
                 "title": "¡Fuiste baneado de {guild}!",
                 "reason": "Razón",
+                "footer": "Baneado por",
                 "default_reason": "*No hubo una razón específica, pero seguro fue por algo malo*"
             }
         },
@@ -41,13 +45,16 @@
             "description": "Limpia la cantidad de mensajes indicada",
 			"usage": "<cantidad de mensajes a borrar>",
             "success": "{msgs} mensajes borrados",
-            "error": "No se pudieron borrar los mensajes por este error: `{error}`."
+            "error": "No se pudieron borrar los mensajes por este error: `{error}`.",
+            "50016": "Error 50016: Proveídos muy pocos o demasiados mensajes que borrar. Debe proveer a lo menos 2 y menos  que 100 mensajes a borrar."
         },
         "createrole":{
             "description": "Crea un rol con propiedades opcionales.",
             "fulldescription": "Crea un rol con todas sus propiedades opcionales en el formato de `propiedad:valor`, en el caso de crear un rol con solo el nombre el nuevo rol tendrá los permisos básicos({default}), sin color, ni será destacado, ni mencionable. Los propiedades son:\n`name` - El nombre del nuevo rol\n`color` - El color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a incluir en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n`hoist` - Si se incluye, el rol será visible en la lista de miembros\n`mentionable` - Si se incluye, el rol puede mencionarse por cualquier miembro. Útil para roles de ayuda.",
             "usage": "<solo el nombre>`  o `<{propiedad:valor[,propiedad:valor]...}>",
             "success": "el rol {role} fue creado sin problemas.",
+            "high_position": "el rol que vas a crear está igual o más alto que todos mis roles juntos, así que hasta aquí hemos llegado",
+            "30005": "Error 30005: Cantidad máxima de roles alcanzada (250)",
             "embed":{
                 "title": "Detalles:",
                 "name": "Nombre",

@@ -3,59 +3,64 @@ import { Message, Permissions, MessageEmbed, RoleData} from "discord.js";
 import { Lang } from "./lang/Lang";
 
 export class CreateRoleCommand implements ArgCommand{
-	permission: string = 'Gestionar roles'
+	permission: string = 'MANAGE_ROLES'
 	shortdescription: string = 'info.createrole.description'
 	fulldescription: string = 'info.createrole.fulldescription';
 	commandNames: string[] = ['createrole', 'cr']
 	requiredArgs: number = 1
 	examples: string[] = ['{name:strong red, color: #ff0000}', '{ name:Admin, color:ffff00, permissions:0x7fffffff,hoist, mentionable}', '{name: users, hoist}']
-	usage:string = '{ [name:value], [color:value], [perms:hexvalue], [position:number], [hoist], [mentionable]}'
+	usage:string = 'info.createrole.usage'
 	guildExclusive: boolean = true
-	async run(msg: Message, args: string[]): Promise<void> {
+	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const bot = msg.guild!.member(msg.client.user!)!
 		// nuevo código
 		const arg = args.join(' ')
 		const data = createData(arg)
 		if (!data) {
-			msg.guild!.roles.create({data: {name: arg,permissions:Permissions.DEFAULT,color:'RANDOM'}, reason: `Comando ejecutado por ${msg.author.tag}`}).then((role) => {
-				const embed = new MessageEmbed().setTitle('Detalles:').setColor(role.color || 0)
+			msg.guild!.roles.create({data: {name: arg,permissions:Permissions.DEFAULT,color:'RANDOM'}, reason: l.translate('reason',msg.author.tag)}).then((role) => {
+				const e = 'info.createrole.embed.'
+				const embed = new MessageEmbed().setTitle(l.translate(e+'title')).setColor(role.color || 0)
 					.addFields(
-						{ name: 'Nombre:'    , value: role.name                 , inline: true},
-						{ name: 'Color:'     , value: role.hexColor             , inline: true},
-						{ name: 'Posición'   , value: role.position             , inline: true},
-						{ name: 'hoist'      , value: (()=>role.hoist?'Sí':'No'), inline: true},
-						{ name: 'mentionable', value: (()=>role.hoist?'Sí':'No'), inline: true},
-						{ name: 'Permisos:'  , value: role.permissions.toJSON()}
+						{ name: l.translate(e+'name')       , value: role.name                 , inline: true},
+						{ name: l.translate(e+'color')      , value: role.hexColor             , inline: true},
+						{ name: l.translate(e+'position')   , value: role.position             , inline: true},
+						{ name: l.translate(e+'hoist')      , value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
+						{ name: l.translate(e+'mentionable'), value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
+						{ name: l.translate(e+'permissions'), value: role.permissions.toJSON()}
 						)
 					.setTimestamp();
-				msg.reply(`el rol ${role} fue creado sin problemas.`, embed)
+				l.reply('info.createrole.success',msg,role.toString())
+				msg.channel.send(embed)
 			}).catch( (error) => {
-				msg.reply('Error inesperado!!!')
+				if(error.code === 30005) l.translate('info.createrole.30005')
+				else l.reply('errors.unknown',msg)
 				console.error(error)
 			});
 			return
 		}
 		if (data.position! >= bot.roles.highest.position) {
-			msg.reply('el rol que vas a crear está igual o más alto que todos mis roles juntos, así que hasta aquí hemos llegado')
+			l.reply('info.createrole.high_position',msg)
 			return
 		}
 		console.log('Creando rol ' + data.toString())
         // Ejecución
-        msg.guild!.roles.create({data: data, reason: `Comando ejecutado por ${msg.author.tag}`}).then((role) => {
+        msg.guild!.roles.create({data: data, reason: l.translate('reason',msg.author.tag)}).then((role) => {
+			const e = 'info.createrole.embed.'
 			const embed = new MessageEmbed().setTitle('Detalles:').setColor(data.color || 0)
-                .addFields(
-					{ name: 'Nombre:'    , value: role.name                 , inline: true},
-					{ name: 'Color:'     , value: role.hexColor             , inline: true},
-					{ name: 'Posición'   , value: role.position             , inline: true},
-					{ name: 'hoist'      , value: (()=>role.hoist?'Sí':'No'), inline: true},
-					{ name: 'mentionable', value: (()=>role.hoist?'Sí':'No'), inline: true},
-					{ name: 'Permisos:'  , value: role.permissions.toJSON()}
+				.addFields(
+				{ name: l.translate(e+'name')       , value: role.name                 , inline: true},
+				{ name: l.translate(e+'color')      , value: role.hexColor             , inline: true},
+				{ name: l.translate(e+'position')   , value: role.position             , inline: true},
+				{ name: l.translate(e+'hoist')      , value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
+				{ name: l.translate(e+'mentionable'), value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
+				{ name: l.translate(e+'permissions'), value: role.permissions.toJSON()}
 				)
-                .setTimestamp();
+            	.setTimestamp();
             msg.reply(`el rol ${role} fue creado sin problemas.`, embed)
         }).catch( (error) => {
-			msg.reply('Error inesperado!!!')
-			console.error(error)
+			if(error.code === 30005) l.translate('info.createrole.30005')
+			else l.reply('errors.unknown',msg)
+			console.error(error.stack)
 		});
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
@@ -111,7 +116,7 @@ function createData(str:string):RoleData | undefined {
 	  case 'position': case 'pos':
 		data.position = parseInt(value)
 		if (isNaN(data.position)) {
-			console.error('valor position no es un número')
+			console.error('valor position ('+value+') no es un número')
 			data.position = 0
 		}
 		break

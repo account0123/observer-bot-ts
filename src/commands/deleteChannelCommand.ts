@@ -5,7 +5,7 @@ import { utils, ModeOfOperation} from 'aes-js'
 import { GetPassCommand } from './getPassCommand'
 import { Lang } from './lang/Lang'
 export class DeleteChannelCommand implements ArgCommand{
-	permission: string = 'Gestionar canales'
+	permission: string = 'MANAGE_CHANNELS'
 	shortdescription: string = 'info.deletechannel.description'
 	fulldescription: string = 'info.deletechannel.fulldescription'
 	commandNames:string[]=['deletechannel']
@@ -13,21 +13,21 @@ export class DeleteChannelCommand implements ArgCommand{
 	requiredArgs:number=2
 	usage:string='info.deletechannel.usage'
 	examples:string[]=['123456789987654321 1234', 'new-channel 1234']
-	async run(msg:Message,args:string[]){
+	async run(msg:Message,l: Lang, args:string[]){
 		const encryptedBytes = utils.hex.toBytes(args[1])
 		const aesCbc = new ModeOfOperation.cbc(GetPassCommand.key,GetPassCommand.iv)
 		const decryptedBytes = aesCbc.decrypt(encryptedBytes)
 		const key = utils.utf8.fromBytes(decryptedBytes)
 		if(key != msg.author.id.substring(0,16)){
-			msg.reply('Contraseña incorrecta.')
+			l.send('errors.wrong_password',msg)
 			return
 		}
 		const channel = ChannelFinder.getChannel(msg,args[0])
 		if(!channel){
-			msg.reply('no pude identificar el canal')
+			l.reply('errors.invalid_channel',msg,args[0])
 			return
 		}
-		await channel.delete(`Comando ejecutado por ${msg.author.tag}`).then((c:GuildChannel)=>msg.channel.send(`Canal **${c.name}** borrado sin problemas.`))
+		await channel.delete(l.translate('reason',msg.author.tag)).then((c:GuildChannel)=>l.send('info.deletechannel.success',msg,c.name))
 	}
 	async checkPermissions(msg: Message,l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!

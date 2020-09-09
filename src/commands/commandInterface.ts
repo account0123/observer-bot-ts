@@ -1,4 +1,5 @@
 import { Message } from "discord.js";
+import { Lang } from "./lang/Lang";
 
 export default interface Command {
   /**
@@ -20,5 +21,5 @@ export default interface Command {
   readonly fulldescription: string
 
   /** Ejecución del comando. La función debe ser asincrónica. */
-  run(msg: Message): Promise<void>
+  run(msg: Message,l: Lang): Promise<void>
 }

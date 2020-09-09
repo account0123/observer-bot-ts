@@ -3,33 +3,35 @@ import { Message, Permissions } from "discord.js";
 import { Lang } from "./lang/Lang";
 
 export class CleanCommand implements ArgCommand {
-	permission: string = 'Gestionar mensajes'
+	permission: string = 'MANAGE_MESSAGES'
 	shortdescription: string = 'info.clean.description'
 	fulldescription: string = this.shortdescription
 	commandNames: string[] = ['clean', 'purge', 'prune']
 	requiredArgs: number = 1
 	examples: string[] = ['30']
-	usage: string= '<number of messages to delete>'
+	usage: string= 'info.clean.usage'
 	guildExclusive: boolean = true
-	async run(msg: Message, args: string[]): Promise<void> {
+	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
 		const n = parseInt(args[0])
 		if (isNaN(n)) {
-			msg.reply('')
+			l.reply('errors.NaN',msg,args[0])
 		}
-		await msg.channel.bulkDelete(n, true).then((msgs)=>msg.channel.send(`${msgs.size} mensajes borrados`).then(m=>m.delete({timeout: 5000})).catch(e=>{msg.reply('No se pudieron borrar los mensajes por un error.')
-		console.error(`Se intentó borrar ${n} mensajes pero no se pudo por ${e}`)
-		console.error();})
+		await msg.channel.bulkDelete(n, true).then((msgs)=>l.send('info.clean.success',msg,'' + msgs.size).then(m=>m.delete({timeout: 5000})).catch(e=>{
+		if(e.code == 50016) l.send('info.clean.50016',msg)
+		else l.reply('info.clean.error',msg,e)
+		console.error(`Se intentó borrar ${n} mensajes pero no se pudo por ${e.stack}`)
+		})
 		)	
 	}
-	async checkPermissions(msg: Message): Promise<boolean> {
+	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) {
-			msg.reply('no tengo el permiso para borrar mensajes.')
+			l.reply('errors.botperms.clean',msg)
 			return false
 		}
 		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) {
-			msg.reply('no tienes permiso de borrar mensajes.')
+			l.reply('errors.modperms.clean',msg)
 			return false
 		}
 		return true

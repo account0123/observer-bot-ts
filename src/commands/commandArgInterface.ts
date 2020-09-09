@@ -31,7 +31,7 @@ export default interface ArgCommand {
   readonly permission: string
   
   /** Ejecución del comando. La función debe ser asincrónica. */
- run(msg: Message, args: string[]): Promise<void>
+ run(msg: Message,l: Lang, args: string[]): Promise<void>
 
  /** Verifica que el permiso se pueda ejecutar */
  checkPermissions(msg: Message,l:Lang): Promise<boolean>

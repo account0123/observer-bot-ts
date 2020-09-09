@@ -6,14 +6,14 @@ export class CallCommand implements ArgCommand {
 	requiredArgs: number = 1
 	commandNames: string[] = ['call', 'summon']
 	guildExclusive: boolean = true
-	shortdescription: string = ''
-	fulldescription: string = ''
-	usage: string = '<user> [user]...'
+	shortdescription: string = 'info.call.description'
+	fulldescription: string = 'info.call.fulldescription'
+	usage: string = 'info.call.usage'
 	examples: string[] = ['@user#1234 @user2#3221', '12335684247853234 987654321213456789 958372642132422']
-	permission: string = 'Mencionar @everyone @here y todos los roles'
-	async run(msg: Message, args: string[]): Promise<void> {
+	permission: string = 'MENTION_EVERYONE'
+	async run(msg: Message, L: Lang, args: string[]): Promise<void> {
 		const users = args.map(arg=>'<@'+arg+'>')
-		const begin = '***Invocando a '
+		const begin = L.translate('info.call.start')
 		const mention = users.join(', ')
 		const end = '***'
 		msg.channel.send(begin+mention+end)
