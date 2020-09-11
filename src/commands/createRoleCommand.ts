@@ -29,17 +29,17 @@ export class CreateRoleCommand implements ArgCommand{
 						{ name: l.translate(e+'permissions'), value: role.permissions.toJSON()}
 						)
 					.setTimestamp();
-				l.reply('info.createrole.success',msg,role.toString())
+				l.reply('info.createrole.success',role.toString())
 				msg.channel.send(embed)
 			}).catch( (error) => {
 				if(error.code === 30005) l.translate('info.createrole.30005')
-				else l.reply('errors.unknown',msg)
+				else l.reply('errors.unknown')
 				console.error(error)
 			});
 			return
 		}
 		if (data.position! >= bot.roles.highest.position) {
-			l.reply('info.createrole.high_position',msg)
+			l.reply('info.createrole.high_position')
 			return
 		}
 		console.log('Creando rol ' + data.toString())
@@ -59,7 +59,7 @@ export class CreateRoleCommand implements ArgCommand{
             msg.reply(`el rol ${role} fue creado sin problemas.`, embed)
         }).catch( (error) => {
 			if(error.code === 30005) l.translate('info.createrole.30005')
-			else l.reply('errors.unknown',msg)
+			else l.reply('errors.unknown')
 			console.error(error.stack)
 		});
 	}
@@ -67,11 +67,11 @@ export class CreateRoleCommand implements ArgCommand{
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			l.reply('errors.botperms.create_role',msg)
+			l.reply('errors.botperms.create_role')
 			return false
 		}
 		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			l.reply('errors.modperms.create_role',msg)
+			l.reply('errors.modperms.create_role')
 			return false
 		}
 		return true

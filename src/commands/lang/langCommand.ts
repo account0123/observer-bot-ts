@@ -1,6 +1,7 @@
 import ArgCommand from "../commandArgInterface";
 import { Message } from "discord.js";
 import { Connections } from "../../config/connections";
+import { Lang } from "./Lang";
 
 export class LangCommand implements ArgCommand {
 	requiredArgs: number = 0
@@ -11,7 +12,7 @@ export class LangCommand implements ArgCommand {
 	usage: string = '[idioma a cambiar]'
 	examples: string[] = ['', 'es']
 	permission: string = 'Administrador'
-	async run(msg: Message, args: string[]): Promise<void> {
+	async run(msg: Message, l: Lang,args: string[]): Promise<void> {
 		const sql = Connections.db
 		const g = msg.guild!
 		if (args.length == 0) {
@@ -45,10 +46,10 @@ export class LangCommand implements ArgCommand {
 			}
 		}
 	}
-	async checkPermissions(msg: Message): Promise<boolean> {
+	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		if (!mod.hasPermission(8)){
-			msg.channel.send('Comando reservado para administradores.')
+			l.reply('errors.modperms.admin')
 			return false
 		}
 		return true

@@ -3,6 +3,7 @@ import { Message, GuildMember, MessageEmbed } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { Time } from "../util/Time";
 import { UserActivity } from "../util/UserActivity";
+import { Lang } from "./lang/Lang";
 
 export class UserInfoCommand implements ArgCommand {
 	requiredArgs: number = 0
@@ -13,19 +14,19 @@ export class UserInfoCommand implements ArgCommand {
 	usage: string = 'info.userinfo.usage'
 	examples: string[] = ['', '123456789987654321', '@user#1234', '@nickname#1234']
 	permission: string = ''
-	async run(msg: Message, args: string[]): Promise<void> {
+	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		var embed: MessageEmbed
 		const details = args.includes('--details')
 		if(args.length > 0){
 			const mention = args.join(' ').trim()
 			const member = MemberFinder.getMember(msg,mention)
 			if (!member) {
-				msg.reply(`el miembro ${mention} no ha sido encontrado `)
+				l.reply('errors.invalid_member',mention)
 				return
 			}
-			embed = userEmbed(member,details)
+			embed = userEmbed(member,l,details)
 		}else{
-			embed = userEmbed(msg.guild!.member(msg.author)!,details)
+			embed = userEmbed(msg.guild!.member(msg.author)!,l,details)
 		}
 		await msg.channel.send(embed)
 	}
@@ -33,31 +34,32 @@ export class UserInfoCommand implements ArgCommand {
 		return true
 	}
 }
-function userEmbed(member:GuildMember, showDetails:boolean) {
+function userEmbed(member:GuildMember, l: Lang, showDetails:boolean) {
 	let activity = new UserActivity(member.user).toString()
-	const creationdate = new Time(member.id).toString()
-	const joindate = new Time(member.joinedAt).toString()
+	const e = 'info.userinfo.embed.'
+	const creationdate = new Time(member.id, l).toString()
+	const joindate = new Time(member.joinedAt, l).toString()
 	const embed = new MessageEmbed()
 		.setAuthor(member.id, member.user.displayAvatarURL())
 		.setThumbnail(member.user.displayAvatarURL({dynamic:true}));
-	if (member.nickname) embed.addField('Apodo',member.nickname,true)
+	if (member.nickname) embed.addField(l.translate(e+'nickname'),member.nickname,true)
 	embed.addFields(
-			{name: 'Nombre', value: member.user.username, inline:true},
-			{name: 'Discriminador', value: member.user.discriminator, inline: true},
-			{name: 'Fecha de creación', value: creationdate},
-			{name: 'Fecha de ingreso', value: joindate});
+			{name: l.translate(e+'name'), value: member.user.username, inline:true},
+			{name: l.translate(e+'discriminator'), value: member.user.discriminator, inline: true},
+			{name: l.translate(e+'created'), value: creationdate},
+			{name: l.translate(e+'joined'), value: joindate});
 	if (showDetails) {
 		embed.addFields(
 			{name: 'Roles', value: member.roles.cache.array(),inline: true},
-			{name: 'Permisos', value: member.permissions.toArray()},
-			{name: 'Actividad actual', value: activity,inline: true}
+			{name: l.translate(e+'permissions'), value: member.permissions.toArray()},
+			{name: l.translate(e+'activity'), value: activity,inline: true}
 		);
 	}else{
 		embed.addFields(
 			{name: 'Roles*', value: member.roles.cache.size,inline: true},
-			{name: 'Permisos*', value: member.permissions.bitfield.toString(16)},
-			{name: 'Actividad actual', value: activity,inline: true}
-		).setFooter('*Para ver el conjunto de valores agrega --details al comando');
-	}		
+			{name: l.translate(e+'permissions') + '*', value: member.permissions.bitfield.toString(16)},
+			{name: l.translate(e+'activity'), value: activity,inline: true}
+		).setFooter(l.translate(e+'footer'));
+	}
 	return embed;
 }

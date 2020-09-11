@@ -20,7 +20,7 @@ export class AvatarCommand implements ArgCommand {
 		const mention = args[0]
 		const user = UserFinder.getUser(msg,mention)!
 		if(!user){
-			l.reply('errors.invalid_user',msg,mention)
+			l.reply('errors.invalid_user',mention)
 		}
 		const e = new MessageEmbed().setDescription(l.translate('info.avatar.user',user.username)).setImage(user.avatarURL({dynamic:true})!).setFooter(l.translate('info.avatar.footer'))
 		msg.channel.send(e).then(()=> console.log(`Avatar de ${user.id} entergado`)).catch(err=>console.error(err))

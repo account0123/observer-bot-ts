@@ -13,18 +13,20 @@ export class RemoveRoleCommand implements ArgCommand {
 	examples: string[] = ['123456789987654321 @Mods', '@usuario#1234 trial admin'];
 	usage: string = 'info.removerole.usage'
 	guildExclusive: boolean = true
-	async run(msg: Message, args: string[]): Promise<void> {
-		const member = MemberFinder.getMember(msg,args.shift()!)
+	async run(msg: Message, l:Lang, args: string[]): Promise<void> {
+		const mention = args.shift()!
+		const member = MemberFinder.getMember(msg,mention)
 		const role = RoleFinder.getRole(msg,args.join(' '))
 		if (!member) {
-			msg.reply('el miembro no es válido. Por si acaso el orden es `<usuario> <rol>`.')
+			l.reply('errors.invalid_member',mention)
 			return
 		}
 		if (!role) {
-			msg.reply('el rol no es válido')
+			l.reply('errors.invalid_role',args.join(' '))
 			return
 		}
-		await member.roles.remove(role,`Comando ejecutado por ${msg.author.tag}`).then(m=>msg.channel.send(`Rol **${role.name}** removido a **${m.displayName}**.`)).catch(e=>{msg.reply(`No pude quitar el rol por el error \`${e}\``)
+		await member.roles.remove(role,l.translate('reason',msg.author.tag)).then(m=>l.send('info.removerole.success',role.name,member.displayName)).catch(e=>{
+		l.reply('info.removerole.error',e)
 		console.error(`Se intento eliminar el rol **${role.name}** a ${member.displayName} pero falló por`)
 		console.error(e.stack)
 		})
@@ -33,11 +35,11 @@ export class RemoveRoleCommand implements ArgCommand {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			l.reply('errors.botperms.remove_role',msg)
+			l.reply('errors.botperms.remove_role')
 			return false
 		}
 		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			l.reply('errors.modperms.remove_role',msg)
+			l.reply('errors.modperms.remove_role')
 			return false
 		}
 		return true

@@ -12,27 +12,28 @@ export class EditRoleCommand implements ArgCommand {
 	examples: string[] = ['123456789987654321 pos: 10', '@any rolename {name:another name,color:RED}', '"mod" +manage_roles']
 	usage: string = 'info.editrole.usage'
 	guildExclusive: boolean = true
-	async run(msg: Message, args: string[]): Promise<void> {
+	async run(msg: Message, l:Lang, args: string[]): Promise<void> {
 		const botposition = msg.guild!.member(msg.client.user!)!.roles.highest.position
 		// Se asume a la mención de rol como la primera palabra de los argumentos
 		var mention = args[0]
 		// Se busca el patrón donde el nombre de rol puede estar
-		const regex = args.join(' ').match(/"?([^{]+)"? {?.+}?/)
+		const regex = args.join(' ').match(/"?([^"{]+)"? {?.+}?/)
 		// Si hay match el nombre de rol es lo señalado en el patrón
 		if (regex) mention = regex[1]
 		// En caso de no existir el nombre en el patrón, se resatura al valor anterior
 		if (!mention || mention.length == 0) mention = args[0]
 		const role = RoleFinder.getRole(msg,mention.trim())
 		if(!role){
-			msg.reply(`el rol ${args[0]} no pudo ser encontrado, intente con la ID o poniendo el nombre entre comillas`)
+			l.reply('info.editrole.not_found',args[0])
 			return
 		}
 		if (!role.editable) {
-			msg.reply('el rol puede ser editado, intenta ponerlo más abajo que mi rol superior. También verifica que tenga el permiso de gestionar roles.')
+			l.reply('errors.lower_role')
 		}
 		// A partir de aquí se asume al rol como existente
 
 		// 1. Detectar si hay una sola variable a editar
+		const tag = msg.author.tag
 		const properties = args.join(' ').slice(mention.length + 1)
 		const propRegex = properties.match(/^(\w+) ?:(.+)/) || properties.match(/\+\w+|-\w+/)
 		if(propRegex){
@@ -46,25 +47,26 @@ export class EditRoleCommand implements ArgCommand {
 				switch (target) {
 					case 'hoist':
 						if(action==='add'){
-							await role.setHoist(true,`Comando ejecutado por ${msg.author!.tag}`).then(r=>msg.reply(`**${role.name}** ahora **se muestra**`)).catch(err=>{
-							msg.reply(`no pude cambiar el rol a **destacado**.`)
+							await role.setHoist(true,l.translate('reason',tag)).then(r=>l.reply('info.editrole.hoist_change.add_success',r.name)).catch(err=>{
+							l.reply('info.editrole.hoist_change.add_error')
 							console.error(`Se intentó poner el rol @${role.name} como destacado, pero falló por ${err}`)});
 						}
 						if(action==='remove'){
-							await role.setHoist(false,`Comando ejecutado por ${msg.author!.tag}`).then(r=>msg.reply(`**${role.name}** ahora **no se muestra**`)).catch(err=>{
-								msg.reply(`no pude cambiar el rol a **oculto**.`)
+							await role.setHoist(false,l.translate('reason',tag)).then(r=>l.reply('info.editrole.hoist_change.remove_success',r.name)).catch(err=>{
+								l.reply('info.editrole.hoist_change.remove_error')
 								console.error(`Se intentó poner el rol @${role.name} como oculto, pero falló por ${err}`)});
 						}
 						return
 					case 'mentionable':
 						if(action==='add'){
-							await role.setMentionable(true,`Comando ejecutado por ${msg.author!.tag}`).then(r=>msg.reply(`**${role.name}** ahora **es 100% mencionable**`)).catch(err=>{
-							msg.reply(`no pude cambiar el rol a **mencionable**.`)
+							await role.setMentionable(true,l.translate('reason',tag)).then(r=>l.reply('info.editrole.mentionable_change.add_success',r.name)).catch(err=>{
+								l.reply('info.editrole.mentionable_change.add_error')
 							console.error(`Se intentó poner el rol @${role.name} como mencionable, pero falló por ${err}`)});
 						}
 						if(action==='remove'){
-							await role.setMentionable(false,`Comando ejecutado por ${msg.author!.tag}`).then(r=>msg.reply(`**${r.name}** ahora **no es mencionable**(a menos que tengas el permiso de mencionar roles)`)).catch(err=>{
-								msg.reply(`no pude cambiar el rol a **no mencionable**.`)
+							await role.setMentionable(false,l.translate('reason',tag)).then(r=>l.reply('info.editrole.mentionable_change.remove_success',r.name)
+							).catch(err=>{
+								l.reply('info.editrole.mentionable_change.remove_success')
 								console.error(`Se intentó poner el rol @${role.name} como no mencionable, pero falló por ${err}`)});
 						}
 						return
@@ -75,13 +77,13 @@ export class EditRoleCommand implements ArgCommand {
 								if (action==='add') {
 									permission = <PermissionString> flag
 									role.permissions.add(permission)
-									await msg.reply(`**${role.name}** ahora tiene el permiso **${flag}** agregado.`)
+									await l.reply('info.editrole.permissions_change.add_success',role.name,flag)
 									return
 								}
 								if(action==='remove'){
 									permission = <PermissionString> flag
 									role.permissions.remove(permission)
-									await msg.reply(`**${role.name}** ahora no tiene el permiso **${flag}**.`)
+									await l.reply('info.editrole.permissions_change.remove_success',role.name,flag)
 									return
 								}
 							}
@@ -93,100 +95,100 @@ export class EditRoleCommand implements ArgCommand {
 				const value = propRegex[1].trim()
 				switch (propRegex[0].trim().toLowerCase()) {
 					case 'name':
-						await role.setName(value,`Comando ejecutado por ${msg.author!.tag}`).then(r=>msg.reply(`**${role.name}** ahora se llama **${r.name}**`)).catch(err=>{
-							msg.reply(`no pude renombrar al rol como ${value}.`)
+						await role.setName(value,l.translate('reason',tag)).then(r=>l.reply('info.editrole.name_change.add_success',role.name,r.name)).catch(err=>{
+							l.reply('info.editrole.name_change.error',value)
 							console.error(`Se intentó renombrar al rol @${role.name} como @${value}, pero falló por ${err}`)
 						});
 						return
 					case 'color':
-						await role.setColor(value,`Comando ejecutado por ${msg.author!.tag}`).then(r=>msg.reply(`**${role.name}** ahora es color **${r.hexColor}**`)).catch(err=>{
-							msg.reply(`no pude ponerle el color ${value} al rol.`)
+						await role.setColor(value,l.translate('reason',tag)).then(r=>l.reply('info.editrole.color_change.success',r.name,r.color.toString(16))).catch(err=>{
+							l.reply('info.editrole.color_change.error',value)
 							console.error(`Se intentó poner el color ${value} al rol @${role.name}, pero falló por ${err}`)
 						});
 						return
 					case 'perms': case 'permissions':
 						const perms = parseInt(value,16)
 						if(isNaN(perms)){
-							msg.reply('el número en hexadecimal no es válido, tiene que ser la suma en binario de todos los permisos a poner en el rol. Si solo quieres agregar o quitar un permiso usa el argumento `+permiso` o `-permiso`. Ejemplo: +ban_members')
+							l.reply('info.editrole.permissions_change.NaN')
 							return
 						}
-						await role.setPermissions(perms,`Comando ejecutado por ${msg.author!.tag}`).then(r=>msg.reply(`**${role.name}** ahora tiene los permisos \`${r.permissions.toArray().toString()}\``)).catch(err=>{
-							msg.reply(`no pude cambiarle los permisos a ${value} al rol. Quizás estás poniendo más permisos de los que puedo permitir.`)
+						await role.setPermissions(perms,l.translate('reason',tag)).then(r=>l.reply('info.editrole.permissions_change.success',r.name,r.permissions.toArray().join(', '))).catch(err=>{
+							l.reply('info.editrole.permissions_change.error',value)
 							console.error(`Se intentó poner el set de permisos ${value} al rol @${role.name}, pero falló por ${err}`)})
 						return
 					case 'position': case 'pos':
 						const position = parseInt(value)
 						if(isNaN(position)){
-							msg.reply(`${value} no es un número válido`)
+							l.reply('errors.NaN',value)
 							return
 						}
 						if (position >= botposition) {
-							msg.reply('no puedo cambiar la posición del rol si es igual o mayor a mi rol más alto')
+							l.reply('info.editrole.error_highposition')
 							return
 						}
-						await role.setPosition(position,{relative: false,reason:`Comando ejecutado por ${msg.author!.tag}`}).then(r=>msg.reply(`**${role.name}** ahora está en la posición \`${r.position}\``)).catch(err=>{
-							msg.reply(`no pude cambiar la posición del rol a ${value}.`)
+						await role.setPosition(position,{relative: false,reason:l.translate('reason',tag)}).then(r=>l.reply('info.editrole.position_change.success',r.name,r.position.toString())).catch(err=>{
+							l.reply('info.editrole.position_change.error',value)
 							console.error(`Se intentó cambiar la posición a ${value} al rol @${role.name}, pero falló por ${err}`)});
 						return
 					case 'above':
 						const lowerRole = RoleFinder.getRole(msg,value)
 						if(!lowerRole){
-							msg.reply('el rol inferior no es válido.')
+							l.reply('info.editrole.position_change.invalid_lower_role')
 							return
 						}
 						const pos_b = lowerRole.position + 1
 						if (pos_b >= botposition) {
-							msg.reply('no puedo cambiar la posición del rol si es igual o mayor a mi rol más alto')
+							l.reply('info.editrole.error_highposition')
 							return
 						}
-						await role.setPosition(pos_b,{relative: false,reason: `Comando ejecutado por ${msg.author.tag}`}).then(r=>msg.reply(`**${role.name}** ahora está en la posición \`${r.position}\``)).catch(err=>{
-							msg.reply(`no pude cambiar la posición del rol a ${value}.`)
+						await role.setPosition(pos_b,{relative: false,reason: l.translate('reason',tag)}).then(r=>l.reply('info.editrole.position_change.success',r.name,r.position.toString())).catch(err=>{
+							l.reply('info.editrole.position_change.error',value)
 							console.error(`Se intentó cambiar la posición a ${value} al rol @${role.name}, pero falló por ${err}`)});
 						return
 					case 'below':
 						const higherRole = RoleFinder.getRole(msg,value)
 						if (!higherRole) {
-							msg.reply('el rol superior no es válido.')
+							l.reply('info.editrole.position_change.invalid_higher_role')
 							return
 						}
 						let pos_c = higherRole.position - 1
 						if (pos_c >= botposition) {
-							msg.reply('no puedo cambiar la posición del rol si es igual o mayor a mi rol más alto')
+							l.reply('info.editrole.error_highposition')
 						}
-						await role.setPosition(pos_c,{reason:`Comando ejecutado por ${msg.author.tag}`}).then(r=>msg.reply(`**${role.name}** ahora está en la posición \`${r.position}\``)).catch(err=>{
-							msg.reply(`no pude cambiar la posición del rol a ${value}.`)
+						await role.setPosition(pos_c,{reason:l.translate('reason',tag)}).then(r=>l.reply('info.editrole.position_change.success',r.name,r.position.toString())).catch(err=>{
+							l.reply('info.editrole.position_change.error',value)
 							console.error(`Se intentó cambiar la posición a ${value} al rol @${role.name}, pero falló por ${err}`)});
 						return
 					}
 			}
 		}
 		//2. Si hay más variables a editar, utilizar la función de crear data
-		const data = createData(msg,properties, role)
+		const data = createData(l,msg,properties, role)
 		if(!data){
-			msg.reply('el formato ingresado no es válido. El formato correcto es { dato:valor, dato:valor, *...* }')
+			l.reply('info.editrole.invalid_format')
 			return
 		}
 		if (data.name == role.name && data.position == role.position && data.color == role.color && data.permissions == role.permissions && data.hoist == role.hoist && data.mentionable == role.mentionable) {
-			msg.reply('*No hay cambios.*')
+			l.send('info.editrole.no_changes')
 			return
 		}
-		await role.edit(data,`Comando ejecutado por ${msg.author.tag}`).then(r=>msg.channel.send(`Rol **${r.name}** modificado correctamente`))
+		await role.edit(data,l.translate('reason',tag)).then(r=>l.send('info.editrole.success',r.name))
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			l.reply('errors.botperms.edit_role',msg)
+			l.reply('errors.botperms.edit_role')
 			return false
 		}
 		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			l.reply('errors.modperms.edit_role',msg)
+			l.reply('errors.modperms.edit_role')
 			return false
 		}
 		return true
 	}
 }
-function createData(msg:Message,str:string, oldRole:Role):RoleData | undefined {
+function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | undefined {
 	const botposition = msg.guild!.member(msg.client.user!)!.roles.highest.position
 	if(!str.startsWith('{') && !str.endsWith('}')) return undefined
 	const body = str.slice(1,-1)
@@ -230,7 +232,7 @@ function createData(msg:Message,str:string, oldRole:Role):RoleData | undefined {
 			if(!lowerRole) break
 			const pos = lowerRole.position + 1
 			if (pos >= botposition) {
-				msg.channel.send('Advertencia: No puedo cambiar la posición del rol si es igual o mayor a mi rol más alto')
+				l.send('info.editrole.warn_highposition')
 				break
 			}
 			data.position = pos
@@ -240,7 +242,7 @@ function createData(msg:Message,str:string, oldRole:Role):RoleData | undefined {
 			if (!higherRole) break
 			const pos_c = higherRole.position - 1
 			if (pos_c >= botposition) {
-				msg.channel.send('Advertencia: No puedo cambiar la posición del rol si es igual o mayor a mi rol más alto')
+				l.send('info.editrole.warn_highposition')
 				break
 			}
 			data.position = pos_c
@@ -248,6 +250,7 @@ function createData(msg:Message,str:string, oldRole:Role):RoleData | undefined {
 		case 'position': case 'pos':
 		data.position = parseInt(value)
 		if (isNaN(data.position)) {
+			l.reply('info.editrole.position_NaN',value)
 			console.error('valor position no es un número')
 			data.position = 0
 		}

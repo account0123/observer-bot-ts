@@ -103,7 +103,7 @@
                 "invalid_higher_role": "el rol superior no es válido."
             },
             "permissions_change":{
-                "success": "**{role.name}** ahora tiene los permisos `{r.permissions.toArray()}`",
+                "success": "**{role.name}** ahora tiene los permisos `{r.permissions.toArray}`",
                 "error": "no pude cambiarle los permisos a {value} al rol. Quizás estás poniendo más permisos de los que puedo permitir.",
                 "NaN" : "el número en hexadecimal no es válido, tiene que ser la suma en hexadecimal de todos los permisos a poner en el rol. Si solo quieres agregar o quitar un permiso usa el argumento `+permiso` o `-permiso`. Ejemplo: +ban_members",
                 "add_success": "**{role}** ahora tiene el permiso **{flag}** agregado.",
@@ -166,7 +166,8 @@
             "embed":{
                 "title": "¡Fuiste expulsado de {guild}!",
                 "reason": "Razón",
-                "default_reason": "*No hubo una razón específica, pero seguro fue por algo malo*"
+                "default_reason": "*No hubo una razón específica, pero seguro fue por algo malo*",
+                "footer": "Expulsado/a por {mod.user.tag}"
             }
         },
         "removerole":{
@@ -189,10 +190,11 @@
             "fulldescription": "Envía la información del rol indicado.",
             "usage": "<rol>",
             "embed":{
-                "title": "Detalles:",
+                "title": "Detalles de {id}",
                 "name": "Nombre",
                 "position": "Posición",
                 "permissions": "Permisos",
+                "creation": "Fecha de creación",
                 "hoist": "Destacado",
                 "mentionable": "Mentionable"
             }
@@ -234,7 +236,7 @@
             }
         },
         "snipe":{
-            "description": "Muestra el mensaje borrado.",
+            "description": "Muestra el mensa je borrado.",
             "fulldescription": "Muestra el último mensaje borrado de este canal.",
             "no_msg": "*No hay mensajes que mostrar*",
             "success": "Mensaje borrado.",
@@ -281,6 +283,7 @@
             "massunban-success": "{count} miembros desbaneados.",
             "massunban-error": "Error al desbanear a {user.tag}. Omitiendo...",
             "success": "**{u.username}** está desbaneado de **{g.name}**.",
+            "error": "Error al desbanear a **{user.tag}**",
             "10013": "Error 10013: No fue encontrado el usuario asociado a la susodicha ID.",
             "10026": "Error 10026: El usuario no estaba baneado en primer lugar."
         },
@@ -295,7 +298,8 @@
                 "created": "Fecha de creación",
                 "joined": "Fecha de cuando se unió acá",
                 "permissions": "Permisos",
-                "activity": "Actividad actual"
+                "activity": "Actividad actual",
+                "footer": "* Para ver el conjunto de valores agrega --details al comando"
             }
         }
     },
@@ -359,6 +363,7 @@
         },
         "modperms":{
             "add_role": "no tienes permiso para asignar roles. ||Necesitas: Gestionar roles||",
+            "admin": "este comando es exclusivo para administradores. ||Necesitas: Administrador||",
             "ban": "no tienes permiso para banear. ||Necesitas: Banear miembros||",
             "clean": "no tienes permiso para limpiar este chat. ||Necesitas: Gestionar mensajes||",
             "create_role": "no tienes permiso para crear roles. ||Necesitas: Gestionar roles||",
@@ -371,11 +376,12 @@
         },
         "unknown": "hubo un error desconocido al ejecutar este comando :thinking:",
         "unsafe_integer": "el número es tan largo que casi provoca un agujero en el espacio-tiempo... o casi sobrecargaste la memoria, que es casi lo mismo.",
-        "wrong_password": "Contraseña incorrecta."
+        "wrong_password": "Contraseña incorrecta.\n||Pista: Usa el comando getpass para obtener una contraseña||"
     },
     "reason": "Comando ejecutado por {author}",
     "yes": "Sí",
     "no": "No",
     "cancelling": "Cancelando comando...",
-    "canceled": "Comando cancelado."
+    "canceled": "Comando cancelado.",
+    "members": "humano(s)"
 }

@@ -1,5 +1,6 @@
 import ArgCommand from "./commandArgInterface";
 import { Message } from "discord.js";
+import { Lang } from "./lang/Lang";
 
 export class SayCommand implements ArgCommand {
 	permission: string = ''
@@ -13,9 +14,9 @@ export class SayCommand implements ArgCommand {
 	examples: string[] = ['Hello world!!!','Hay pelotudos y luego estás tú']
 	usage: string = 'info.say.usage'
 	guildExclusive: boolean = false
-	async run(msg: Message, args: string[]): Promise<void> {
+	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		await msg.channel.send(args.join(' '))
-		await msg.delete({timeout: 800,reason: 'Comando say ejecutado'})
+		await msg.delete({timeout: 800,reason: l.translate('reason',msg.author.tag)})
 	}
 	
 }

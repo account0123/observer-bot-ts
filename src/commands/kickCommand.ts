@@ -12,25 +12,26 @@ export class KickCommand implements ArgCommand {
 	requiredArgs: number = 1;
 	examples: string[] = ['plskickme','@user#1234 for some reasons', '123456789987654321 read the rules'];
 	usage: string = 'info.kick.usage';
-	async run(msg: Message, args: string[]): Promise<void> {
+	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const mod = msg.guild!.member(msg.author)!
 		const mention = args.splice(0,1).toString()
-		const reason = args.join(' ') || '*No hubo una razón específica, pero seguro fue por algo malo*'
+		const reason = args.join(' ') || l.translate('info.kick.embed.default_reason')
 		const member = MemberFinder.getMember(msg, mention);
 		if(!member){
-			msg.reply('el miembro mencionado no es válido.')
+			l.reply('errors.invalid_member',mention)
 			return
 		}
 		if(!member.bannable){
-			msg.reply('no puedes exoulsar al miembro')
+			l.reply('errors.lower_bot')
 			return
 		}
 		await member.kick(reason).then(kicked => {
+			const e = 'info.kick.embed.'
 			const embed = new MessageEmbed()
-				.setAuthor(`¡Fuiste expulsado de ${kicked.guild.name}!`, msg.client.user!.avatarURL()!)
-				.setTitle('Razón:')
+				.setAuthor(l.translate(e+'title',msg.guild!.name), msg.client.user!.avatarURL()!)
+				.setTitle(l.translate(e+'reason'))
 				.setDescription(reason)
-				.setFooter(`Admin: ${mod.user.tag}`);
+				.setFooter(l.translate(e+'footer',mod.user.tag));
 			kicked.send(embed);
 		});
 	}
@@ -38,11 +39,11 @@ export class KickCommand implements ArgCommand {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) {
-			l.reply('errors.botperms.kick',msg)
+			l.reply('errors.botperms.kick')
 			return false
 		}
 		if (!mod.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) {
-			l.reply('errors.modperms.kick',msg)
+			l.reply('errors.modperms.kick')
 			return false
 		}
 		return true

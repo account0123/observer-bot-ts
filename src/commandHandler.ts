@@ -60,29 +60,29 @@ export default class CommandHandler {
     const matchedCommand = CommandHandler.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
     const matchedArgCommand = CommandHandler.argCommands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
     var lang: Lang
-    if (message.guild) lang = new Lang(message.guild.id)
-    else lang = new Lang(message.author.locale)
+    if (message.guild) lang = new Lang(message)
+    else lang = new Lang(message,message.author.locale)
     if(matchedCommand) {
       if (message.channel.type == "dm" && matchedCommand.guildExclusive) {
-        lang.reply('errors.no_dms', message)
+        lang.reply('errors.no_dms')
         return
       }
-      await matchedCommand.run(message).catch(error => {
+      await matchedCommand.run(message,lang).catch(error => {
         console.error(`"${this.echoMessage(message)}" falló por "${error}"`);
       });
     }
     if (matchedArgCommand) {
       if (message.channel.type == "dm" && matchedArgCommand.guildExclusive) {
-        lang.reply('errors.no_dms', message)
+        lang.reply('errors.no_dms')
         return
       }
       if (commandParser.args.length < matchedArgCommand.requiredArgs) {
-        lang.reply('errors.not_enough_args',message,CommandHandler.prefix,commandParser.parsedCommandName,matchedArgCommand.usage)
+        lang.reply('errors.not_enough_args',CommandHandler.prefix,commandParser.parsedCommandName,matchedArgCommand.usage)
         return
       }
       await matchedArgCommand.checkPermissions(message,lang).then(b=>{
-       if(b) matchedArgCommand.run(message,commandParser.args).catch(error => {
-         lang.send('errors.unknown', message)
+       if(b) matchedArgCommand.run(message,lang,commandParser.args).catch(error => {
+         lang.send('errors.unknown')
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
       })});
     }

@@ -19,15 +19,15 @@ export class BanCommand implements ArgCommand {
 		const reason = args.join(' ')  || l.translate('info.ban.embed.default_reason')
 		const member = MemberFinder.getMember(msg, mention);
 		if(!member){
-			l.reply('errors.invalid_member',msg,mention)
+			l.reply('errors.invalid_member',mention)
 			return
 		}
 		if(!member.bannable){
-			l.reply('errors.bot_lower',msg)
+			l.reply('errors.bot_lower')
 			return
 		}
 		await member.ban({days:1, reason: reason}).then(banned => {
-			l.send('info.ban.success',msg,banned.user.tag,msg.guild!.name)
+			l.send('info.ban.success',banned.user.tag,msg.guild!.name)
 			const e = 'info.ban.embed.'
 			const embed = new MessageEmbed()
 				.setAuthor(l.translate(e+'title',banned.guild.name), msg.client.user!.avatarURL()!)
@@ -35,7 +35,7 @@ export class BanCommand implements ArgCommand {
 				.setFooter(l.translate(e+'footer') + `: ${mod.user.tag}`).setTimestamp();
 			banned.send(embed).catch(e=>console.error(`No se pudo enviar el mensaje a ${banned.displayName} por ${e}`));
 		}).catch(error => {
-			l.send('info.ban.error',msg,member.user.tag,error)
+			l.send('info.ban.error',member.user.tag,error)
 			console.error(`Se intentó banear a ${member.displayName} (${member.id}) de ${msg.guild!.name} (${msg.guild!.id}) pero falló por ${error.stack}`)
 		});
 	}
@@ -43,11 +43,11 @@ export class BanCommand implements ArgCommand {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) {
-			l.reply('errors.botperms.ban',msg)
+			l.reply('errors.botperms.ban')
 			return false
 		}
 		if (!mod.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) {
-			l.reply('errors.modperms.ban',msg)
+			l.reply('errors.modperms.ban')
 			return false
 		}
 		return true

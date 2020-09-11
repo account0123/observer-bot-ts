@@ -17,20 +17,20 @@ export class DemoteCommand implements ArgCommand {
 		const member = MemberFinder.getMember(msg,mention)
 		const mod = msg.guild!.member(msg.author)!
 		if(!member){
-			l.reply('errors.invalid_member',msg,mention)
+			l.reply('errors.invalid_member',mention)
 			return
 		}
 		if(!member.manageable){
-			l.reply('errors.lower_bot',msg)
+			l.reply('errors.lower_bot')
 			return
 		}
 		const role = member.roles.highest
 		if(!(mod.roles.highest.position > role.position)){
-			l.reply('info.demote.asbuddy',msg)
+			l.reply('info.demote.asbuddy')
 			return
 		}
-		await member.roles.remove(role,args.join(' ') || l.translate('reason',msg.author.tag)).then(m=>l.send('info.demote.success',msg,role.name,member.displayName,m.roles.highest.name)).catch(e=>{
-		l.send('info.demote.error',msg,e)
+		await member.roles.remove(role,args.join(' ') || l.translate('reason',msg.author.tag)).then(m=>l.send('info.demote.success',role.name,member.displayName,m.roles.highest.name)).catch(e=>{
+		l.send('info.demote.error',e)
 		console.error(`Se intento eliminar el rol **${role.name}** a ${member.displayName} pero falló por`)
 		console.error(e.stack)
 		})
@@ -39,11 +39,11 @@ export class DemoteCommand implements ArgCommand {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			l.reply('errors.botperms.remove_role',msg)
+			l.reply('errors.botperms.remove_role')
 			return false
 		}
 		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			l.reply('errors.modperms.remove_role',msg)
+			l.reply('errors.modperms.remove_role')
 			return false
 		}
 		return true

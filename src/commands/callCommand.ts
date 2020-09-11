@@ -21,7 +21,7 @@ export class CallCommand implements ArgCommand {
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		if (!mod.hasPermission(Permissions.FLAGS.MENTION_EVERYONE)) {
-			l.reply('errors.modperms.massmention',msg)
+			l.reply('errors.modperms.massmention')
 			return false
 		}
 		return true

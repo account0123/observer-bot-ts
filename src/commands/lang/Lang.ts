@@ -2,37 +2,42 @@ import fs from 'fs'
 import { Connections } from "../../config/connections";
 import { Message } from "discord.js";
 export class Lang {
-	private lang:string
-	constructor(guild_id: string){
-		switch(guild_id){
-			case '': case 'es':
-				this.lang = 'es'
-				return
-			case 'en':
-				this.lang = 'en'
-				return
+	locale:string
+	private msg:Message
+	constructor(msg: Message,locale?:string){
+		this.msg = msg
+		if(locale){
+			switch(locale){
+				case '': case 'es':
+					this.locale = 'es'
+					return
+				case 'en': default:
+					this.locale = 'en'
+					return
+			}
 		}
+		const guild_id = msg.guild!.id
 		Connections.db.query('SELECT language FROM guilds WHERE id=?',[guild_id],(err,rows,fields) =>{
 			if(err) throw err
 			if(rows.length === 0) {
 				console.error('COULDN\'T FIND GUILD ' + guild_id + ' PLEASE UPADTE')
-				this.lang = 'es'
+				this.locale = 'es'
 				return
 			}
 			const row = rows[0]
 			switch (row.lang) {
 				case 'es':
-					this.lang = 'es'
+					this.locale = 'es'
 					return
 				case 'en':
-					this.lang = 'en'
+					this.locale = 'en'
 					return
 			}
 		});
-		this.lang = 'es'
+		this.locale = 'es'
 	}
-	send(code:string,msg:Message,...values:string[]):Promise<Message>{
-		const content = fs.readFileSync(`./${this.lang}.json`,{encoding: 'utf-8'})
+	send(code:string,...values:string[]):Promise<Message>{
+		const content = fs.readFileSync(`./${this.locale}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {
@@ -47,7 +52,7 @@ export class Lang {
 		var script:string = obj
 		const data = script.match(/\{[\w.]+\}/gm)
 		if(!data){
-			return msg.channel.send(script)
+			return this.msg.channel.send(script)
 		}
 		if (!values) {
 			throw new Error('FALTAN ARGUMENTOS EN EL ENVIO DE DATOS')
@@ -58,10 +63,10 @@ export class Lang {
 			const value = values[i]
 			script = script.replace(marker,value)
 		}
-		return msg.channel.send(script)
+		return this.msg.channel.send(script)
 	}
-	reply(code:string,msg:Message,...values:string[]):Promise<Message>{
-		const content = fs.readFileSync(`./${this.lang}.json`,{encoding: 'utf-8'})
+	reply(code:string,...values:string[]):Promise<Message>{
+		const content = fs.readFileSync(`./${this.locale}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {
@@ -76,7 +81,7 @@ export class Lang {
 		var script:string = obj
 		const data = script.match(/\{[\w.]+\}/gm)
 		if(!data){
-			return msg.reply(script)
+			return this.msg.reply(script)
 		}
 		if (!values) {
 			throw new Error('FALTAN ARGUMENTOS EN EL ENVIO DE DATOS')
@@ -87,10 +92,10 @@ export class Lang {
 			const value = values[i]
 			script = script.replace(marker,value)
 		}
-		return msg.reply(script)
+		return this.msg.reply(script)
 	}
 	translate(code:string,...values:string[]):string{
-		const content = fs.readFileSync(`./${this.lang}.json`,{encoding: 'utf-8'})
+		const content = fs.readFileSync(`./${this.locale}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {

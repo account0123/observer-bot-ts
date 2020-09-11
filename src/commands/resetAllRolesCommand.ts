@@ -13,36 +13,36 @@ export class ResetAllRolesCommand implements ArgCommand {
 	fulldescription: string = 'info.resetallroles.fulldescription'
 	usage: string = 'info.resetallroles.usage'
 	examples: string[] = ['832abc370fa879d2']
-	permission: string = 'Gestionar roles'
-	async run(msg: Message, args: string[]): Promise<void> {
+	permission: string = 'MANAGE_ROLES'
+	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
 		const encryptedBytes = utils.hex.toBytes(args[0])
 		const aesCbc = new ModeOfOperation.cbc(GetPassCommand.key,GetPassCommand.iv)
 		const decryptedBytes = aesCbc.decrypt(encryptedBytes)
 		const key = utils.utf8.fromBytes(decryptedBytes)
 		if(key != msg.author.id.substring(0,16)){
-			msg.reply('Contraseña incorrecta.')
+			l.send('errors.wrong_password')
 			return
 		}
 		var perms = 0
 		if (args[1]) {
 			perms = parseInt(args[1],16)
 			if(isNaN(perms)){
-				msg.reply(`${args[1]} no es un número válido.`)
-				await msg.channel.send('Cancelando comando...').then(m=>m.delete({timeout: 1000}))
-				msg.channel.send('Comando cancelado.')
+				l.reply('errors.NaN',args[1])
+				await l.send('cancelling').then(m=>m.delete({timeout: 1000}))
+				l.send('canceled')
 				return
 			}
 		}
 		const bot = msg.guild!.member(msg.client.user!)!
 		const botperms = bot.permissions.bitfield
 		if (!bot.hasPermission(8) && perms > botperms) {
-			msg.reply(`no puedo añadir los permisos \`${new Permissions(perms - botperms).toArray()}\``)
-			await msg.channel.send('Cancelando comando...').then(m=>m.delete({timeout: 1000}))
-			msg.channel.send('Comando cancelado.')
+			l.reply('info.resetallroles.permission_limit',new Permissions(perms - botperms).toArray().join(', '))
+			await l.send('cancelling').then(m=>m.delete({timeout: 1000}))
+			l.send('canceled')
 			return
 		}
 		const botposition = bot.roles.highest.position
-		await msg.channel.send(`Reiniciando ${botposition - 1} roles con los permisos \`${new Permissions(perms).toArray()}\``)
+		await l.send('info.resetallroles.start','' + (botposition -1),new Permissions(perms).toArray().join(', '))
 		msg.guild!.roles.cache.forEach(async r => {
 		})
 		const asyncForEach = async (a:Role[], callback: { (r: Role): Promise<void>; (arg0: Role, arg1: number, arg2: Role[]): any; }) => {
@@ -52,13 +52,13 @@ export class ResetAllRolesCommand implements ArgCommand {
 		}
 		const restart = async () => {
 		  await asyncForEach(msg.guild!.roles.cache.array(), async (r:Role) => {
-			if (botposition > r.position) await r.setPermissions(perms,`Comando ejecutado por ${msg.author.tag}`)
+			if (botposition > r.position) await r.setPermissions(perms,l.translate('reason',msg.author.tag))
 				.catch(e=>{
-					msg.channel.send(`Fallo al reiniciar **${r.name}**\nOmitiendo...`)
+					l.send('info.resetallroles.error')
 					console.error(e.stack)
 				});
 			});
-		  msg.channel.send('Todos los roles reiniciados.')
+		  l.send('info.resetallroles.success')
 		}
 		restart()
 	}
@@ -66,11 +66,11 @@ export class ResetAllRolesCommand implements ArgCommand {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)){
-			l.reply('errors.botperms.edit_role',msg)
+			l.reply('errors.botperms.edit_role')
 			return false
 		}
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			l.reply('errors.modperms.edit_role',msg)
+			l.reply('errors.modperms.edit_role')
 			return false
 		}
 		return true

@@ -103,7 +103,7 @@
                 "invalid_higher_role": "higher reference role is invalid."
             },
             "permissions_change":{
-                "success": "**{role.name}** now has the following permissions: `{r.permissions.toArray()}`",
+                "success": "**{role.name}** now has the following permissions: `{r.permissions.toArray}`",
                 "error": "i couldn't set {value} bitfield permission to role. Maybe you are asking for more permissions i can give.",
                 "NaN" : "hex number permission isn't valid, it must be the hexadecimal sum of all permissions to set on role. If you just wanna add/remove a single permission you can use `+permission` o `-permission` in the command args. Eg: +ban_members",
                 "add_success": "**{role}** now has **{flag}** added.",
@@ -139,7 +139,8 @@
         },
 		"help": {
 			"description": "Help command.",
-			"fulldescription": "Show all commands list if there's not arguments, or detailed command help from the command argued",
+            "fulldescription": "Show all commands list if there's not arguments, or detailed command help from the command argued",
+            "usage": "[command]",
 			"general":{
 				"title": "All Observador's commands",
 				"footer": "Use {prefix}help `command` to see how to use a command"
@@ -165,7 +166,8 @@
             "embed":{
                 "title": "¡You got kicked from {guild}!",
                 "reason": "Reason",
-                "default_reason": "*There wasn't a specific reason, but you had to do something bad*"
+                "default_reason": "*There wasn't a specific reason, but you had to do something bad*",
+                "footer": "Kicked by {mod.user.tag}"
             }
         },
         "removerole":{
@@ -191,6 +193,7 @@
                 "title": "Detalls:",
                 "name": "Name",
                 "position": "Position",
+                "creation": "Creation Date",
                 "permissions": "Permissions",
                 "hoist": "Hoisted",
                 "mentionable": "Mentionable"
@@ -258,7 +261,8 @@
             "start": "Starting massive unban, you invite them, ok?",
             "massunban-success": "{count} unbanned members.",
             "massunban-error": "There was an error unbanning {user.tag}. Skipping...",
-            "success": "**{u.username}** is unbanned from **{g.name}**.", 
+            "success": "**{u.username}** is unbanned from **{g.name}**.",
+            "error": "There was an error unbanning **{user.tag}**", 
             "10013": "Error 10013: The user asocied to the given ID couldn't have found.",
             "10026": "Error 10026: The user was not banned in the first place."
         },
@@ -273,7 +277,8 @@
                 "created": "Creation Date",
                 "joined": "Join Date",
                 "permissions": "Permissions",
-                "activity": "Present Activity"
+                "activity": "Present Activity",
+                "footer": "* If you wanna see those values as array add --details to this command"
             }
         }
     },
@@ -311,7 +316,7 @@
         "MANAGE_EMOJIS": "Manage Emojis"
     },
     "errors": {
-		"clean_up_error": "I'm sorry... i don't think I can clean up this mess either. You should use Dyno or a bot of those.",
+		"clean_up_failed": "I'm sorry... i don't think I can clean up this mess either. You should use MEE6 or a bot of those.",
 		"dm_closed": "i couldn't send you a private message, maybe you closed it or deactivated the private messages from this server.",
 		"invalid_channel": "i couldn't find {mention} channel",
         "invalid_duration": "please, send a valid duration time on format `n`d`n`h`n`m`n`s being `nd` n days, `nh` n hours, `nm` n minutes and `ns` n seconds. I require at least one time unit to valid the duration",
@@ -337,6 +342,7 @@
         },
         "modperms":{
             "add_role": "you don't have permission to add roles. ||You need: Manage roles||",
+            "admin": "this command is for admin use only. ||You need: Administrator||",
             "ban": "you don't have permission to ban people. ||You need: Ban Members||",
             "clean": "you don't have permission to clean up this chat. ||You need: Manage Messages||",
             "create_role": "you don't have permission to create roles. ||You need: Manage roles||",
@@ -348,11 +354,12 @@
 			"unban": "you don't have permission to remove bans. ||You need: Ban Members||"
         }, 
         "unknown": "an error has been thrown when this command was executed.",
-		"wrong_password": "Contraseña incorrecta."
+		"wrong_password": "Wrong password.\n||Hint: Use getpass command to get a password||"
     },
     "reason": "Command executed by {author}",
     "yes": "Yes",
     "no": "No",
     "cancelling": "Cancelling command...",
-    "canceled": "Command canceled."
+    "canceled": "Command canceled.",
+    "members": "human(s)"
 }

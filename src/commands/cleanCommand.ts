@@ -14,11 +14,11 @@ export class CleanCommand implements ArgCommand {
 	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
 		const n = parseInt(args[0])
 		if (isNaN(n)) {
-			l.reply('errors.NaN',msg,args[0])
+			l.reply('errors.NaN',args[0])
 		}
-		await msg.channel.bulkDelete(n, true).then((msgs)=>l.send('info.clean.success',msg,'' + msgs.size).then(m=>m.delete({timeout: 5000})).catch(e=>{
-		if(e.code == 50016) l.send('info.clean.50016',msg)
-		else l.reply('info.clean.error',msg,e)
+		await msg.channel.bulkDelete(n, true).then((msgs)=>l.send('info.clean.success','' + msgs.size).then(m=>m.delete({timeout: 5000})).catch(e=>{
+		if(e.code == 50016) l.send('info.clean.50016')
+		else l.reply('info.clean.error',e)
 		console.error(`Se intentó borrar ${n} mensajes pero no se pudo por ${e.stack}`)
 		})
 		)	
@@ -27,11 +27,11 @@ export class CleanCommand implements ArgCommand {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) {
-			l.reply('errors.botperms.clean',msg)
+			l.reply('errors.botperms.clean')
 			return false
 		}
 		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) {
-			l.reply('errors.modperms.clean',msg)
+			l.reply('errors.modperms.clean')
 			return false
 		}
 		return true

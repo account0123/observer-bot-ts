@@ -1,8 +1,11 @@
 import { SnowflakeUtil } from "discord.js"
+import { Lang } from "../commands/lang/Lang"
 
 export class Time {
 	private readonly date: Date | null
-	constructor(snowflake: string| Date| null){
+	private readonly lang: Lang
+	constructor(snowflake: string| Date| null, language:Lang){
+		this.lang = language
 		if (typeof snowflake == 'string') {
 			this.date = SnowflakeUtil.deconstruct(snowflake).date
 		}else{
@@ -14,6 +17,7 @@ export class Time {
 			return '*Fecha desconocida*'
 		}
 		// If english, pls use the official toString function from Date class
+		if(this.lang.locale === 'en') return new Date(this.date).toISOString()
 		return this.getDay(this.date.getDay()) + ', ' + this.date.getDate() + ' de ' + this.getMonth(this.date.getMonth()) + ' del ' + this.date.getFullYear() + ', a las ' + this.date.toTimeString()
 	}
 	private getDay(day:number):string{
