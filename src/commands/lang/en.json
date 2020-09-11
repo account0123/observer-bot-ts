@@ -327,7 +327,7 @@
         "lower_roles": "'i can't manage a role if that's higher or equal than my highest role",
 		"NaN": "whatever you typed is not a valid number. Or are you gonna tell me {value} is a number?",
         "no_dms": "I can't use this kind of commands in DMs!",
-        "not_enough_args": "i couldn't do anything due to lack of arguments. The right usage for that command is {prefix}{commandName} {usage}",
+        "not_enough_args": "i couldn't do anything due to lack of arguments. The right usage for that command is \n{prefix}{commandName} `{usage}`",
 		"no_hit": "Ok, 0 members.. i better clean",
         "botperms": {
             "add_role": "i don't have permission to add roles. ||Missing Permission: Manage roles||",

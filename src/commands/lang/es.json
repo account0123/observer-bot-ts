@@ -349,7 +349,7 @@
         "NaN": "lo que sea que ingresaste no es un número válido. ¿O me vas a decir que {value} es un número?",
         "no_dms": "este comando solo puede ejecutarse en servidores.",
         "no_hit": "Vaya, 0 miembros... mejor limpio",
-        "not_enough_args": "no pude hacer nada por falta de argumentos. El uso correcto del comando sería{prefix}{commandName} {usage}",
+        "not_enough_args": "no pude hacer nada por falta de argumentos. El uso correcto del comando sería\n{prefix}{commandName} `{usage}`",
         "botperms": {
             "add_role": "no tengo permiso para asignar roles. ||Permiso faltante: Gestionar roles||",
             "ban": "no tengo permiso para banear. ||Permiso faltante: Banear miembros||",

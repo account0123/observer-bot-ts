@@ -1,6 +1,6 @@
 {
   "name": "observer-bot",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "Discord bot written in Typescript and discord.js hosted on Heroku",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
     "start:dev": "nodemon build/index.js",
     "prebuild": "rimraf ./build",
     "build": "tsc",
+    "postbuild": "copyfiles -u 1 \"./src/**/*.json\" ./build/",
     "prestart": "npm run build",
     "start": "node build/index.js"
   },
@@ -42,6 +43,7 @@
     "@types/mysql": "^2.15.15",
     "@types/node": "^14.0.20",
     "aes-js": "^3.1.2",
+    "cpy-cli": "^3.1.1",
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",

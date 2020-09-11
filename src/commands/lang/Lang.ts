@@ -37,7 +37,7 @@ export class Lang {
 		this.locale = 'es'
 	}
 	send(code:string,...values:string[]):Promise<Message>{
-		const content = fs.readFileSync(`./${this.locale}.json`,{encoding: 'utf-8'})
+		const content = fs.readFileSync(`./build/commands/lang/${this.locale}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {
@@ -66,7 +66,7 @@ export class Lang {
 		return this.msg.channel.send(script)
 	}
 	reply(code:string,...values:string[]):Promise<Message>{
-		const content = fs.readFileSync(`./${this.locale}.json`,{encoding: 'utf-8'})
+		const content = fs.readFileSync(`./build/commands/lang/${this.locale}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {
@@ -95,7 +95,7 @@ export class Lang {
 		return this.msg.reply(script)
 	}
 	translate(code:string,...values:string[]):string{
-		const content = fs.readFileSync(`./${this.locale}.json`,{encoding: 'utf-8'})
+		const content = fs.readFileSync(`./build/commands/lang/${this.locale}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {

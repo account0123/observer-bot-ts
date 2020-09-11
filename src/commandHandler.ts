@@ -77,7 +77,7 @@ export default class CommandHandler {
         return
       }
       if (commandParser.args.length < matchedArgCommand.requiredArgs) {
-        lang.reply('errors.not_enough_args',CommandHandler.prefix,commandParser.parsedCommandName,matchedArgCommand.usage)
+        lang.reply('errors.not_enough_args',CommandHandler.prefix,commandParser.parsedCommandName,lang.translate(matchedArgCommand.usage))
         return
       }
       await matchedArgCommand.checkPermissions(message,lang).then(b=>{
