@@ -16,7 +16,7 @@ export class BanCommand implements ArgCommand {
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const mod = msg.guild!.member(msg.author)!
 		const mention = args.splice(0,1).toString()
-		const reason = args.join(' ')  || l.translate('info.ban.embed.default_reason')
+		const reason = args.join(' ')  || await l.translate('info.ban.embed.default_reason')
 		const member = MemberFinder.getMember(msg, mention);
 		if(!member){
 			l.reply('errors.invalid_member',mention)
@@ -26,13 +26,13 @@ export class BanCommand implements ArgCommand {
 			l.reply('errors.bot_lower')
 			return
 		}
-		await member.ban({days:1, reason: reason}).then(banned => {
+		await member.ban({days:1, reason: reason}).then(async banned => {
 			l.send('info.ban.success',banned.user.tag,msg.guild!.name)
 			const e = 'info.ban.embed.'
 			const embed = new MessageEmbed()
-				.setAuthor(l.translate(e+'title',banned.guild.name), msg.client.user!.avatarURL()!)
-				.setTitle(l.translate(e+'reason')).setDescription(reason)
-				.setFooter(l.translate(e+'footer') + `: ${mod.user.tag}`).setTimestamp();
+				.setAuthor(await l.translate(e+'title',banned.guild.name), msg.client.user!.avatarURL()!)
+				.setTitle(await l.translate(e+'reason')).setDescription(reason)
+				.setFooter(await l.translate(e+'footer') + `: ${mod.user.tag}`).setTimestamp();
 			banned.send(embed).catch(e=>console.error(`No se pudo enviar el mensaje a ${banned.displayName} por ${e}`));
 		}).catch(error => {
 			l.send('info.ban.error',member.user.tag,error)

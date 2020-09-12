@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed, Permissions } from "discord.js";
 import CommandHandler from "../commandHandler";
 import { Lang } from "./lang/Lang";
 
@@ -22,50 +22,49 @@ export class HelpCommand implements ArgCommand {
 		}else{
 			embed = this.createCommandList()
 		}
-		if (!embed) return
-		await msg.channel.send(embed.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!)).then(()=>console.log('Embed de ayuda enviado'))
+		await embed.then(e=>{if(!e)return;msg.channel.send(e.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!)).then(()=>console.log('Embed de ayuda enviado'))})
 	}
 	async checkPermissions(): Promise<boolean> {
 		return true
 	}
-	private createCommandList():MessageEmbed {
+	private async createCommandList():Promise<MessageEmbed> {
 		if(!this.lang) return new MessageEmbed()
 		const l = this.lang
 		const array = CommandHandler.commands.map(c=>`**${c.commandNames[0]}** - ${l.translate(c.shortdescription)}`).concat(CommandHandler.argCommands.map(c=>`**${c.commandNames[0]}** - ${l.translate(c.shortdescription)}`)).sort()
-		return new MessageEmbed().setTitle(l.translate('info.help.general.title')).setDescription(array).setFooter(l.translate('info.help.general.footer',CommandHandler.prefix)).setTimestamp()
+		return new MessageEmbed().setTitle(await l.translate('info.help.general.title')).setDescription(array).setFooter(await l.translate('info.help.general.footer',CommandHandler.prefix)).setTimestamp()
 	}
-	private createHelpEmbed(commandName:string):MessageEmbed | undefined {
+	private async createHelpEmbed(commandName:string):Promise<MessageEmbed | undefined> {
 		if(!this.lang) return new MessageEmbed()
 		const l = this.lang
 		const command = CommandHandler.commands.find(command => command.commandNames.includes(commandName.toLowerCase()))
 		const argCommand = CommandHandler.argCommands.find(command => command.commandNames.includes(commandName.toLowerCase()))
 		const about = 'info.help.about.'
 		if (command) {
-			return new MessageEmbed().setTitle(l.translate(about + 'title',command.commandNames.shift()!))
-			.setDescription(l.translate(command.fulldescription))
-			.addField(l.translate(about + 'aliases'),command.commandNames.join(', '),true)
-			.addField(l.translate(about + 'usage'),l.translate('info.help.default.no_usage'),true)
+			return new MessageEmbed().setTitle(await l.translate(about + 'title',command.commandNames.shift()!))
+			.setDescription(await l.translate(command.fulldescription))
+			.addField(await l.translate(about + 'aliases'),command.commandNames.join(', '),true)
+			.addField(await l.translate(about + 'usage'),l.translate('info.help.default.no_usage'),true)
 			.setTimestamp();
 		}
 		if (argCommand) {
 			const droute = 'info.help.default.'
-			const buildField = () => {
+			const buildField = async () => {
 				switch (argCommand.permission) {
 					case '':
-						return l.translate(droute + 'no_permissions')
+						return await l.translate(droute + 'no_permissions')
 					case 'Administrador':
-						return l.translate(droute + 'admin_exclusive')
+						return await l.translate(droute + 'admin_exclusive')
 					default:
-						return l.translate(droute + 'permission_or_admin',l.translate('permissions.' + argCommand.permission))
+						return await l.translate(droute + 'permission_or_admin',await l.translate('permissions.' + argCommand.permission))
 				}
 			}
 			const name = argCommand.commandNames.shift()!
-			const embed = new MessageEmbed().setTitle(l.translate(about + 'title',name)).setDescription(l.translate(argCommand.fulldescription))
-			if(argCommand.commandNames.length > 0) embed.addField(l.translate(about + 'alias'),argCommand.commandNames.join(', '),true)
-			embed.addField(l.translate(about + 'usage'),`${CommandHandler.prefix}${name} \`${l.translate(argCommand.usage)}\``,true)
-			.addField(l.translate(about + 'required'),buildField(),true)
-			.addField(l.translate(about + 'examples'),argCommand.examples.map(e=>`${CommandHandler.prefix}${name} \`${e}\``))
-			.setFooter(l.translate(about + 'footer'))
+			const embed = new MessageEmbed().setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,Permissions.DEFAULT.toString()))
+			if(argCommand.commandNames.length > 0) embed.addField(await l.translate(about + 'alias'),argCommand.commandNames.join(', '),true)
+			embed.addField(await l.translate(about + 'usage'),`${CommandHandler.prefix}${name} \`${await l.translate(argCommand.usage)}\``,true)
+			.addField(await l.translate(about + 'required'),buildField(),true)
+			.addField(await l.translate(about + 'examples'),argCommand.examples.map(e=>`${CommandHandler.prefix}${name} \`${e}\``))
+			.setFooter(await l.translate(about + 'footer'))
 			.setTimestamp();
 			return embed
 		}

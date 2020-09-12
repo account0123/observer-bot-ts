@@ -22,12 +22,12 @@ export class AvatarCommand implements ArgCommand {
 		if(!user){
 			l.reply('errors.invalid_user',mention)
 		}
-		const e = new MessageEmbed().setDescription(l.translate('info.avatar.user',user.username)).setImage(user.avatarURL({dynamic:true})!).setFooter(l.translate('info.avatar.footer'))
+		const e = new MessageEmbed().setDescription(await l.translate('info.avatar.user',user.username)).setImage(user.avatarURL({dynamic:true})!).setFooter(await l.translate('info.avatar.footer'))
 		msg.channel.send(e).then(()=> console.log(`Avatar de ${user.id} entergado`)).catch(err=>console.error(err))
 	}else{
 		const user = UserFinder.getUser(msg,msg.author.id)
 		if(!user) return
-		const e = new MessageEmbed().setDescription(l.translate('info.avatar.own',user.username)).setImage(user.avatarURL({dynamic:true})!).setFooter(l.translate('info.avatar.footer'))
+		const e = new MessageEmbed().setDescription(await l.translate('info.avatar.own',user.username)).setImage(user.avatarURL({dynamic:true})!).setFooter(await l.translate('info.avatar.footer'))
 		msg.channel.send(e).then(()=> console.log(`Avatar de ${user.id} entergado`)).catch(err=>console.error(err))
 	}}
 }

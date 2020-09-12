@@ -34,7 +34,7 @@ export class UnbanCommand implements ArgCommand {
       const encryptedBytes = utils.hex.toBytes(args[1])
       const decryptedBytes = new ModeOfOperation.cbc(GetPassCommand.key,GetPassCommand.iv).decrypt(encryptedBytes)
 		  if(utils.utf8.fromBytes(decryptedBytes) != msg.author.id.substring(0,16)){
-			  l.reply('errors.wrong_password')
+			  l.send('errors.wrong_password')
 			  return
 		  }
       this.unbaneveryone(g,manager,msg)
@@ -42,7 +42,7 @@ export class UnbanCommand implements ArgCommand {
     }
     const id = args.shift()
     if(!id) return
-    const reason = args.join(' ') || 'reason'
+    const reason = args.join(' ') || await l.translate('reason',msg.author.tag)
     await manager.unban(id,reason).then(u=>l.send('info.unban.success',u.tag,g.name)).catch(e=>{
       l.send('info.unban.error',id)
       if (e.code == 10013) l.send('info.unban.10013')
@@ -60,7 +60,7 @@ export class UnbanCommand implements ArgCommand {
     await g.fetchBans().then(banCollection=>{
       banCollection.each(async banInfo=>{
        const user = banInfo.user
-       await manager.unban(user,this.lang.translate('reason',msg.author.tag)).then(()=>count++).catch(e=>{
+       await manager.unban(user,await this.lang.translate('reason',msg.author.tag)).then(()=>count++).catch(e=>{
          errors++
          this.lang.send('info.unban.massunban-error',user.tag)
          console.error(`Se intentó desbanear a ${user.tag} pero ocurrió el siguiente error.`)

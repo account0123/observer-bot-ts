@@ -25,7 +25,7 @@ export class RemoveRoleCommand implements ArgCommand {
 			l.reply('errors.invalid_role',args.join(' '))
 			return
 		}
-		await member.roles.remove(role,l.translate('reason',msg.author.tag)).then(m=>l.send('info.removerole.success',role.name,member.displayName)).catch(e=>{
+		await member.roles.remove(role,await l.translate('reason',msg.author.tag)).then(m=>l.send('info.removerole.success',role.name,member.displayName)).catch(e=>{
 		l.reply('info.removerole.error',e)
 		console.error(`Se intento eliminar el rol **${role.name}** a ${member.displayName} pero falló por`)
 		console.error(e.stack)

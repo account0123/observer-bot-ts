@@ -61,7 +61,7 @@ export class AddRoleCommand implements ArgCommand {
 			l.send('info.addrole.massrole-success',role.name,'' + count)
 			return
 		}
-		await member.roles.add(role,l.translate('reason',msg.author.tag)).then(m=>l.send('info.addrole.success',role.name,m.displayName)).catch(e=>{l.reply('info.addrole.error',e)
+		await member.roles.add(role,await l.translate('reason',msg.author.tag)).then(m=>l.send('info.addrole.success',role.name,m.displayName)).catch(e=>{l.reply('info.addrole.error',e)
 		console.error(`Se intento añadir el rol **${role.name}** a ${member.displayName} pero falló por`)
 		console.error(e.stack)
 		})

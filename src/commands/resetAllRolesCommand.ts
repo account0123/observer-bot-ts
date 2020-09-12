@@ -52,7 +52,7 @@ export class ResetAllRolesCommand implements ArgCommand {
 		}
 		const restart = async () => {
 		  await asyncForEach(msg.guild!.roles.cache.array(), async (r:Role) => {
-			if (botposition > r.position) await r.setPermissions(perms,l.translate('reason',msg.author.tag))
+			if (botposition > r.position) await r.setPermissions(perms,await l.translate('reason',msg.author.tag))
 				.catch(e=>{
 					l.send('info.resetallroles.error')
 					console.error(e.stack)

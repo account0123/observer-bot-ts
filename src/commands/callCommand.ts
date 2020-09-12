@@ -13,7 +13,7 @@ export class CallCommand implements ArgCommand {
 	permission: string = 'MENTION_EVERYONE'
 	async run(msg: Message, L: Lang, args: string[]): Promise<void> {
 		const users = args.map(arg=>'<@'+arg+'>')
-		const begin = L.translate('info.call.start')
+		const begin = await L.translate('info.call.start')
 		const mention = users.join(', ')
 		const end = '***'
 		msg.channel.send(begin+mention+end)

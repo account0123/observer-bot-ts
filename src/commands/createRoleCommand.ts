@@ -17,22 +17,22 @@ export class CreateRoleCommand implements ArgCommand{
 		const arg = args.join(' ')
 		const data = createData(arg)
 		if (!data) {
-			msg.guild!.roles.create({data: {name: arg,permissions:Permissions.DEFAULT,color:'RANDOM'}, reason: l.translate('reason',msg.author.tag)}).then((role) => {
+			msg.guild!.roles.create({data: {name: arg,permissions:Permissions.DEFAULT,color:'RANDOM'}, reason: await l.translate('reason',msg.author.tag)}).then(async (role) => {
 				const e = 'info.createrole.embed.'
 				const embed = new MessageEmbed().setTitle(l.translate(e+'title')).setColor(role.color || 0)
 					.addFields(
-						{ name: l.translate(e+'name')       , value: role.name                 , inline: true},
-						{ name: l.translate(e+'color')      , value: role.hexColor             , inline: true},
-						{ name: l.translate(e+'position')   , value: role.position             , inline: true},
-						{ name: l.translate(e+'hoist')      , value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
-						{ name: l.translate(e+'mentionable'), value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
-						{ name: l.translate(e+'permissions'), value: role.permissions.toJSON()}
+						{ name: await l.translate(e+'name')       , value: role.name                 , inline: true},
+						{ name: 'Color'  						  , value: role.hexColor             , inline: true},
+						{ name: await l.translate(e+'position')   , value: role.position             , inline: true},
+						{ name: await l.translate(e+'hoist')      , value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
+						{ name: await l.translate(e+'mentionable'), value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
+						{ name: await l.translate(e+'permissions'), value: role.permissions.toJSON()}
 						)
 					.setTimestamp();
 				l.reply('info.createrole.success',role.toString())
 				msg.channel.send(embed)
 			}).catch( (error) => {
-				if(error.code === 30005) l.translate('info.createrole.30005')
+				if(error.code === 30005) l.send('info.createrole.30005')
 				else l.reply('errors.unknown')
 				console.error(error)
 			});
@@ -43,22 +43,24 @@ export class CreateRoleCommand implements ArgCommand{
 			return
 		}
 		console.log('Creando rol ' + data.toString())
-        // Ejecución
-        msg.guild!.roles.create({data: data, reason: l.translate('reason',msg.author.tag)}).then((role) => {
+		// Ejecución
+        msg.guild!.roles.create({data: data, reason: await l.translate('reason',msg.author.tag)}).then(async (role) => {
+			const isHoist = async ()=> role.hoist ? await l.translate('yes') : await l.translate('no')
+			const isMentionable = async ()=>role.mentionable?await l.translate('yes'):await l.translate('no')
 			const e = 'info.createrole.embed.'
 			const embed = new MessageEmbed().setTitle('Detalles:').setColor(data.color || 0)
 				.addFields(
-				{ name: l.translate(e+'name')       , value: role.name                 , inline: true},
-				{ name: l.translate(e+'color')      , value: role.hexColor             , inline: true},
-				{ name: l.translate(e+'position')   , value: role.position             , inline: true},
-				{ name: l.translate(e+'hoist')      , value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
-				{ name: l.translate(e+'mentionable'), value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
-				{ name: l.translate(e+'permissions'), value: role.permissions.toJSON()}
+				{ name: await l.translate(e+'name')       , value: role.name                 , inline: true},
+				{ name: 'Color'   						  , value: role.hexColor             , inline: true},
+				{ name: await l.translate(e+'position')   , value: role.position             , inline: true},
+				{ name: await l.translate(e+'hoist')      , value: await isHoist(), inline: true},
+				{ name: await l.translate(e+'mentionable'), value: await isMentionable(), inline: true},
+				{ name: await l.translate(e+'permissions'), value: role.permissions.toJSON()}
 				)
             	.setTimestamp();
             msg.reply(`el rol ${role} fue creado sin problemas.`, embed)
         }).catch( (error) => {
-			if(error.code === 30005) l.translate('info.createrole.30005')
+			if(error.code === 30005) l.send('info.createrole.30005')
 			else l.reply('errors.unknown')
 			console.error(error.stack)
 		});

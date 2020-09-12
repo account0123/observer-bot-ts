@@ -77,12 +77,12 @@ export default class CommandHandler {
         return
       }
       if (commandParser.args.length < matchedArgCommand.requiredArgs) {
-        lang.reply('errors.not_enough_args',CommandHandler.prefix,commandParser.parsedCommandName,lang.translate(matchedArgCommand.usage))
+        lang.reply('errors.not_enough_args',CommandHandler.prefix,commandParser.parsedCommandName,await lang.translate(matchedArgCommand.usage))
         return
       }
       await matchedArgCommand.checkPermissions(message,lang).then(b=>{
        if(b) matchedArgCommand.run(message,lang,commandParser.args).catch(error => {
-         lang.send('errors.unknown')
+         lang.reply('errors.unknown')
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
       })});
     }

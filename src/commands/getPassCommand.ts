@@ -34,7 +34,7 @@ export class GetPassCommand implements ArgCommand {
 			const textBytes = utils.utf8.toBytes(id);
 			const encryptedBytes = aesCbc.encrypt(textBytes);
 			const encryptedHex = utils.hex.fromBytes(encryptedBytes)
-			msg.author.send(l.translate('info.getpass.user',user.id,user.tag)).catch((e)=>{
+			msg.author.send(await l.translate('info.getpass.user',user.id,user.tag)).catch((e)=>{
 			if (e.code == 50007) l.reply('errors.dm_closed')
 			else l.reply('errors.unknown')
 			})

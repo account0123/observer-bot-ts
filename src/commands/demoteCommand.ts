@@ -29,7 +29,7 @@ export class DemoteCommand implements ArgCommand {
 			l.reply('info.demote.asbuddy')
 			return
 		}
-		await member.roles.remove(role,args.join(' ') || l.translate('reason',msg.author.tag)).then(m=>l.send('info.demote.success',role.name,member.displayName,m.roles.highest.name)).catch(e=>{
+		await member.roles.remove(role,args.join(' ') || await l.translate('reason',msg.author.tag)).then(m=>l.send('info.demote.success',msg.author.tag,member.user.tag,role.name,m.roles.highest.name)).catch(e=>{
 		l.send('info.demote.error',e)
 		console.error(`Se intento eliminar el rol **${role.name}** a ${member.displayName} pero falló por`)
 		console.error(e.stack)

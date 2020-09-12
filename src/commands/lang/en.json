@@ -170,6 +170,11 @@
                 "footer": "Kicked by {mod.user.tag}"
             }
         },
+        "lang":{
+            "description": "Language i'm using",
+            "fulldescription": "Shows or changes the language i type (`en` (english) & `es` (spanish) available)",
+            "usage": "[new language]"
+        },
         "removerole":{
             "description": "Removes from a given member the given role.",
             "usage": "<user> <role>",

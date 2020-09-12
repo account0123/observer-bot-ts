@@ -2,24 +2,25 @@ import ArgCommand from "../commandArgInterface";
 import { Message } from "discord.js";
 import { Connections } from "../../config/connections";
 import { Lang } from "./Lang";
+import { RowDataPacket } from "mysql2";
 
 export class LangCommand implements ArgCommand {
 	requiredArgs: number = 0
 	commandNames: string[] = ['lang']
 	guildExclusive: boolean = true
-	shortdescription: string = 'Idioma en el que escribo'
-	fulldescription: string = 'Muestra o cambia el idioma en el que escribo (solo `en` (inglés) y `es` (español) disponibles)'
-	usage: string = '[idioma a cambiar]'
+	shortdescription: string = 'info.lang.description'
+	fulldescription: string = 'info.lang.fulldescription'
+	usage: string = 'info.lang.usage'
 	examples: string[] = ['', 'es']
-	permission: string = 'Administrador'
+	permission: string = 'ADMINISTRATOR'
 	async run(msg: Message, l: Lang,args: string[]): Promise<void> {
 		const sql = Connections.db
 		const g = msg.guild!
 		if (args.length == 0) {
-			sql.query('SELECT language FROM guilds WHERE id=?',[g.id],function(err,rows,fields){
-				if(err) throw err
+			const [rows] = await sql.execute<RowDataPacket[]>('SELECT language FROM guilds WHERE id=?',[g.id])
 				if(rows.length === 0) {
-					msg.reply('el idioma actual es español')
+					sql.query('INSERT INTO guilds VALUES(?,?,?,?);',[g.id,g.name,'!!','en'])
+					msg.reply('the actual language is english.')
 					return
 				}
 				const row = rows[0]
@@ -31,16 +32,15 @@ export class LangCommand implements ArgCommand {
 						msg.reply('the actual language is english.')
 						break
 				}
-			});
 		}else{
 			const language = args[0].toLowerCase().trim()
 			switch (language) {
 				case 'es':
-					sql.query('UPDATE guilds SET language=\'es\'')
+					sql.query('UPDATE guilds SET language=\'es\' WHERE id=?',[g.id])
 					msg.channel.send('Ahora mi idioma es español, ostia.')
 					break;
 				case 'en':
-					sql.query('UPDATE guilds SET language=\'en\'')
+					sql.query('UPDATE guilds SET language=\'en\'WHERE id=?',[g.id])
 					msg.channel.send('My language is english rn, nice.')
 					break;
 			}

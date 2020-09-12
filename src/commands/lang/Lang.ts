@@ -1,8 +1,9 @@
 import fs from 'fs'
 import { Connections } from "../../config/connections";
 import { Message } from "discord.js";
+import { RowDataPacket } from 'mysql2';
 export class Lang {
-	locale:string
+	locale:string | undefined
 	private msg:Message
 	constructor(msg: Message,locale?:string){
 		this.msg = msg
@@ -16,27 +17,22 @@ export class Lang {
 					return
 			}
 		}
-		const guild_id = msg.guild!.id
-		Connections.db.query('SELECT language FROM guilds WHERE id=?',[guild_id],(err,rows,fields) =>{
-			if(err) throw err
-			if(rows.length === 0) {
-				console.error('COULDN\'T FIND GUILD ' + guild_id + ' PLEASE UPADTE')
-				this.locale = 'es'
-				return
-			}
-			const row = rows[0]
-			switch (row.lang) {
-				case 'es':
-					this.locale = 'es'
-					return
-				case 'en':
-					this.locale = 'en'
-					return
-			}
-		});
-		this.locale = 'es'
 	}
-	send(code:string,...values:string[]):Promise<Message>{
+	async request(guild_id: string):Promise<string> {
+		try {
+			const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT language FROM guilds WHERE id=?', [guild_id])
+			const row = rows[0]
+			return row.language
+		} catch (error) {
+			console.error('COULDN\'T FIND GUILD ' + guild_id + ' PLEASE UPADTE')
+			console.error('Continuando con idioma inglés')
+			return 'en'
+		}
+	}
+	async send(code:string,...values:string[]):Promise<Message>{
+		if (!this.locale) {
+			this.locale = await this.request(this.msg.guild!.id)
+		}
 		const content = fs.readFileSync(`./build/commands/lang/${this.locale}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
@@ -65,7 +61,10 @@ export class Lang {
 		}
 		return this.msg.channel.send(script)
 	}
-	reply(code:string,...values:string[]):Promise<Message>{
+	async reply(code:string,...values:string[]):Promise<Message>{
+		if (!this.locale) {
+			this.locale = await this.request(this.msg.guild!.id)
+		}
 		const content = fs.readFileSync(`./build/commands/lang/${this.locale}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
@@ -94,7 +93,10 @@ export class Lang {
 		}
 		return this.msg.reply(script)
 	}
-	translate(code:string,...values:string[]):string{
+	async translate(code:string,...values:string[]):Promise<string>{
+		if (!this.locale) {
+			this.locale = await this.request(this.msg.guild!.id)
+		}
 		const content = fs.readFileSync(`./build/commands/lang/${this.locale}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");

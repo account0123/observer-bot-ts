@@ -30,9 +30,9 @@ export class ActivitycheckCommand implements Command {
             }
         }
         const total:number = connected + idle + dnd + offline;
-        l.send('info.activity.success','' + connected,'' + total,'' + idle,'' + total,'' + dnd,'' + total,'' + offline,'' + total,this.isActive(offline,total,l))
+        l.send('info.activity.success','' + connected,'' + total,'' + idle,'' + total,'' + dnd,'' + total,'' + offline,'' + total,await this.isActive(offline, total, l))
   }
-  isActive(o:number,t:number, l: Lang): string{
-    return o > (t /4) ? l.translate('info.activity.dead') : l.translate('info.activity.alive')
+  async isActive(o:number,t:number, l: Lang): Promise<string>{
+    return o > (t /4) ? await l.translate('info.activity.dead') : await l.translate('info.activity.alive')
   }
 }

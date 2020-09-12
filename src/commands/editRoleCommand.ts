@@ -29,6 +29,7 @@ export class EditRoleCommand implements ArgCommand {
 		}
 		if (!role.editable) {
 			l.reply('errors.lower_role')
+			return
 		}
 		// A partir de aquí se asume al rol como existente
 
@@ -47,24 +48,24 @@ export class EditRoleCommand implements ArgCommand {
 				switch (target) {
 					case 'hoist':
 						if(action==='add'){
-							await role.setHoist(true,l.translate('reason',tag)).then(r=>l.reply('info.editrole.hoist_change.add_success',r.name)).catch(err=>{
+							await role.setHoist(true,await l.translate('reason',tag)).then(r=>l.reply('info.editrole.hoist_change.add_success',r.name)).catch(err=>{
 							l.reply('info.editrole.hoist_change.add_error')
 							console.error(`Se intentó poner el rol @${role.name} como destacado, pero falló por ${err}`)});
 						}
 						if(action==='remove'){
-							await role.setHoist(false,l.translate('reason',tag)).then(r=>l.reply('info.editrole.hoist_change.remove_success',r.name)).catch(err=>{
+							await role.setHoist(false,await l.translate('reason',tag)).then(r=>l.reply('info.editrole.hoist_change.remove_success',r.name)).catch(err=>{
 								l.reply('info.editrole.hoist_change.remove_error')
 								console.error(`Se intentó poner el rol @${role.name} como oculto, pero falló por ${err}`)});
 						}
 						return
 					case 'mentionable':
 						if(action==='add'){
-							await role.setMentionable(true,l.translate('reason',tag)).then(r=>l.reply('info.editrole.mentionable_change.add_success',r.name)).catch(err=>{
+							await role.setMentionable(true,await l.translate('reason',tag)).then(r=>l.reply('info.editrole.mentionable_change.add_success',r.name)).catch(err=>{
 								l.reply('info.editrole.mentionable_change.add_error')
 							console.error(`Se intentó poner el rol @${role.name} como mencionable, pero falló por ${err}`)});
 						}
 						if(action==='remove'){
-							await role.setMentionable(false,l.translate('reason',tag)).then(r=>l.reply('info.editrole.mentionable_change.remove_success',r.name)
+							await role.setMentionable(false,await l.translate('reason',tag)).then(r=>l.reply('info.editrole.mentionable_change.remove_success',r.name)
 							).catch(err=>{
 								l.reply('info.editrole.mentionable_change.remove_success')
 								console.error(`Se intentó poner el rol @${role.name} como no mencionable, pero falló por ${err}`)});
@@ -92,16 +93,16 @@ export class EditRoleCommand implements ArgCommand {
 						return
 				}
 			}else{
-				const value = propRegex[1].trim()
-				switch (propRegex[0].trim().toLowerCase()) {
+				const value = propRegex[2].trim()
+				switch (propRegex[1].trim().toLowerCase()) {
 					case 'name':
-						await role.setName(value,l.translate('reason',tag)).then(r=>l.reply('info.editrole.name_change.add_success',role.name,r.name)).catch(err=>{
+						await role.setName(value,await l.translate('reason',tag)).then(r=>l.reply('info.editrole.name_change.add_success',role.name,r.name)).catch(err=>{
 							l.reply('info.editrole.name_change.error',value)
 							console.error(`Se intentó renombrar al rol @${role.name} como @${value}, pero falló por ${err}`)
 						});
 						return
 					case 'color':
-						await role.setColor(value,l.translate('reason',tag)).then(r=>l.reply('info.editrole.color_change.success',r.name,r.color.toString(16))).catch(err=>{
+						await role.setColor(value,await l.translate('reason',tag)).then(r=>l.reply('info.editrole.color_change.success',r.name,r.color.toString(16))).catch(err=>{
 							l.reply('info.editrole.color_change.error',value)
 							console.error(`Se intentó poner el color ${value} al rol @${role.name}, pero falló por ${err}`)
 						});
@@ -112,7 +113,7 @@ export class EditRoleCommand implements ArgCommand {
 							l.reply('info.editrole.permissions_change.NaN')
 							return
 						}
-						await role.setPermissions(perms,l.translate('reason',tag)).then(r=>l.reply('info.editrole.permissions_change.success',r.name,r.permissions.toArray().join(', '))).catch(err=>{
+						await role.setPermissions(perms,await l.translate('reason',tag)).then(r=>l.reply('info.editrole.permissions_change.success',r.name,r.permissions.toArray().join(', '))).catch(err=>{
 							l.reply('info.editrole.permissions_change.error',value)
 							console.error(`Se intentó poner el set de permisos ${value} al rol @${role.name}, pero falló por ${err}`)})
 						return
@@ -126,7 +127,7 @@ export class EditRoleCommand implements ArgCommand {
 							l.reply('info.editrole.error_highposition')
 							return
 						}
-						await role.setPosition(position,{relative: false,reason:l.translate('reason',tag)}).then(r=>l.reply('info.editrole.position_change.success',r.name,r.position.toString())).catch(err=>{
+						await role.setPosition(position,{relative: false,reason: await l.translate('reason',tag)}).then(r=>l.reply('info.editrole.position_change.success',r.name,r.position.toString())).catch(err=>{
 							l.reply('info.editrole.position_change.error',value)
 							console.error(`Se intentó cambiar la posición a ${value} al rol @${role.name}, pero falló por ${err}`)});
 						return
@@ -141,7 +142,7 @@ export class EditRoleCommand implements ArgCommand {
 							l.reply('info.editrole.error_highposition')
 							return
 						}
-						await role.setPosition(pos_b,{relative: false,reason: l.translate('reason',tag)}).then(r=>l.reply('info.editrole.position_change.success',r.name,r.position.toString())).catch(err=>{
+						await role.setPosition(pos_b,{relative: false,reason: await  l.translate('reason',tag)}).then(r=>l.reply('info.editrole.position_change.success',r.name,r.position.toString())).catch(err=>{
 							l.reply('info.editrole.position_change.error',value)
 							console.error(`Se intentó cambiar la posición a ${value} al rol @${role.name}, pero falló por ${err}`)});
 						return
@@ -155,7 +156,7 @@ export class EditRoleCommand implements ArgCommand {
 						if (pos_c >= botposition) {
 							l.reply('info.editrole.error_highposition')
 						}
-						await role.setPosition(pos_c,{reason:l.translate('reason',tag)}).then(r=>l.reply('info.editrole.position_change.success',r.name,r.position.toString())).catch(err=>{
+						await role.setPosition(pos_c,{reason: await l.translate('reason',tag)}).then(r=>l.reply('info.editrole.position_change.success',r.name,r.position.toString())).catch(err=>{
 							l.reply('info.editrole.position_change.error',value)
 							console.error(`Se intentó cambiar la posición a ${value} al rol @${role.name}, pero falló por ${err}`)});
 						return
@@ -172,7 +173,7 @@ export class EditRoleCommand implements ArgCommand {
 			l.send('info.editrole.no_changes')
 			return
 		}
-		await role.edit(data,l.translate('reason',tag)).then(r=>l.send('info.editrole.success',r.name))
+		await role.edit(data,await l.translate('reason',tag)).then(r=>l.send('info.editrole.success',r.name))
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!

@@ -170,6 +170,11 @@
                 "footer": "Expulsado/a por {mod.user.tag}"
             }
         },
+        "lang": {
+            "description": "Idioma en el que escribo",
+            "fulldescription": "Muestra o cambia el idioma en el que escribo (solo `en` (inglés) y `es` (español) disponibles)",
+            "usage": "[idioma a cambiar]"
+        },
         "removerole":{
             "description": "Remueve al miembro indicado un rol.",
             "usage": "<usuario> <rol>",

@@ -20,16 +20,18 @@ export class RoleInfoCommand implements ArgCommand {
 			l.reply('errors.invalid_role',mention)
 			return
 		}
+		const isHoist = async ()=> role.hoist ? await l.translate('yes') : await l.translate('no')
+		const isMentionable = async ()=>role.mentionable?await l.translate('yes'):await l.translate('no')
 		const e = 'info.roleinfo.embed.'
-		const embed = new MessageEmbed().setTitle(l.translate(e+'title',role.name)).setColor(role.color || 0)
+		const embed = new MessageEmbed().setTitle(await l.translate(e+'title',role.name)).setColor(role.color || 0)
                 .addFields(
-					{ name: l.translate(e+'name')       , value: role.name,     inline: true},
-                    { name: l.translate(e+'color')      , value: role.hexColor, inline: true},
-					{ name: l.translate(e+'position')   , value: role.position, inline: true},
-					{ name: l.translate(e+'hoist')      , value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
-					{ name: l.translate(e+'mentionable'), value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
-					{ name: l.translate(e+'creation')   , value: new Time(role.id,l).toString()},
-					{ name: l.translate(e+'permissions'), value: role.permissions.toJSON()}
+					{ name: await l.translate(e+'name')       , value: role.name,     inline: true},
+                    { name: 'Color'      , value: role.hexColor, inline: true},
+					{ name: await l.translate(e+'position')   , value: role.position, inline: true},
+					{ name: await l.translate(e+'hoist')      , value: await isHoist(), inline: true},
+					{ name: await l.translate(e+'mentionable'), value: await isMentionable() , inline: true},
+					{ name: await l.translate(e+'creation')   , value: new Time(role.id,l).toString()},
+					{ name: await l.translate(e+'permissions'), value: role.permissions.toJSON()}
                     )
 				.setTimestamp();
 		await msg.channel.send(embed).catch(e=>console.error(e.stack))

@@ -15,7 +15,7 @@ export class KickCommand implements ArgCommand {
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const mod = msg.guild!.member(msg.author)!
 		const mention = args.splice(0,1).toString()
-		const reason = args.join(' ') || l.translate('info.kick.embed.default_reason')
+		const reason = args.join(' ') || await l.translate('info.kick.embed.default_reason')
 		const member = MemberFinder.getMember(msg, mention);
 		if(!member){
 			l.reply('errors.invalid_member',mention)
@@ -25,13 +25,13 @@ export class KickCommand implements ArgCommand {
 			l.reply('errors.lower_bot')
 			return
 		}
-		await member.kick(reason).then(kicked => {
+		await member.kick(reason).then(async kicked => {
 			const e = 'info.kick.embed.'
 			const embed = new MessageEmbed()
-				.setAuthor(l.translate(e+'title',msg.guild!.name), msg.client.user!.avatarURL()!)
-				.setTitle(l.translate(e+'reason'))
+				.setAuthor(await l.translate(e+'title',msg.guild!.name), msg.client.user!.avatarURL()!)
+				.setTitle(await l.translate(e+'reason'))
 				.setDescription(reason)
-				.setFooter(l.translate(e+'footer',mod.user.tag));
+				.setFooter(await l.translate(e+'footer',mod.user.tag));
 			kicked.send(embed);
 		});
 	}

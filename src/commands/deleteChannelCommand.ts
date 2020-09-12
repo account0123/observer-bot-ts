@@ -27,7 +27,7 @@ export class DeleteChannelCommand implements ArgCommand{
 			l.reply('errors.invalid_channel',args[0])
 			return
 		}
-		await channel.delete(l.translate('reason',msg.author.tag)).then((c:GuildChannel)=>l.send('info.deletechannel.success',c.name))
+		await channel.delete(await l.translate('reason',msg.author.tag)).then((c:GuildChannel)=>l.send('info.deletechannel.success',c.name))
 	}
 	async checkPermissions(msg: Message,l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
