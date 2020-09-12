@@ -30,7 +30,7 @@ export class HelpCommand implements ArgCommand {
 	private async createCommandList():Promise<MessageEmbed> {
 		if(!this.lang) return new MessageEmbed()
 		const l = this.lang
-		const array = CommandHandler.commands.map(c=>`**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`).concat(CommandHandler.argCommands.map(c=>`**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`)).sort()
+		const array = CommandHandler.commands.map(async c=>`**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`).concat(CommandHandler.argCommands.map(async c=>`**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`)).sort()
 		return new MessageEmbed().setTitle(await l.translate('info.help.general.title')).setDescription(array).setFooter(await l.translate('info.help.general.footer',CommandHandler.prefix)).setTimestamp()
 	}
 	private async createHelpEmbed(commandName:string):Promise<MessageEmbed | undefined> {
