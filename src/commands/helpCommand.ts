@@ -43,7 +43,7 @@ export class HelpCommand implements ArgCommand {
 			return new MessageEmbed().setTitle(await l.translate(about + 'title',command.commandNames.shift()!))
 			.setDescription(await l.translate(command.fulldescription))
 			.addField(await l.translate(about + 'aliases'),command.commandNames.join(', '),true)
-			.addField(await l.translate(about + 'usage'),l.translate('info.help.default.no_usage'),true)
+			.addField(await l.translate(about + 'usage'),await l.translate('info.help.default.no_usage'),true)
 			.setTimestamp();
 		}
 		if (argCommand) {
@@ -60,7 +60,7 @@ export class HelpCommand implements ArgCommand {
 			}
 			const name = argCommand.commandNames.shift()!
 			const embed = new MessageEmbed().setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,Permissions.DEFAULT.toString()))
-			if(argCommand.commandNames.length > 0) embed.addField(await l.translate(about + 'alias'),argCommand.commandNames.join(', '),true)
+			if(argCommand.commandNames.length > 0) embed.addField(await l.translate(about + 'aliases'),argCommand.commandNames.join(', '),true)
 			embed.addField(await l.translate(about + 'usage'),`${CommandHandler.prefix}${name} \`${await l.translate(argCommand.usage)}\``,true)
 			.addField(await l.translate(about + 'required'),buildField(),true)
 			.addField(await l.translate(about + 'examples'),argCommand.examples.map(e=>`${CommandHandler.prefix}${name} \`${e}\``))
