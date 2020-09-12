@@ -213,6 +213,7 @@
             "fulldescription": "Sends informations about this server.",
             "embed":{
                 "vanity": "Vanity Invite",
+                "name": "Nombre",
                 "region": "Region",
                 "owner": "Owner",
                 "members": "Members",

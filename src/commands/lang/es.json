@@ -213,6 +213,7 @@
             "fulldescription": "Envía información del servidor.",
             "embed":{
                 "vanity": "Invitación oficial",
+                "name": "Nombre",
                 "region": "Región",
                 "owner": "Dueño",
                 "members": "Miembros",

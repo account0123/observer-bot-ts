@@ -30,7 +30,7 @@ export class HelpCommand implements ArgCommand {
 	private async createCommandList():Promise<MessageEmbed> {
 		if(!this.lang) return new MessageEmbed()
 		const l = this.lang
-		const array = CommandHandler.commands.map(c=>`**${c.commandNames[0]}** - ${l.translate(c.shortdescription)}`).concat(CommandHandler.argCommands.map(c=>`**${c.commandNames[0]}** - ${l.translate(c.shortdescription)}`)).sort()
+		const array = CommandHandler.commands.map(c=>`**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`).concat(CommandHandler.argCommands.map(c=>`**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`)).sort()
 		return new MessageEmbed().setTitle(await l.translate('info.help.general.title')).setDescription(array).setFooter(await l.translate('info.help.general.footer',CommandHandler.prefix)).setTimestamp()
 	}
 	private async createHelpEmbed(commandName:string):Promise<MessageEmbed | undefined> {
@@ -62,8 +62,8 @@ export class HelpCommand implements ArgCommand {
 			const embed = new MessageEmbed().setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,Permissions.DEFAULT.toString()))
 			if(argCommand.commandNames.length > 0) embed.addField(await l.translate(about + 'aliases'),argCommand.commandNames.join(', '),true)
 			embed.addField(await l.translate(about + 'usage'),`${CommandHandler.prefix}${name} \`${await l.translate(argCommand.usage)}\``,true)
-			.addField(await l.translate(about + 'required'),buildField(),true)
-			.addField(await l.translate(about + 'examples'),argCommand.examples.map(e=>`${CommandHandler.prefix}${name} \`${e}\``))
+			.addField(await l.translate(about + 'required'),await buildField(),true)
+			.addField(await l.translate(about + 'examples'),argCommand.examples.map(e=>`${CommandHandler.prefix}${name} ${e}`))
 			.setFooter(await l.translate(about + 'footer'))
 			.setTimestamp();
 			return embed

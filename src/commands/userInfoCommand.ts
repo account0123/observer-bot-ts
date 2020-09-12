@@ -17,7 +17,7 @@ export class UserInfoCommand implements ArgCommand {
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		var embed: Promise<MessageEmbed>
 		const details = args.includes('--details')
-		if(args.length > 0){
+		if(args.length > 0 && !details){
 			const mention = args.join(' ').trim()
 			const member = MemberFinder.getMember(msg,mention)
 			if (!member) {
@@ -59,7 +59,7 @@ async function userEmbed(member:GuildMember, l: Lang, showDetails:boolean) {
 			{name: 'Roles*', value: member.roles.cache.size,inline: true},
 			{name: await l.translate(e+'permissions') + '*', value: member.permissions.bitfield.toString(16)},
 			{name: await l.translate(e+'activity'), value: activity,inline: true}
-		).setFooter(l.translate(e+'footer'));
+		).setFooter(await l.translate(e+'footer'));
 	}
 	return embed;
 }
