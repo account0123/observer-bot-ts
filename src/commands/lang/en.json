@@ -160,6 +160,17 @@
 				"admin_exclusive": "Administrator"
 			}			
         },
+        "info":{
+            "description": "Shows information about me.",
+            "embed": {
+                "title": "Everything about me",
+                "language": "Language",
+                "library": "Library",
+                "version": "Version",
+                "changelog": "Changelog",
+                "changes": "**28** new commands (help command to see them) because is my first release\nI can get users/members/roles from mention, ID or name\nI speak in english and spanish (lang command)\nSome commands like deletechannel require a password (getpass command)"
+            }
+        },
 	    "kick": {
             "description": "Kicks a member from the server with(out) any reason.",
             "usage": "<user> [reason]",

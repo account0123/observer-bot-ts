@@ -2,6 +2,7 @@ import ArgCommand from "./commandArgInterface";
 import { Message, MessageEmbed, Permissions } from "discord.js";
 import CommandHandler from "../commandHandler";
 import { Lang } from "./lang/Lang";
+import Command from "./commandInterface";
 
 export class HelpCommand implements ArgCommand {
 	permission: string = ''
@@ -10,7 +11,7 @@ export class HelpCommand implements ArgCommand {
 	commandNames: string[] = ['help', 'h']
 	requiredArgs: number = 0
 	examples: string[] = ['', 'createrole']
-	usage: string = '[comando]'
+	usage: string = 'info.help.usage'
 	guildExclusive: boolean = false
 	lang: Lang | undefined
 	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
@@ -22,7 +23,7 @@ export class HelpCommand implements ArgCommand {
 		}else{
 			embed = this.createCommandList()
 		}
-		await embed.then(e=>{if(!e)return;msg.channel.send(e.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!)).then(()=>console.log('Embed de ayuda enviado'))})
+		await embed.then(e=>{if(!e)return;msg.channel.send(e.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!).setColor(msg.guild!.member(bot)!.displayColor)).then(()=>console.log('Embed de ayuda enviado'))})
 	}
 	async checkPermissions(): Promise<boolean> {
 		return true
@@ -30,7 +31,8 @@ export class HelpCommand implements ArgCommand {
 	private async createCommandList():Promise<MessageEmbed> {
 		if(!this.lang) return new MessageEmbed()
 		const l = this.lang
-		const array = CommandHandler.commands.map(async c=>`**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`).concat(CommandHandler.argCommands.map(async c=>`**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`)).sort()
+		const createList = async (c:Command | ArgCommand) => `**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`;
+		const array = CommandHandler.commands.map(async c=>await createList(c)).concat(CommandHandler.argCommands.map(async c=>await createList(c))).sort()
 		return new MessageEmbed().setTitle(await l.translate('info.help.general.title')).setDescription(array).setFooter(await l.translate('info.help.general.footer',CommandHandler.prefix)).setTimestamp()
 	}
 	private async createHelpEmbed(commandName:string):Promise<MessageEmbed | undefined> {
@@ -63,7 +65,7 @@ export class HelpCommand implements ArgCommand {
 			if(argCommand.commandNames.length > 0) embed.addField(await l.translate(about + 'aliases'),argCommand.commandNames.join(', '),true)
 			embed.addField(await l.translate(about + 'usage'),`${CommandHandler.prefix}${name} \`${await l.translate(argCommand.usage)}\``,true)
 			.addField(await l.translate(about + 'required'),await buildField(),true)
-			.addField(await l.translate(about + 'examples'),argCommand.examples.map(e=>`${CommandHandler.prefix}${name} ${e}`))
+			.addField(await l.translate(about + 'examples'),argCommand.examples.map(e=>`${CommandHandler.prefix}${name} ${e}\n`))
 			.setFooter(await l.translate(about + 'footer'))
 			.setTimestamp();
 			return embed

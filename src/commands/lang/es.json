@@ -160,6 +160,17 @@
                 "admin_exclusive": "Administrador"
             }
         },
+        "info":{
+            "description": "Muestra información sobre mí.",
+            "embed": {
+                "title": "Todo sobre mí",
+                "language": "Lenguaje",
+                "library": "Librería",
+                "version": "Versión",
+                "changelog": "Cambios recientes",
+                "changes": "**28** comandos nuevos(comando help para verlos) por ser la primera versión\nDetecto usuarios/miembros/roles por mención, por ID y por nombre\nHablo en inglés y en español (comando lang)\nAlgunos comandos como deletechannel requieren una contraseña (comando getpass)"
+            }
+        },
         "kick": {
             "description": "Expulsa a un miembro del servidor por (ning)una razón.",
             "usage": "<usuario> [razón]",
