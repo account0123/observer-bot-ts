@@ -11,10 +11,10 @@ export class Lang {
 			switch(locale){
 				case '': case 'es':
 					this.locale = 'es'
-					return
+					break
 				case 'en': default:
 					this.locale = 'en'
-					return
+					break
 			}
 		}
 	}
