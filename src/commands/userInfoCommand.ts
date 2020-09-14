@@ -17,7 +17,7 @@ export class UserInfoCommand implements ArgCommand {
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		var embed: Promise<MessageEmbed>
 		const details = args.includes('--details')
-		if(args.length > 0 && !details){
+		if((args.length > 0 && !details) || args.length > 1){
 			const mention = args.join(' ').trim()
 			const member = MemberFinder.getMember(msg,mention)
 			if (!member) {
