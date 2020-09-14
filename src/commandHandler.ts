@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, CallCommand, LangCommand, InfoCommand } from "./commands";
+import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, CallCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
@@ -40,7 +40,9 @@ export default class CommandHandler {
       ResetAllRolesCommand,
       UserInfoCommand,
       CallCommand,
-      LangCommand
+      LangCommand,
+      FocusBanCommand,
+      FormatCommand
     ];
 
     CommandHandler.commands = commandClasses.map(commandClass => new commandClass());
@@ -96,6 +98,7 @@ export default class CommandHandler {
 
   /** Determines whether or not a message is a user command. */
   private isCommand(message: Message): boolean {
-    return message.content.startsWith(CommandHandler.prefix || '<@685645806069612621> ' || '<@!685645806069612621> ');
+    const c = message.content
+    return c.startsWith(CommandHandler.prefix) || c.startsWith('<@685645806069612621> ') || c.startsWith('<@!685645806069612621> ');
   }
 }

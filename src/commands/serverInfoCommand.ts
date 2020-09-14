@@ -30,8 +30,9 @@ export class ServerInfoCommand implements Command {
 		const mfa = async ()=> this.g.mfaLevel == 1 ? await l.translate('yes'): await l.translate('no')
 		if (url) serverEmbed.addField(await l.translate(e+'vanity'),url,true)
 		serverEmbed.addFields(
-			{name: await l.translate(e+'region'), value:this.g.region,inline: true},
-			{ name: await l.translate(e+'name'), value: this.g.owner!.user.tag, inline: true},
+			{ name: await l.translate(e+'name'), value: this.g.name, inline: true},
+			{ name: await l.translate(e+'region'), value:this.g.region,inline: true},
+			{ name: await l.translate(e+'owner'), value: this.g.owner!.user.tag, inline: true},
 			{ name: await l.translate(e+'members'), value: this.countMembers(), inline: true},
 			{ name: await l.translate(e+'channels'), value: `${channels} (${channelCount})`,inline: true},
 			{ name: await l.translate(e+'emojis'), value: this.g.emojis.cache.size, inline:true},

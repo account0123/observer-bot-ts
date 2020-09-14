@@ -129,6 +129,16 @@
             "success": "Mensaje editado.",
             "error": "Hubo un error al enviar el editsnipe."
         },
+        "focusban": {
+            "description": "Baneará a un miembro del servidor por (ning)una razón.",
+            "fulldescription": "Baneará al finalizar el tiempo dado (x**d**x**h**x**m**x**s**) a un miembro del servidor por (ning)una razón. Puede fallar si, por ejemplo, el miembro se sale.",
+            "success": "En **{time}** segundos, **{member}** será baneado por {reason}",
+            "default": "algo que hizo."
+        },
+        "format": {
+            "description": "Igual que `say`, pero puedes agregar [escapes](https://www.freeformatter.com/javascript-escape.html)",
+            "usage": "[texto a decir]"
+        },
         "getpass": {
             "description": "Envía tu clave de seguridad.",
             "fulldescription": "Envía a tu canal privado una clave de seguridad única para utilizar ciertos comandos administrativos.",
@@ -168,7 +178,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "**28** comandos nuevos(comando help para verlos) por ser la primera versión\nDetecto usuarios/miembros/roles por mención, por ID y por nombre\nHablo en inglés y en español (comando lang)\nAlgunos comandos como deletechannel requieren una contraseña (comando getpass)"
+                "changes": "**2** comandos nuevos (focusban & format)"
             }
         },
         "kick": {

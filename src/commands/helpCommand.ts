@@ -23,7 +23,11 @@ export class HelpCommand implements ArgCommand {
 		}else{
 			embed = this.createCommandList()
 		}
-		await embed.then(e=>{if(!e)return;msg.channel.send(e.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!).setColor(msg.guild!.member(bot)!.displayColor)).then(()=>console.log('Embed de ayuda enviado'))})
+		await embed.then(e=>{
+			if(!e) return
+			if(msg.guild) e.setColor(msg.guild!.member(bot)!.displayColor)
+			else e.setColor(0xffffff)
+			msg.channel.send(e.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!)).then(()=>console.log('Embed de ayuda enviado'))})
 	}
 	async checkPermissions(): Promise<boolean> {
 		return true
@@ -32,8 +36,8 @@ export class HelpCommand implements ArgCommand {
 		if(!this.lang) return new MessageEmbed()
 		const l = this.lang
 		const createList = async (c:Command | ArgCommand) => `**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`;
-		const array = CommandHandler.commands.map(async c=>await createList(c)).concat(CommandHandler.argCommands.map(async c=>await createList(c))).sort()
-		return new MessageEmbed().setTitle(await l.translate('info.help.general.title')).setDescription(array).setFooter(await l.translate('info.help.general.footer',CommandHandler.prefix)).setTimestamp()
+		const array = CommandHandler.commands.map(async c=>await createList(c)).concat(CommandHandler.argCommands.map(async c=>await createList(c)))
+		return new MessageEmbed().setTitle(await l.translate('info.help.general.title')).setDescription((await Promise.all(array)).sort()).setFooter(await l.translate('info.help.general.footer',CommandHandler.prefix)).setTimestamp()
 	}
 	private async createHelpEmbed(commandName:string):Promise<MessageEmbed | undefined> {
 		if(!this.lang) return new MessageEmbed()
@@ -61,7 +65,7 @@ export class HelpCommand implements ArgCommand {
 				}
 			}
 			const name = argCommand.commandNames.shift()!
-			const embed = new MessageEmbed().setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,Permissions.DEFAULT.toString()))
+			const embed = new MessageEmbed().setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,Permissions.DEFAULT.toString(16)))
 			if(argCommand.commandNames.length > 0) embed.addField(await l.translate(about + 'aliases'),argCommand.commandNames.join(', '),true)
 			embed.addField(await l.translate(about + 'usage'),`${CommandHandler.prefix}${name} \`${await l.translate(argCommand.usage)}\``,true)
 			.addField(await l.translate(about + 'required'),await buildField(),true)

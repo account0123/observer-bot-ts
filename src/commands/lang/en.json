@@ -129,6 +129,16 @@
             "success": "Edited message.",
             "error": "There was an error sending editsnipe."
         },
+        "focusban": {
+            "description": "Will ban a member from this server with(out) any reason.",
+            "fulldescription": "Will ban when the given time finishes (x**d**x**h**x**m**x**s**)to the given member from the guild by any or no reason.This can fail if, for example, the member leaves.",
+            "success": "After **{time}** seconds, **{member}** will be banned by {reason}",
+            "default": "something they did."
+        },
+        "format": {
+            "description": "Equal to `say`, but you can add [escapes](https://www.freeformatter.com/javascript-escape.html)",
+            "usage": "<text to say>"
+        },
         "getpass": {
             "description": "Sends you a security key",
             "fulldescription": "Sends to your private channel an unique security key to use some administrative commands.",
@@ -139,11 +149,11 @@
         },
 		"help": {
 			"description": "Help command.",
-            "fulldescription": "Show all commands list if there's not arguments, or detailed command help from the command argued",
+            "fulldescription": "Show all commands list if there's not arguments, or detailed command help from the given command",
             "usage": "[command]",
 			"general":{
 				"title": "All Observador's commands",
-				"footer": "Use {prefix}help `command` to see how to use a command"
+				"footer": "Use {prefix}help <command> to see how to use a command"
 			},
 			"about":{
 				"title": "{commandName} details",
@@ -168,7 +178,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "**28** new commands (help command to see them) because is my first release\nI can get users/members/roles from mention, ID or name\nI speak in english and spanish (lang command)\nSome commands like deletechannel require a password (getpass command)"
+                "changes": "**2** new commands (focusban & format)"
             }
         },
 	    "kick": {
@@ -224,7 +234,7 @@
             "fulldescription": "Sends informations about this server.",
             "embed":{
                 "vanity": "Vanity Invite",
-                "name": "Nombre",
+                "name": "Name",
                 "region": "Region",
                 "owner": "Owner",
                 "members": "Members",
@@ -371,6 +381,7 @@
 			"unban": "you don't have permission to remove bans. ||You need: Ban Members||"
         }, 
         "unknown": "an error has been thrown when this command was executed.",
+        "unsafe_integer": "This duration is so long that almost opens a hole in space-time... or almost overloaded my memory, is the same.",
 		"wrong_password": "Wrong password.\n||Hint: Use getpass command to get a password||"
     },
     "reason": "Command executed by {author}",
