@@ -7,6 +7,7 @@ export class Lang {
 	private msg:Message
 	constructor(msg: Message,locale?:string){
 		this.msg = msg
+		if(!msg.guild) {
 			switch(locale){
 				case '': case 'es':
 					this.locale = 'es'
@@ -15,6 +16,7 @@ export class Lang {
 					this.locale = 'en'
 					break
 			}
+		}
 	}
 	async request(guild_id: string):Promise<string> {
 		try {
