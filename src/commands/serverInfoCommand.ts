@@ -17,7 +17,7 @@ export class ServerInfoCommand implements Command {
 		const channelCount = this.countChannels();
 		const serverEmbed = new MessageEmbed()
 			.setColor('#D0D0D0')
-			.setAuthor(`${this.g.name} (ID: ${this.g.id})`,this.g.iconURL() || undefined);
+			.setAuthor(this.g.name,this.g.iconURL() || undefined);
 		const url = this.g.vanityURLCode
 		const v = 'info.serverinfo.verification.'
 		const intro = await l.translate(v+'intro')
@@ -28,15 +28,16 @@ export class ServerInfoCommand implements Command {
 		const phone = await l.translate(v+'phone')
 		const e = 'info.serverinfo.embed.'
 		const mfa = async ()=> this.g.mfaLevel == 1 ? await l.translate('yes'): await l.translate('no')
+		const buildSafety = ()=>{switch(this.g.verificationLevel){case 'NONE':return none;case 'LOW':return email;case 'MEDIUM':return email+fivemin;case 'HIGH':return email+fivemin+tenmin;case 'VERY_HIGH':return email+fivemin+tenmin+phone}};
 		if (url) serverEmbed.addField(await l.translate(e+'vanity'),url,true)
 		serverEmbed.addFields(
-			{ name: await l.translate(e+'name'), value: this.g.name, inline: true},
+			{ name: 'ID', value: this.g.id, inline: true},
 			{ name: await l.translate(e+'region'), value:this.g.region,inline: true},
 			{ name: await l.translate(e+'owner'), value: this.g.owner!.user.tag, inline: true},
-			{ name: await l.translate(e+'members'), value: this.countMembers(), inline: true},
-			{ name: await l.translate(e+'channels'), value: `${channels} (${channelCount})`,inline: true},
+			{ name: await l.translate(e+'members'), value: await this.countMembers(), inline: true},
+			{ name: await l.translate(e+'channels'), value: `${channels} (${await channelCount})`,inline: true},
 			{ name: await l.translate(e+'emojis'), value: this.g.emojis.cache.size, inline:true},
-			{name: await l.translate(e+'safety'), value: intro + (()=>{switch(this.g.verificationLevel){case 'NONE':return none;case 'LOW':return email;case 'MEDIUM':return email+fivemin;case 'HIGH':return email+fivemin+tenmin;case 'VERY_HIGH':return email+fivemin+tenmin+phone}}), inline:true},
+			{name: await l.translate(e+'safety'), value: intro + buildSafety(), inline:true},
 			{ name: await l.translate(e+'mfa'), value: await mfa(),inline: true},
 			{ name: await  l.translate(e+'boost'), value: this.g.premiumTier,inline: true},
 			{ name: await l.translate(e+'created'), value: new Time(this.g.id,l).toString()}
