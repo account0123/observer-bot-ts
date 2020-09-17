@@ -13,42 +13,37 @@ export class ServerInfoCommand implements Command {
 	async run(msg: Message, l: Lang): Promise<void> {
 		this.g = msg.guild!
 		this.lang = l
-		const channelsArray = this.g.channels.cache.array().length;
+		const channels = this.g.channels.cache.array().length;
 		const channelCount = this.countChannels();
 		const serverEmbed = new MessageEmbed()
 			.setColor('#D0D0D0')
 			.setAuthor(this.g.name,this.g.iconURL() || undefined);
 		const url = this.g.vanityURLCode
 		const v = 'info.serverinfo.verification.'
-		const [intro, none, email, fivemin, tenmin, phone] = await Promise.all([
-			l.translate(v+'intro'), l.translate(v+'none'), l.translate(v+'email'),
-			l.translate(v+'fivemin'), l.translate(v+'tenmin'), l.translate(v+'phone')
-		]);
-		const [yes, no] = await Promise.all([l.translate('yes'), l.translate('no')])
+		const intro = await l.translate(v+'intro')
+		const none = await l.translate(v+'none')
+		const email = await l.translate(v+'email')
+		const fivemin = await l.translate(v+'fivemin')
+		const tenmin = await l.translate(v+'tenmin')
+		const phone = await l.translate(v+'phone')
 		const e = 'info.serverinfo.embed.'
-		const hasMfa = ()=> this.g.mfaLevel == 1 ? yes : no
+		const mfa = async ()=> this.g.mfaLevel == 1 ? await l.translate('yes'): await l.translate('no')
 		const buildSafety = ()=>{switch(this.g.verificationLevel){case 'NONE':return none;case 'LOW':return email;case 'MEDIUM':return email+fivemin;case 'HIGH':return email+fivemin+tenmin;case 'VERY_HIGH':return email+fivemin+tenmin+phone}};
-		const [vanity, region, owner, members, channels, emojis, safety, mfa, boost, created, description] = 
-		await Promise.all([
-			l.translate(e+'vanity'), l.translate(e+'region'), l.translate(e+'owner'), l.translate(e+'members'),
-			l.translate(e+'channels'), l.translate(e+'emojis'), l.translate(e+'safety'), l.translate(e+'mfa'),
-			l.translate(e+'boost'), l.translate(e+'created'), l.translate(e+'description')
-		]);
-		if (url) serverEmbed.addField(vanity,url,true)
+		if (url) serverEmbed.addField(await l.translate(e+'vanity'),url,true)
 		serverEmbed.addFields(
 			{ name: 'ID', value: this.g.id, inline: true},
-			{ name: region, value:this.g.region,inline: true},
-			{ name: owner, value: this.g.owner!.toString(), inline: true},
-			{ name: members, value: await this.countMembers(), inline: true},
-			{ name: channels, value: `${channelsArray} (${await channelCount})`,inline: true},
-			{ name: emojis, value: this.g.emojis.cache.size, inline:true},
-			{ name: safety, value: intro + buildSafety(), inline:true},
-			{ name: mfa, value: hasMfa(),inline: true},
-			{ name: boost, value: this.g.premiumTier,inline: true},
-			{ name: created, value: new Time(this.g.id,l).toString()}
+			{ name: await l.translate(e+'region'), value:this.g.region,inline: true},
+			{ name: await l.translate(e+'owner'), value: this.g.owner!.user.tag, inline: true},
+			{ name: await l.translate(e+'members'), value: await this.countMembers(), inline: true},
+			{ name: await l.translate(e+'channels'), value: `${channels} (${await channelCount})`,inline: true},
+			{ name: await l.translate(e+'emojis'), value: this.g.emojis.cache.size, inline:true},
+			{name: await l.translate(e+'safety'), value: intro + buildSafety(), inline:true},
+			{ name: await l.translate(e+'mfa'), value: await mfa(),inline: true},
+			{ name: await  l.translate(e+'boost'), value: this.g.premiumTier,inline: true},
+			{ name: await l.translate(e+'created'), value: new Time(this.g.id,l).toString()}
 		);
 		const d = this.g.description
-		if (d) serverEmbed.addField(description,d)
+		if (d) serverEmbed.addField(await l.translate(e+'description'),d)
 		const icon = this.g.iconURL({dynamic: true})
 		if (icon) serverEmbed.setThumbnail(icon)
 		const banner = this.g.bannerURL()
@@ -83,6 +78,6 @@ export class ServerInfoCommand implements Command {
 		var bots = 0
 		const total = this.g.memberCount
 		this.g.members.cache.each(m=>{if(m.user.bot) bots++;else members++;});
-		return `${total} (${members} ${await this.lang.translate('members')}/${bots} bot(s))`
+		return `${total} (${members} ${await this.lang.translate('members')}/${bots} bots)`
 	}
 }
