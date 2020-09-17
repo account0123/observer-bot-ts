@@ -14,7 +14,7 @@ export class FormatCommand implements ArgCommand {
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const c = args.join(' ')
 		const f = c.replace('\\n','\n').replace('\\t','\t').replace('\\r','\r').replace('\\b','\b').replace('\\v','\v').replace('\\0','\0').replace('\\f','\f')
-		await msg.channel.send(f)
+		await msg.channel.send(f,{disableMentions: 'everyone'})
 	}
 	async checkPermissions(): Promise<boolean> {
 		return true

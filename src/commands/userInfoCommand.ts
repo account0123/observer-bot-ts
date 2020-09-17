@@ -41,7 +41,8 @@ async function userEmbed(member:GuildMember, l: Lang, showDetails:boolean) {
 	const joindate = new Time(member.joinedAt, l).toString()
 	const embed = new MessageEmbed()
 		.setAuthor(member.id, member.user.displayAvatarURL())
-		.setThumbnail(member.user.displayAvatarURL({dynamic:true}));
+		.setThumbnail(member.user.displayAvatarURL({dynamic:true}))
+		.setColor(member.displayColor)
 	if (member.nickname) embed.addField(await l.translate(e+'nickname'),member.nickname,true)
 	embed.addFields(
 			{name: await l.translate(e+'name'), value: member.user.username, inline:true},

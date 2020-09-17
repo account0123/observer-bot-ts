@@ -33,7 +33,7 @@ export class ServerInfoCommand implements Command {
 		serverEmbed.addFields(
 			{ name: 'ID', value: this.g.id, inline: true},
 			{ name: await l.translate(e+'region'), value:this.g.region,inline: true},
-			{ name: await l.translate(e+'owner'), value: this.g.owner!.user.tag, inline: true},
+			{ name: await l.translate(e+'owner'), value: this.g.owner!.toString(), inline: true},
 			{ name: await l.translate(e+'members'), value: await this.countMembers(), inline: true},
 			{ name: await l.translate(e+'channels'), value: `${channels} (${await channelCount})`,inline: true},
 			{ name: await l.translate(e+'emojis'), value: this.g.emojis.cache.size, inline:true},
@@ -78,6 +78,6 @@ export class ServerInfoCommand implements Command {
 		var bots = 0
 		const total = this.g.memberCount
 		this.g.members.cache.each(m=>{if(m.user.bot) bots++;else members++;});
-		return `${total} (${members} ${await this.lang.translate('members')}/${bots} bots)`
+		return `${total} (${members} ${await this.lang.translate('members')}/${bots} bot(s))`
 	}
 }

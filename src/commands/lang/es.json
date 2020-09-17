@@ -178,7 +178,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "**2** comandos nuevos (focusban & format)"
+                "changes": "Ahora los comandos `say` y `format` **no pueden** mencionar a todos\n\n`avatar` ahora muestra una foto o gif más grande\n\nEl embed de `roleinfo` ahora divide los permisos en 3 columnas (pero la información tardará más en enviarse)"
             }
         },
         "kick": {
@@ -216,8 +216,7 @@
             "fulldescription": "Envía la información del rol indicado.",
             "usage": "<rol>",
             "embed":{
-                "title": "Detalles de {id}",
-                "name": "Nombre",
+                "title": "Detalles de {role}",
                 "position": "Posición",
                 "permissions": "Permisos",
                 "creation": "Fecha de creación",
@@ -234,9 +233,8 @@
             "fulldescription": "Envía información del servidor.",
             "embed":{
                 "vanity": "Invitación oficial",
-                "name": "Nombre",
                 "region": "Región",
-                "owner": "Dueño",
+                "owner": "Dueño/a",
                 "members": "Miembros",
                 "channels": "Canales",
                 "emojis": "Emojis",
@@ -248,10 +246,10 @@
             },
             "channels":{
                 "categories": "{count} categorías",
-                "text: ": "{count} de texto",
-                "voice": "{count} de voz",
-                "news": "{count} de anuncios",
-                "store": "{count} de venta"
+                "text": "/{count} de texto",
+                "voice": "/{count} de voz",
+                "news": "/{count} de anuncios",
+                "store": "/{count} de venta"
             },
             "verification":{
                 "intro": "Cada usuario debe:\n",

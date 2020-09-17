@@ -33,9 +33,10 @@ export class FocusBanCommand implements ArgCommand {
 			l.send('errors.unsafe_integer')
 			return
 		}
-		const member = MemberFinder.getMember(msg,args.shift()!)
+		const mention = args.shift()!
+		const member = MemberFinder.getMember(msg,mention)
 		if(!member){
-			l.reply('errors.invalid_member')
+			l.reply('errors.invalid_member',mention)
 			return
 		}
 		await l.send('info.focusban.success','' + ms/1000,member.displayName,args.join(' ') || await l.translate('info.focusban.default'))

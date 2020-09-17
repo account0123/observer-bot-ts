@@ -178,7 +178,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "**2** new commands (focusban & format)"
+                "changes": "`say` & `format` **no longer** mention everyone\n\n`avatar` shows a bigger profile picture or gif\n\n`roleinfo` embed divides permissions until 3 columns (but information will be sended slower)"
             }
         },
 	    "kick": {
@@ -216,8 +216,7 @@
             "fulldescription": "Sends information about the given role.",
             "usage": "<role>",
             "embed":{
-                "title": "Detalls:",
-                "name": "Name",
+                "title": "Details about {role}",
                 "position": "Position",
                 "creation": "Creation Date",
                 "permissions": "Permissions",
@@ -234,7 +233,6 @@
             "fulldescription": "Sends informations about this server.",
             "embed":{
                 "vanity": "Vanity Invite",
-                "name": "Name",
                 "region": "Region",
                 "owner": "Owner",
                 "members": "Members",
@@ -248,7 +246,7 @@
             },
             "channels":{
                 "categories": "{count} categories",
-                "text: ": "{count} text channels",
+                "text": "{count} text channels",
                 "voice": "{count} voice channels",
                 "news": "{count} news channels",
                 "store": "{count} store channels"
