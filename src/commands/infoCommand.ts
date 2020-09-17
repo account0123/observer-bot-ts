@@ -7,17 +7,15 @@ export class InfoCommand implements Command {
 	guildExclusive: boolean = false
 	shortdescription: string = 'info.info.description'
 	fulldescription: string = this.shortdescription
-	private readonly version:string = 'v1.0.2'
+	private readonly version:string = 'v1.0.3'
 	async run(msg: Message, l: Lang): Promise<void> {
 		var color = 0xffffff
 		if(msg.guild) color = msg.guild.member(msg.client.user!)!.displayColor
 		const e = 'info.info.embed.'
-		const t = await l.translate(e+'title')
-		const language = await l.translate(e+'language')
-		const lib = await l.translate(e+'library')
-		const v = await l.translate(e+'version')
-		const c = await l.translate(e+'changelog')
-		const changes = await l.translate(e+'changes')
+		const [t, language, lib, v ,c, changes] = await Promise.all([
+			l.translate(e+'title'), l.translate(e+'language'), l.translate(e+'library'),
+			l.translate(e+'version'), l.translate(e+'changelog'), l.translate(e+'changes')
+		]);
 		const embed = new MessageEmbed().setTitle(t).addFields(
 			{ name: language, value: '*TypeScript/JavaScript*', inline: true},
 			{ name: lib		, value: 'discord.js'			  , inline: true},

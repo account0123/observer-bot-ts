@@ -1,6 +1,8 @@
 import { Message } from "discord.js";
+import { getNodeMajorVersion } from "typescript";
 import { BanCommand } from ".";
 import { MemberFinder } from "../util/MemberFinder";
+import { CancelCommand } from "./cancelCommand";
 import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
@@ -10,7 +12,7 @@ export class FocusBanCommand implements ArgCommand {
 	guildExclusive: boolean = true
 	shortdescription: string = 'info.focusban.description'
 	fulldescription: string = this.shortdescription
-	usage: string = '<tiempo> <usuario> [razón]'
+	usage: string = 'info.focusban.usage'
 	examples: string[] = ['10m @troll123 bye bye', '10s 123456789987654321 admin abuse']
 	permission: string = 'BAN_MEMBERS'
 	ban:BanCommand
@@ -29,7 +31,7 @@ export class FocusBanCommand implements ArgCommand {
 		if(hoursEx) h = parseInt(hoursEx[0])
 		if(daysEx) d = parseInt(daysEx[0])
 		const ms = d * 36000000 * 24 + h * 3600000 + m * 60000 +  s * 1000
-		if(ms > Number.MAX_SAFE_INTEGER){
+		if(ms > 2147483647){
 			l.send('errors.unsafe_integer')
 			return
 		}
@@ -40,9 +42,9 @@ export class FocusBanCommand implements ArgCommand {
 			return
 		}
 		await l.send('info.focusban.success','' + ms/1000,member.displayName,args.join(' ') || await l.translate('info.focusban.default'))
-		setTimeout(() => {
+		CancelCommand.timeout = setTimeout(() => {
 			this.ban.run(msg,l,[member.id].concat(args))
-		}, ms);
+		}, ms)
 	}
 	checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		return this.ban.checkPermissions(msg,l)

@@ -20,31 +20,43 @@ export class RoleInfoCommand implements ArgCommand {
 			l.reply('errors.invalid_role',mention)
 			return
 		}
-		const loading = msg.channel.send('`Cargando información de ' + role.name + '...`')
-		const isHoist = async ()=> role.hoist ? await l.translate('yes') : await l.translate('no')
-		const isMentionable = async ()=>role.mentionable?await l.translate('yes'):await l.translate('no')
+		const message = await msg.channel.send('`Cargando información de ' + role.name + '...`')
 		const e = 'info.roleinfo.embed.'
+		const [yes, no, title, position, hoist, mentionable, created, permissions,all] = await Promise.all([
+			l.translate('yes'),
+			l.translate('no'),
+			l.translate(e+'title',role.name),
+			l.translate(e+'position'),
+			l.translate(e+'hoist'),
+			l.translate(e+'mentionable'),
+			l.translate(e+'creation'),
+			l.translate(e+'permissions'),
+			l.translate(e+'all')
+		]);
+		const isHoist = async ()=> role.hoist ? yes : no
+		const isMentionable = async ()=>role.mentionable? yes : no
 
 		const dividePermissions = async () =>{
+			if(role.permissions.bitfield === Permissions.ALL) return [[all],['\u200B'],['\u200B']]
 			const a = await Promise.all(role.permissions.toArray().map(s=>l.translate('permissions.'+s)))
 			if(a.length < 12) return [a,['\u200B'],['\u200B']]
 			if(a.length < 23) return [a.slice(0,11),a.slice(11),['\u200B']]
 			return [a.slice(0,11),a.slice(11,22),a.slice(22)]
 		};
-		const permissions = await dividePermissions()
-		const embed = new MessageEmbed().setTitle(await l.translate(e+'title',role.name)).setColor(role.color || 0)
+		const permissionsvalue = await dividePermissions()
+		const embed = new MessageEmbed().setTitle(title).setColor(role.color || 0)
                 .addFields(
-					{ name: 'ID'   , value: role.id      , inline: true},
-                    { name: 'Color', value: role.hexColor, inline: true},
-					{ name: await l.translate(e+'position')   , value: role.position, inline: true},
-					{ name: await l.translate(e+'hoist')      , value: await isHoist(), inline: true},
-					{ name: await l.translate(e+'mentionable'), value: await isMentionable() , inline: true},
-					{ name: await l.translate(e+'creation')   , value: new Time(role.id,l).toString()},
-					{ name: `${await l.translate(e+'permissions')} (${role.permissions.toJSON().toString(16)})`, value:permissions[0],inline: true},
-					{name: '\u200B', value: permissions[1],inline: true},
-					{name: '\u200B', value: permissions[2],inline: true}
+					{ name: 'ID'       , value: role.id              , inline: true},
+                    { name: 'Color'    , value: role.hexColor        , inline: true},
+					{ name: position   , value: role.position        , inline: true},
+					{ name: hoist      , value: await isHoist()      , inline: true},
+					{ name: mentionable, value: await isMentionable(), inline: true},
+					{ name: created    , value: new Time(role.id,l).toString()},
+					{ name: `${permissions} (${role.permissions.toJSON().toString(16)})`, value:permissionsvalue[0],inline: true},
+					{ name: '\u200B'   , value: permissionsvalue[1]  ,inline: true},
+					{ name: '\u200B'   , value: permissionsvalue[2]  ,inline: true}
                     ).setTimestamp();
-		await msg.channel.send(embed).then(()=>loading.then(m=>m.delete())).catch(e=>console.error(e.stack))
+		await message.edit('',embed)
 	}
 	async checkPermissions(): Promise<boolean> {
 		return true

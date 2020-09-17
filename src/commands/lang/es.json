@@ -48,6 +48,10 @@
             "error": "No se pudieron borrar los mensajes por este error: `{error}`.",
             "50016": "Error 50016: Proveídos muy pocos o demasiados mensajes que borrar. Debe proveer a lo menos 2 y menos  que 100 mensajes a borrar."
         },
+        "code": {
+            "description": "Copia el mensaje usando [su ID](https://support.discord.com/hc/es/articles/206346498--D%C3%B3nde-puedo-encontrar-mi-ID-de-usuario-servidor-mensaje-) y lo pega en formato de código",
+            "usage": "<ID del mensaje>"
+        },
         "createrole":{
             "description": "Crea un rol con propiedades opcionales.",
             "fulldescription": "Crea un rol con todas sus propiedades opcionales en el formato de `propiedad:valor`, en el caso de crear un rol con solo el nombre el nuevo rol tendrá los permisos básicos({default}), sin color, ni será destacado, ni mencionable. Los propiedades son:\n`name` - El nombre del nuevo rol\n`color` - El color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a incluir en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n`hoist` - Si se incluye, el rol será visible en la lista de miembros\n`mentionable` - Si se incluye, el rol puede mencionarse por cualquier miembro. Útil para roles de ayuda.",
@@ -221,7 +225,8 @@
                 "permissions": "Permisos",
                 "creation": "Fecha de creación",
                 "hoist": "Destacado",
-                "mentionable": "Mentionable"
+                "mentionable": "Mentionable",
+                "all": "*Todos los permisos*"
             }
         },
         "say": {
@@ -367,6 +372,7 @@
         "invalid_channel": "no pude identificar el canal {mention}",
 		"invalid_duration": "por favor, ingrese una duración válida en el formato `n`d`n`h`n`m`n`s siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida.",
         "invalid_user": "no pude hacer nada porque el usuario {mention} no es válido",
+        "invalid_message": "la ID ({id}) no pudo resolverse como un mensaje de este canal, quizás fue borrado (?)",
         "invalid_member": "no pude hacer nada porque el miembro {mention} no es válido o ya no está aquí como miembro",
         "invalid_role": "no pude hacer nada porque el rol {mention} no es válido",
         "lower_bot": "no puedo hacerle nada a un miembro que esté a mi nivel o más arriba que yo",
@@ -400,7 +406,7 @@
             "unban": "no tienes permiso para quitar baneos. ||Necesitas: Banear miembros||"
         },
         "unknown": "hubo un error desconocido al ejecutar este comando :thinking:",
-        "unsafe_integer": "el número es tan largo que casi provoca un agujero en el espacio-tiempo... o casi sobrecargaste la memoria, que es casi lo mismo.",
+        "unsafe_integer": "La duración no puede ser mayor que `2147483` segundos.",
         "wrong_password": "Contraseña incorrecta.\n||Pista: Usa el comando getpass para obtener una contraseña||"
     },
     "reason": "Comando ejecutado por {author}",
@@ -408,5 +414,6 @@
     "no": "No",
     "cancelling": "Cancelando comando...",
     "canceled": "Comando cancelado.",
+    "nothing_to_cancel": "*No hay nada que cancelar.*",
     "members": "humano(s)"
 }

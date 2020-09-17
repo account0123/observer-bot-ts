@@ -48,6 +48,10 @@
             "error": "I couldn't clean up these messages due this error `{error}`",
             "50016": "Error 50016: Provided too few or too many messages to delete. Must provide at least 2 and fewer than 100 messages to delete"
         },
+        "code": {
+            "description": "Copies a message from the given [message ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-) and pastes it in code format",
+            "usage": "<message id>"
+        },
 		"createrole":{
             "description": "Creates a role with at least a property.",
             "fulldescription": "Creates a role with a name or at least a property in `property:value` format, if you create a role with only the name, it'll have basic permissions({default}), neither color, nor will be hosited nor mentionable. The properties are:\n`name` - Name of new role\n`color` - Color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - The sum of [the permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna include on the role [as hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n`hoist` - when included, the role will be visible in members list\n`mentionable` - When included, the role is mentionable by any member. Useful for helper roles.",
@@ -221,7 +225,8 @@
                 "creation": "Creation Date",
                 "permissions": "Permissions",
                 "hoist": "Hoisted",
-                "mentionable": "Mentionable"
+                "mentionable": "Mentionable",
+                "all": "*All permissions*"
             }
         },
         "say": {
@@ -346,6 +351,7 @@
 		"invalid_channel": "i couldn't find {mention} channel",
         "invalid_duration": "please, send a valid duration time on format `n`d`n`h`n`m`n`s being `nd` n days, `nh` n hours, `nm` n minutes and `ns` n seconds. I require at least one time unit to valid the duration",
         "invalid_user": "i couldn't do anyhing beacuse the user {mention} isn't valid",
+        "invalid_message": "the given ID (`{id}`) couldn't be resolved as a message from this channel, was it deleted?",
         "invalid_member": "i couldn't do anything because the member {mention} either isn't valid or isn't in the server anymore",
         "invalid_role": "i couldn't do anything because the role {mention} is invalid",
 		"lower_bot": "i can do nothing to a member who is at my position or higher",
@@ -387,5 +393,6 @@
     "no": "No",
     "cancelling": "Cancelling command...",
     "canceled": "Command canceled.",
+    "nothing_to_cancel": "*There's nothing to cancel.*",
     "members": "human(s)"
 }
