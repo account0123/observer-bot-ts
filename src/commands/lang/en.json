@@ -394,5 +394,6 @@
     "cancelling": "Cancelling command...",
     "canceled": "Command canceled.",
     "nothing_to_cancel": "*There's nothing to cancel.*",
+    "nice_try": "Nice try, but you can't cancel this future ban.",
     "members": "human(s)"
 }

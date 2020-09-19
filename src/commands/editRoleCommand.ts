@@ -27,8 +27,8 @@ export class EditRoleCommand implements ArgCommand {
 			l.reply('info.editrole.not_found',args[0])
 			return
 		}
-		if (!role.editable) {
-			l.reply('errors.lower_role')
+		if(botposition <= role.position){
+			l.reply('errors.lower_roles')
 			return
 		}
 		// A partir de aquí se asume al rol como existente

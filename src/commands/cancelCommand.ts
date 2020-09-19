@@ -9,6 +9,10 @@ export class CancelCommand implements Command {
 	fulldescription: string = this.shortdescription
 	static timeout: NodeJS.Timeout | undefined
 	async run(msg: Message, l: Lang): Promise<void> {
+		if(!msg.guild!.member(msg.author)!.hasPermission('BAN_MEMBERS')){
+			l.send('nice_try')
+			return
+		}
 		if(CancelCommand.timeout){
 			clearTimeout(CancelCommand.timeout)
 			CancelCommand.timeout = undefined
@@ -17,5 +21,4 @@ export class CancelCommand implements Command {
 			l.send('nothing_to_cancel')
 		}
 	}
-	
 }
