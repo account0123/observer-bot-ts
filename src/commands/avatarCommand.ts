@@ -29,13 +29,13 @@ export class AvatarCommand implements ArgCommand {
 			l.reply('errors.invalid_user',mention)
 			return
 		}
-		const e = new MessageEmbed().setDescription(await l.translate('info.avatar.user',user.username)).setImage(user.avatarURL({size:1024,dynamic:true})!).setFooter(await l.translate('info.avatar.footer'))
+		const e = new MessageEmbed().setDescription(await l.translate('info.avatar.user',user.username)).setImage(user.displayAvatarURL({size:1024,dynamic:true})).setFooter(await l.translate('info.avatar.footer'))
 		msg.channel.send(e).then(()=> console.log(`Avatar de ${user.id} entergado`)).catch(err=>console.error(err))
 	}else{
 		const user = UserFinder.getUser(msg,msg.author.id)
 		if(!user) return
 		const e = new MessageEmbed().setDescription(await l.translate('info.avatar.own',user.username))
-		.setImage(user.avatarURL({size:1024,dynamic:true})!).setFooter(await l.translate('info.avatar.footer'))
+		.setImage(user.displayAvatarURL({size:1024,dynamic:true})).setFooter(await l.translate('info.avatar.footer'))
 		msg.channel.send(e).then(()=> console.log(`Avatar de ${user.id} entergado`)).catch(err=>console.error(err))
 	}}
 }
