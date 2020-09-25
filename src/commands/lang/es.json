@@ -139,6 +139,12 @@
             "success": "En **{time}** segundos, **{member}** será baneado por {reason}",
             "default": "algo que hizo."
         },
+        "focuskick": {
+            "description": "Expulsará a un miembro del servidor por (ning)una razón.",
+            "fulldescription": "Expulsará al finalizar el tiempo dado (x**d**x**h**x**m**x**s**) a un miembro del servidor por (ning)una razón. Puede fallar si, por ejemplo, el miembro se sale.",
+            "success": "En **{time}** segundos, **{member}** será expulsado por {reason}",
+            "default": "algo que hizo."
+        },
         "format": {
             "description": "Igual que `say`, pero puedes agregar [escapes](https://www.freeformatter.com/javascript-escape.html)",
             "usage": "[texto a decir]"
