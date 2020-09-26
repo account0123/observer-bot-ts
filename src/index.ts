@@ -38,6 +38,6 @@ client.on('messageDelete',(deleted: Message| PartialMessage)=>sniper.saveDeleted
 client.on('messageUpdate',(old: Message | PartialMessage)=>sniper.saveEditedMessage(old))
 client.on("error", e => { console.error("Discord client error!", e); });
 
-client.login('NzM1OTU4NDM5ODI1NjM3Mzc2.Xxn0tQ.POppqpbF3fSYFM0Y90Kc025JIoc').catch(e=>console.error(e));
+client.login(DISCORD_TOKEN).catch(e=>console.error(e));
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}!`));
