@@ -38,12 +38,12 @@ export class Lang {
 		const arr = code.split(".");
         while(arr.length > 0) {
             let arg:string = arr.shift()!
-            obj = obj[arg];
-        }
-        if(!obj){
-            const e = new Error(`No se ha encontrado ${code} en el json`);
-            e.name = 'Busqueda fallida';
-            throw e;
+			obj = obj[arg];
+			if(!obj){
+				const e = new Error(`No se ha encontrado ${code} en el json`);
+				e.name = 'Busqueda fallida';
+				throw e;
+			}
         }
 		var script:string = obj
 		const data = script.match(/\{[\w.]+\}/gm)

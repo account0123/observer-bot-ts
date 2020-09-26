@@ -3,7 +3,7 @@ import { CancelCommand, KickCommand } from "."
 import { MemberFinder } from "../util/MemberFinder"
 import { Lang } from "./lang/Lang"
 
-export class FocusKick {
+export class FocusKickCommand {
 	requiredArgs: number = 2
 	commandNames: string[] = ['focuskick','fk']
 	guildExclusive: boolean = true
