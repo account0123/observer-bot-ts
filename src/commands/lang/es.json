@@ -35,6 +35,9 @@
                 "default_reason": "*No hubo una razón específica, pero seguro fue por algo malo*"
             }
         },
+        "cancel":{
+            "description": "Cancela cualquier comando de foco."
+        },
         "call":{
             "description": "Menciona en masa usando IDs.",
             "fulldescription": "Utiliza la herramienta de búsqueda de usuarios para mencionarlos en masa, asumiendo que cada ID/nombre/tag está separado por espacios",

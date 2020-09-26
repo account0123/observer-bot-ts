@@ -35,6 +35,9 @@
                 "default_reason": "*There wasn't a specific reason, but you had to do something really bad*"
             }
         },
+        "cancel": {
+            "description": "Cancels any focus command."
+        },
         "call":{
             "description": "Massmentions using IDs/tags/names.",
             "fulldescription": "Uses my user search tool to mention them in a message, assuming each ID/name/tag is separated by spaces",
