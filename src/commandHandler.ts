@@ -60,8 +60,6 @@ export default class CommandHandler {
       return;
     }
 
-    console.log(`Comando '${this.echoMessage(message)}' ejecutado por ${message.author.tag}`);
-
     const commandParser = new CommandParser(message, CommandHandler.prefix);
 
     const matchedCommand = CommandHandler.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
@@ -93,6 +91,7 @@ export default class CommandHandler {
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
       })});
     }
+    console.log(`Comando '${this.echoMessage(message)}' ejecutado por ${message.author.tag}`);
   }
 
   /** Sends back the message content after removing the prefix. */

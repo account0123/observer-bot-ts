@@ -24,7 +24,7 @@
             "footer": "¡Que hermoso sujeto!"
         },
         "ban":{
-            "description": "Banea a un miembro del servidor por (ning)una razón.",
+            "description": "Banea a un miembro por (ning)una razón.",
             "usage": "<usuario> [razón]",
             "success": "**{member}** ha sido baneado de **{guild}**.",
             "error": "No pude banear a **{member}** por el error `{error}`.",
@@ -36,7 +36,14 @@
             }
         },
         "cancel":{
-            "description": "Cancela cualquier comando de foco."
+            "description": "Cancela cualquier comando de foco.",
+            "success": "{command} cancelado para `{user}`. Te salvaste.",
+            "timeout": "Se acabó el tiempo.",
+            "embed": {
+                "user": "ID usuario",
+                "command": "Comando",
+                "reason": "Razón"
+            }
         },
         "call":{
             "description": "Menciona en masa usando IDs.",
@@ -78,7 +85,7 @@
             "success": "Canal **#{channel}** borrado sin problemas."
         },
         "demote":{
-            "description": "Degrada al miembro indicado por(ning)una razón.",
+            "description": "Degrada al miembro indicado por (ning)una razón.",
             "usage": "<usuario> [razón]",
             "asbuddy": "no puedes degradar a un compañero o superior, que malo.",
             "success": "**{author}** ha degradado a **{member}**, ahora ya no es **{role}**. Ahora es **{member.highest}.**",
@@ -130,26 +137,28 @@
             }
         },
         "editsnipe":{
-            "description": "Muestra el mensaje editado.",
+            "description": "Muestra el útimo mensaje editado.",
             "fulldescription": "Muestra el último mensaje editado de este canal.",
             "no_msg": "*No hay mensajes que mostrar*",
             "success": "Mensaje editado.",
             "error": "Hubo un error al enviar el editsnipe."
         },
         "focusban": {
-            "description": "Baneará a un miembro del servidor por (ning)una razón.",
+            "description": "Baneará por (ning)una razón.",
+            "usage": "<duración> <usuario> [razón]",
             "fulldescription": "Baneará al finalizar el tiempo dado (x**d**x**h**x**m**x**s**) a un miembro del servidor por (ning)una razón. Puede fallar si, por ejemplo, el miembro se sale.",
             "success": "En **{time}** segundos, **{member}** será baneado por {reason}",
             "default": "algo que hizo."
         },
         "focuskick": {
-            "description": "Expulsará a un miembro del servidor por (ning)una razón.",
+            "description": "Expulsará por (ning)una razón.",
+            "usage": "<duración> <usuario> [razón]",
             "fulldescription": "Expulsará al finalizar el tiempo dado (x**d**x**h**x**m**x**s**) a un miembro del servidor por (ning)una razón. Puede fallar si, por ejemplo, el miembro se sale.",
             "success": "En **{time}** segundos, **{member}** será expulsado por {reason}",
             "default": "algo que hizo."
         },
         "format": {
-            "description": "Igual que `say`, pero puedes agregar [escapes](https://www.freeformatter.com/javascript-escape.html)",
+            "description": "`say` con [escapes](https://www.freeformatter.com/javascript-escape.html) y menciones",
             "usage": "[texto a decir]"
         },
         "getpass": {
@@ -275,7 +284,7 @@
             }
         },
         "snipe":{
-            "description": "Muestra el mensa je borrado.",
+            "description": "Muestra el último mensaje borrado.",
             "fulldescription": "Muestra el último mensaje borrado de este canal.",
             "no_msg": "*No hay mensajes que mostrar*",
             "success": "Mensaje borrado.",
@@ -327,7 +336,7 @@
             "10026": "Error 10026: El usuario no estaba baneado en primer lugar."
         },
         "userinfo":{
-            "description": "Muestra info de un miembro.",
+            "description": "Información de un miembro.",
             "fulldescription": "Muestra toda la información del miembro indicado o de ti mismo si no hay parámetros.",
             "usage": "[usuario]",
             "embed":{
@@ -378,6 +387,7 @@
     "errors": {
         "clean_up_failed": "Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Chocolat o algún bot de esos.",
         "dm_closed": "no pude enviarte un mensaje privado, quizás lo tienes cerrado o tienes desactivado los mensajes privados desde este servidor.",
+        "enough_timers": "Tengo demasiados focos donde concentrarme. No puedo con tanto, que sea un bot no significa que merezca estos tratos.",
         "invalid_channel": "no pude identificar el canal {mention}",
 		"invalid_duration": "por favor, ingrese una duración válida en el formato `n`d`n`h`n`m`n`s siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida.",
         "invalid_user": "no pude hacer nada porque el usuario {mention} no es válido",
@@ -424,6 +434,6 @@
     "cancelling": "Cancelando comando...",
     "canceled": "Comando cancelado.",
     "nothing_to_cancel": "*No hay nada que cancelar.*",
-    "nice_try": "Buen intento, pero no puedes cancelar este futuro ban.",
+    "nice_try": "Buen intento, pero no puedes cancelar este futuro {command}.",
     "members": "humano(s)"
 }

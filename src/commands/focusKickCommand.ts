@@ -38,10 +38,16 @@ export class FocusKickCommand {
 			l.reply('errors.invalid_member',mention)
 			return
 		}
-		await l.send('info.focuskick.success','' + ms/1000,member.displayName,args.join(' ') || await l.translate('info.focusban.default'))
-		CancelCommand.timeout = setTimeout(() => {
+		if(CancelCommand.timers.length > 9){
+			l.reply('errors.enough_timers')
+			return
+		}
+		const reason = args.join(' ') || await l.translate('info.focusban.default')
+		await l.send('info.focuskick.success','' + ms/1000,member.displayName, reason)
+		const timeout = setTimeout(() => {
 			this.kick.run(msg,l,[member.id].concat(args))
-		}, ms)
+		}, ms);
+		CancelCommand.timers.push({user: member.id, command: 'Kick', timeout, reason})
 	}
 	checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		return this.kick.checkPermissions(msg,l)

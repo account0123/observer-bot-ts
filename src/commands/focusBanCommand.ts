@@ -1,5 +1,4 @@
 import { Message } from "discord.js";
-import { getNodeMajorVersion } from "typescript";
 import { BanCommand } from ".";
 import { MemberFinder } from "../util/MemberFinder";
 import { CancelCommand } from "./cancelCommand";
@@ -41,10 +40,16 @@ export class FocusBanCommand implements ArgCommand {
 			l.reply('errors.invalid_member',mention)
 			return
 		}
-		await l.send('info.focusban.success','' + ms/1000,member.displayName,args.join(' ') || await l.translate('info.focusban.default'))
-		CancelCommand.timeout = setTimeout(() => {
+		if(CancelCommand.timers.length > 9){
+			l.reply('errors.enough_timers')
+			return
+		}
+		const reason = args.join(' ') || await l.translate('info.focusban.default')
+		await l.send('info.focusban.success','' + ms/1000,member.displayName, reason)
+		const timeout = setTimeout(() => {
 			this.ban.run(msg,l,[member.id].concat(args))
-		}, ms)
+		}, ms);
+		CancelCommand.timers.push({user: member.id, timeout, command: 'Ban', reason});
 	}
 	checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		return this.ban.checkPermissions(msg,l)

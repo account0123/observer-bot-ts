@@ -36,7 +36,14 @@
             }
         },
         "cancel": {
-            "description": "Cancels any focus command."
+            "description": "Cancels any focus command.",
+            "success": "{command} canceled for `{user}`. You were saved.",
+            "timeout": "Time is over.",
+            "embed": {
+                "user": "User ID",
+                "command": "Command",
+                "reason": "Reason"
+            }
         },
         "call":{
             "description": "Massmentions using IDs/tags/names.",
@@ -138,12 +145,14 @@
         },
         "focusban": {
             "description": "Will ban a member from this server with(out) any reason.",
+            "usage": "<time> <user> [reason]",
             "fulldescription": "Will ban when the given time finishes (x**d**x**h**x**m**x**s**)to the given member from the guild by any or no reason.This can fail if, for example, the member leaves.",
             "success": "After **{time}** seconds, **{member}** will be banned by {reason}",
             "default": "something they did."
         },
         "focuskick": {
             "description": "Will kcik a member from this server with(out) any reason.",
+            "usage": "<time> <user> [reason]",
             "fulldescription": "Will kick when the given time finishes (x**d**x**h**x**m**x**s**)to the given member from the guild by any or no reason.This can fail if, for example, the member leaves.",
             "success": "After **{time}** seconds, **{member}** will be kicked by {reason}",
             "default": "something they did."
@@ -356,7 +365,8 @@
     },
     "errors": {
 		"clean_up_failed": "I'm sorry... i don't think I can clean up this mess either. You should use MEE6 or a bot of those.",
-		"dm_closed": "i couldn't send you a private message, maybe you closed it or deactivated the private messages from this server.",
+        "dm_closed": "i couldn't send you a private message, maybe you closed it or deactivated the private messages from this server.",
+        "enough_timers": "I have to focus on many punishment. I can't support it, I'm a bot but it doesn't mean I deserve these treatments.",
 		"invalid_channel": "i couldn't find {mention} channel",
         "invalid_duration": "please, send a valid duration time on format `n`d`n`h`n`m`n`s being `nd` n days, `nh` n hours, `nm` n minutes and `ns` n seconds. I require at least one time unit to valid the duration",
         "invalid_user": "i couldn't do anyhing beacuse the user {mention} isn't valid",
@@ -403,6 +413,6 @@
     "cancelling": "Cancelling command...",
     "canceled": "Command canceled.",
     "nothing_to_cancel": "*There's nothing to cancel.*",
-    "nice_try": "Nice try, but you can't cancel this future ban.",
+    "nice_try": "Nice try, but you can't cancel this future {command}.",
     "members": "human(s)"
 }

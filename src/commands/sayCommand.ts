@@ -16,7 +16,7 @@ export class SayCommand implements ArgCommand {
 	guildExclusive: boolean = false
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		await msg.channel.send(args.join(' '),{disableMentions: 'everyone'})
-		await msg.delete({timeout: 800,reason: await l.translate('reason',msg.author.tag)})
+		await msg.delete({timeout: 300,reason: await l.translate('reason',msg.author.tag)})
 	}
 	
 }
