@@ -200,7 +200,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "`say` & `format` **no longer** mention everyone\n\n`avatar` shows a bigger profile picture or gif\n\n`roleinfo` embed divides permissions until 3 columns (but information will be sended slower)"
+                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number."
             }
         },
 	    "kick": {

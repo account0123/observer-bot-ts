@@ -200,7 +200,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Ahora los comandos `say` y `format` **no pueden** mencionar a todos\n\n`avatar` ahora muestra una foto o gif más grande\n\nEl embed de `roleinfo` ahora divide los permisos en 3 columnas (pero la información tardará más en enviarse)"
+                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente."
             }
         },
         "kick": {
