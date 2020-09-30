@@ -1,4 +1,6 @@
+import { match } from "assert";
 import { DMChannel, Message, Permissions, Snowflake, TextChannel, Webhook } from "discord.js";
+import { UserFinder } from "../util/UserFinder";
 import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
@@ -14,7 +16,7 @@ export class FormatCommand implements ArgCommand {
 	static webhooks: Map<Snowflake,Webhook>
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const c = args.join(' ')
-		const f = c.replace('\\n','\n').replace('\\t','\t').replace('\\r','\r').replace('\\b','\b').replace('\\v','\v').replace('\\0','\0').replace('\\f','\f')
+		var f = c.replace('\\n','\n').replace('\\t','\t').replace('\\r','\r').replace('\\b','\b').replace('\\v','\v').replace('\\0','\0').replace('\\f','\f')
 		const bot = msg.guild!.member(msg.client.user!)!
 		const user = msg.author
 		if (msg.channel instanceof DMChannel) {
@@ -27,8 +29,24 @@ export class FormatCommand implements ArgCommand {
 						avatar: 'https://i.imgur.com/n1MdeHO.png',
 					});
 					FormatCommand.webhooks.set(msg.channel.id,webhook)
-				}else await msg.channel.send(f,{allowedMentions: {parse: ['users']}})
-				return
+				}else{
+					const matches = f.match(/@\S+/)
+					if(matches){
+						let i = 0
+						for (const match of matches) {
+							const user = UserFinder.getUser(msg,match)
+							if(!user){
+								i++
+								continue
+							}
+							f = f.replace(match[i],user.username)
+							i++
+						}
+					}
+					await msg.channel.send(f,{allowedMentions: {parse: ['users']}})
+
+					return
+				}
 			}
 			await webhook.send(f,{
 				username: user.username,

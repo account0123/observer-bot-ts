@@ -22,7 +22,7 @@ export class GetPassCommand implements ArgCommand {
 			const textBytes = utils.utf8.toBytes(id);
 			const encryptedBytes = aesCbc.encrypt(textBytes);
 			const encryptedHex = utils.hex.fromBytes(encryptedBytes)
-			msg.author.send(l.translate('info.getpass.own'))
+			msg.author.send(await l.translate('info.getpass.own'))
 			msg.author.send(encryptedHex)
 		} else {
 			const user = UserFinder.getUser(msg,args[0])

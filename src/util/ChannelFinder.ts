@@ -1,4 +1,4 @@
-import { Message, Guild, GuildChannel } from "discord.js";
+import { Message, Guild, GuildChannel, CategoryChannel, Snowflake } from "discord.js";
 export class ChannelFinder {
   /**
    * 
@@ -26,5 +26,13 @@ export class ChannelFinder {
     // La ID corresponde al segundo elemento del array devuelto
     const id: string = matches[1]
     return g.channels.cache.get(id);
+  }
+  static getCategoryId(message: Message, mention:string): Snowflake | undefined{
+    if(!message.guild) return undefined
+    for (const channel of message.guild.channels.cache.values()) {
+      if(channel instanceof CategoryChannel){
+        if(mention.toLowerCase().trim() === channel.name.toLowerCase()) return channel.id
+      }
+    }
   }
 }
