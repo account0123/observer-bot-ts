@@ -63,8 +63,8 @@
             "usage": "<ID del mensaje>"
         },"createchannel":{
             "description": "Crea un canal con por lo menos el tipo de canal y el nombre",
-            "fulldescription": "Crea un nuevo canal con el tipo (`text` o `voice` o `news` o `store` o `category`), un nombre sin espacios y opcionalmente, propiedades en el formato`propiedad:valor` y permisos de canal en el formato `rol/usuario:{permisos}`. Las propiedades son:\n`position`: La posición del canal contando de arriba a abajo.\n`nsfw`: Si está presente, el canal será marcado como nsfw.\n\nLos permisos de canal corresponden a su [nombre oficial](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags).",
-            "usage": "<tipo> <nombre> [{propiedad:valor,...}] [allow-roles {rol:{permisos,...},...}] [deny-roles {rol:{permisos...},...}] [allow-users {usuario:{permisos...},...}] [deny-users {usuario:{permisos...},...}]",
+            "fulldescription": "Crea un nuevo canal con el tipo (`text` o `voice` o `news` o `store` o `category`), un nombre sin espacios y opcionalmente, propiedades en el formato`propiedad:valor` y permisos de canal en el formato `rol/usuario:{permisos...}`. Las propiedades son:\n`position`: La posición del canal contando de arriba a abajo.\n`nsfw`: Si está presente, el canal será marcado como nsfw.\n\nLos permisos de canal corresponden a su [nombre oficial](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags).",
+            "usage": "<tipo> <nombre> [{[propiedad:valor]...}] [allow-roles {[rol:{[permisos]...]}]...}] [deny-roles {[rol:{[permisos]...]}]...}] [allow-users {usuario:{[permisos]...}]...}] [deny-users {[usuario:{[permisos]...}]...}]",
             "success":"El canal {channel} fue creado sin problemas!",
             "30013": "Error 30013: Cantidad máxima de canales del servidor alcanzada (500)",
             "embed":{
