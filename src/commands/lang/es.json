@@ -95,8 +95,11 @@
         "deletechannel":{
             "description": "Borra un canal.",
             "fulldescription": "Borra un canal. La contraseña se adquiere con el comando `getpass` invocado por cualquier administrador.",
-            "usage": "<canal> <constraseña>",
+            "usage": "<canal> <contraseña>",
             "success": "Canal **#{channel}** borrado sin problemas."
+        },
+        "deletedis":{
+            "description": "BORRA ESTO."
         },
         "demote":{
             "description": "Degrada al miembro indicado por (ning)una razón.",
@@ -214,7 +217,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente."
+                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevo comando: Deletedis."
             }
         },
         "kick": {

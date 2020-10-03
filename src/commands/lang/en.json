@@ -99,6 +99,9 @@
             "usage": "<channel> <key>",
             "success": "**#{channel}** channel deleted successfully!"
         },
+        "deletedis":{
+            "description": "DELETE DIS."
+        },
         "demote":{
             "description": "Demotes a member with(out) a(ny) reason.",
             "usage": "<user> [reason]",
@@ -215,7 +218,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number."
+                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: Deletedis."
             }
         },
 	    "kick": {
