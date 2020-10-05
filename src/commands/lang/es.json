@@ -217,7 +217,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevo comando: deletedis.\n\nNuevo comando: resetmember"
+                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevo comando: deletedis.\n\nNuevo comando: resetmember\n\nNuevo comando: renameeveryone"
             }
         },
         "kick": {
@@ -240,6 +240,12 @@
             "usage": "<usuario> <rol>",
             "success": "Rol **{role.name}** removido a **{m.displayName}**.",
             "error": "No pude quitar el rol por el error: `{e}`"
+        },
+        "renameeveryone": {
+            "description": "Elimina los apodos de todos o agrega un prefijo a sus nombres",
+            "usage": "<contraseña> [prefijo]",
+            "success": "Todos fueron renombrados.",
+            "error": "No pude renombrar a **{member}**\nOmitiendo..."
         },
         "resetallroles":{
             "description": "Reinicia todos los roles.",

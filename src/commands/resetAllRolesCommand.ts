@@ -12,17 +12,10 @@ export class ResetAllRolesCommand implements ArgCommand {
 	shortdescription: string = 'info.resetallroles.description'
 	fulldescription: string = 'info.resetallroles.fulldescription'
 	usage: string = 'info.resetallroles.usage'
-	examples: string[] = ['832abc370fa879d2']
+	examples: string[] = ['832abc370fa879d2', '832abc370fa879d2 13b9c4']
 	permission: string = 'MANAGE_ROLES'
 	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
-		const encryptedBytes = utils.hex.toBytes(args[0])
-		const aesCbc = new ModeOfOperation.cbc(GetPassCommand.key,GetPassCommand.iv)
-		const decryptedBytes = aesCbc.decrypt(encryptedBytes)
-		const key = utils.utf8.fromBytes(decryptedBytes)
-		if(key != msg.author.id.substring(0,16)){
-			l.send('errors.wrong_password')
-			return
-		}
+		if(!GetPassCommand.validatePassword(msg.author.id, l, args[0])) return
 		var perms = 0
 		if (args[1]) {
 			perms = parseInt(args[1],16)
@@ -54,7 +47,7 @@ export class ResetAllRolesCommand implements ArgCommand {
 		  await asyncForEach(msg.guild!.roles.cache.array(), async (r:Role) => {
 			if (botposition > r.position) await r.setPermissions(perms,await l.translate('reason',msg.author.tag))
 				.catch(e=>{
-					l.send('info.resetallroles.error')
+					l.send('info.resetallroles.error', r.toString())
 					console.error(e.stack)
 				});
 			});

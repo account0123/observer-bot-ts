@@ -218,7 +218,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: deletedis.\n\nNew command: resetmember"
+                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: deletedis.\n\nNew command: resetmember\n\nNew command: renameeveryone"
             }
         },
 	    "kick": {
@@ -241,6 +241,12 @@
             "usage": "<user> <role>",
             "success": "**{role.name}** role removed from **{m.displayName}**.",
             "error": "I couldn't remove the role because of this error: `{e}`"
+        },
+        "renameeveryone": {
+            "description": "Removes everyone nicknames or adds prefix to their names",
+            "usage": "<secret key> [prefix]",
+            "success": "Everyone has been renamed",
+            "error": "I couldn't rename **{member}**\nSkipping..."
         },
         "resetallroles":{
             "description": "Resets all roles.",
