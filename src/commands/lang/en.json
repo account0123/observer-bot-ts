@@ -218,7 +218,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: Deletedis."
+                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: deletedis.\n\nNew command: resetmember"
             }
         },
 	    "kick": {
@@ -250,6 +250,12 @@
             "start": "Resseting {count} roles with `{permissions.array}` permissions",
             "success": "All roles resetted.",
             "error": "I couldn't reset **{r.name}**\nSkipping..."
+        },
+        "resetmember":{
+            "description": "Removes all roles from a member.",
+            "fulldescription": "Removes all roles from a member of this server (if i can modify them). Requires a secret key you can get using `getPass` command.",
+            "usage": "<user> <secret key>",
+            "success": "**{member}** hasn't any role."
         },
         "roleinfo":{
             "description": "Information about a role.",
@@ -390,6 +396,7 @@
         "invalid_user": "i couldn't do anyhing beacuse the user {mention} isn't valid",
         "invalid_message": "the given ID (`{id}`) couldn't be resolved as a message from this channel, was it deleted?",
         "invalid_member": "i couldn't do anything because the member {mention} either isn't valid or isn't in the server anymore",
+        "invalid_password": "at least one pair of characters from the secret key doesn't represent a number, maybe your secret key was not sent by me.",
         "invalid_role": "i couldn't do anything because the role {mention} is invalid",
 		"lower_bot": "i can do nothing to a member who is at my position or higher",
         "lower_roles": "'i can't manage a role if that's higher or equal than my highest role",
@@ -422,7 +429,8 @@
             "massmention": "you don't have permission to massmention ||You need: Mention @everyone, @here and All Roles||",
             "remove_role": "you don't have permission to remove roles. ||You need: Manage roles||",
 			"unban": "you don't have permission to remove bans. ||You need: Ban Members||"
-        }, 
+        },
+        "short_password": "The secret key must be 32 characters long.",
         "unknown": "an error has been thrown when this command was executed.",
         "unsafe_integer": "This duration is so long that almost opens a hole in space-time... or almost overloaded my memory, is the same.",
 		"wrong_password": "Wrong password.\n||Hint: Use getpass command to get a password||"

@@ -14,14 +14,7 @@ export class DeleteChannelCommand implements ArgCommand{
 	usage:string='info.deletechannel.usage'
 	examples:string[]=['123456789987654321 1234', 'new-channel 1234']
 	async run(msg:Message,l: Lang, args:string[]){
-		const encryptedBytes = utils.hex.toBytes(args[1])
-		const aesCbc = new ModeOfOperation.cbc(GetPassCommand.key,GetPassCommand.iv)
-		const decryptedBytes = aesCbc.decrypt(encryptedBytes)
-		const key = utils.utf8.fromBytes(decryptedBytes)
-		if(key != msg.author.id.substring(0,16)){
-			l.send('errors.wrong_password')
-			return
-		}
+		if(!GetPassCommand.validatePassword(msg.author.id, l, args[1])) return
 		const channel = ChannelFinder.getChannel(msg,args[0])
 		if(!channel){
 			l.reply('errors.invalid_channel',args[0])

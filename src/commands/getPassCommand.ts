@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, Snowflake } from "discord.js";
 import {utils, ModeOfOperation} from 'aes-js'
 import ArgCommand from "./commandArgInterface";
 import CommandHandler from "../commandHandler";
@@ -15,6 +15,27 @@ export class GetPassCommand implements ArgCommand {
 	fulldescription: string = 'info.getpass.fulldescription'
 	static readonly key = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ]
 	static readonly iv = [ 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114,115, 116 ]
+	static validatePassword(author_id: Snowflake, l: Lang, input: string): boolean{
+		if(input.length != 32){
+			l.reply('errors.short_password')
+			return false
+		}
+		const encryptedBytes = utils.hex.toBytes(input)
+		for (const byte of encryptedBytes) {
+			if(isNaN(byte)){
+				l.reply('errors.invalid_password')
+				return false
+			}
+		}
+		const aesCbc = new ModeOfOperation.cbc(GetPassCommand.key,GetPassCommand.iv)
+		const decryptedBytes = aesCbc.decrypt(encryptedBytes)
+		const key = utils.utf8.fromBytes(decryptedBytes)
+		if(key != author_id.substring(0,16)){
+			l.send('errors.wrong_password')
+			return false
+		}
+		return true
+	}
 	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
 		const aesCbc = new ModeOfOperation.cbc(GetPassCommand.key, GetPassCommand.iv)
 		if (args.length == 0) {

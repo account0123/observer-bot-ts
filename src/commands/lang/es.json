@@ -54,7 +54,7 @@
         "clean":{
             "description": "Limpia la cantidad de mensajes indicada",
 			"usage": "<cantidad de mensajes a borrar>",
-            "success": "{msgs} mensajes borrados",
+            "success": "{msgs} mensajes borrados.",
             "error": "No se pudieron borrar los mensajes por este error: `{error}`.",
             "50016": "Error 50016: Proveídos muy pocos o demasiados mensajes que borrar. Debe proveer a lo menos 2 y menos  que 100 mensajes a borrar."
         },
@@ -217,7 +217,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevo comando: Deletedis."
+                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevo comando: deletedis.\n\nNuevo comando: resetmember"
             }
         },
         "kick": {
@@ -249,6 +249,13 @@
             "start": "Reiniciando {count} roles con los permisos `{permissions.array}`",
             "success": "Todos los roles reiniciados.",
             "error": "Fallo al reiniciar **{r.name}**\nOmitiendo..."
+        },
+        "resetmember":{
+            "description": "Remueve los roles de un miembro.",
+            "fulldescription": "Remueve todos los roles de un miembro del servidor (si puedo modificarlo). Requiere contraseña obtenida con el comando `getPass`.",
+            "usage": "<usuario> <contraseña> [rol a mantener]...",
+            "success_empty": "**{member}** ya no tiene roles.",
+            "success": "**{member}** solo tiene los roles {roles}"
         },
         "roleinfo":{
             "description": "Información de un rol.",
@@ -410,6 +417,7 @@
         "invalid_user": "no pude hacer nada porque el usuario {mention} no es válido",
         "invalid_message": "la ID ({id}) no pudo resolverse como un mensaje de este canal, quizás fue borrado (?)",
         "invalid_member": "no pude hacer nada porque el miembro {mention} no es válido o ya no está aquí como miembro",
+        "invalid_password": "al menos un par de caracteres de las contraseña no representa un número, quizás esa contraseña no fue enviada por mi.",
         "invalid_role": "no pude hacer nada porque el rol {mention} no es válido",
         "lower_bot": "no puedo hacerle nada a un miembro que esté a mi nivel o más arriba que yo",
         "lower_roles": "no puedo modificar un rol si está más arriba o es igual que mi rol más alto.",
@@ -441,6 +449,7 @@
             "remove_role": "no tienes permiso para retirar roles. ||Necesitas: Gestionar roles||",
             "unban": "no tienes permiso para quitar baneos. ||Necesitas: Banear miembros||"
         },
+        "short_password": "la contraseña tiene que tener 32 caracteres exactos.",
         "unknown": "hubo un error desconocido al ejecutar este comando :thinking:",
         "unsafe_integer": "La duración no puede ser mayor que `2147483` segundos.",
         "wrong_password": "Contraseña incorrecta.\n||Pista: Usa el comando getpass para obtener una contraseña||"

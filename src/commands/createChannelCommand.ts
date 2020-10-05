@@ -12,9 +12,6 @@ export class CreateChannelCommand implements ArgCommand{
 	usage:string = 'info.createchannel.usage'
 	guildExclusive: boolean = true
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		msg.channel.send('Lamentablemente, este comando está en desarrollo, por la seguridad del servidor no haré nada');
-		return;
-		/** 
 		// nuevo código
 		const first_arg = args.shift()!.toLowerCase()
 		let type: GuildCreateChannelOptions["type"]
@@ -54,6 +51,7 @@ export class CreateChannelCommand implements ArgCommand{
 				else l.reply('errors.unknown')
 				console.error(error)
 			});
+		}
 		// Ejecución
 		data!.type = type
         msg.guild!.channels.create(name,data!).then(async (channel) => {
@@ -78,7 +76,7 @@ export class CreateChannelCommand implements ArgCommand{
 			else l.reply('errors.unknown')
 			console.error(error)
 		});
-	}**/}
+	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
@@ -95,7 +93,7 @@ export class CreateChannelCommand implements ArgCommand{
 }
 
 function createData(str:string): GuildCreateChannelOptions | undefined {
-	if(!str.startsWith('{') && !str.endsWith('}')) return undefined
+	if(str === '') return undefined 
 	const body = str.slice(1,-1)
 	if(!body || body.length < 6) return undefined
 	const map = body.split(',')
@@ -111,8 +109,7 @@ function createData(str:string): GuildCreateChannelOptions | undefined {
 	var data: GuildCreateChannelOptions = {
 	  topic: '',
 	  position: 0,
-	  nsfw: false,
-	  permissionOverwrites: undefined
+	  nsfw: false
 	};
 	// Setting values
 	for (const [key,value] of properties) {
@@ -124,7 +121,12 @@ function createData(str:string): GuildCreateChannelOptions | undefined {
 			data.position = 0
 		}
 		break
-	  }
+	  case 'topic':
+		  data.topic = value
+		  break
+	  case 'nsfw':
+		  if(value == 'true') data.nsfw =true
+		} 
 	}
 	return data
   }

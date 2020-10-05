@@ -59,7 +59,7 @@ export class Lang {
 			const value = values[i]
 			script = script.replace(marker,value)
 		}
-		return this.msg.channel.send(script)
+		return this.msg.channel.send(script,{allowedMentions: {parse: ['users']}})
 	}
 	async reply(code:string,...values:string[]):Promise<Message>{
 		if (!this.locale) {
@@ -91,7 +91,7 @@ export class Lang {
 			const value = values[i]
 			script = script.replace(marker,value)
 		}
-		return this.msg.reply(script)
+		return this.msg.reply(script,{allowedMentions: {parse: ['users']}})
 	}
 	async translate(code:string,...values:string[]):Promise<string>{
 		if (!this.locale) {

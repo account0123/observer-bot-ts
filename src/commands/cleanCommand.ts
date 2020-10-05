@@ -18,7 +18,7 @@ export class CleanCommand implements ArgCommand {
 		}
 		await msg.channel.bulkDelete(n, true).then((msgs)=>l.send('info.clean.success','' + msgs.size).then(m=>m.delete({timeout: 5000})).catch(e=>{
 		if(e.code == 50016) l.send('info.clean.50016')
-		else l.reply('info.clean.error',e)
+		else l.send('info.clean.error',e)
 		console.error(`Se intentó borrar ${n} mensajes pero no se pudo por ${e.stack}`)
 		})
 		)	
