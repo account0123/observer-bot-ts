@@ -236,6 +236,10 @@
             "fulldescription": "Muestra o cambia el idioma en el que escribo (solo `en` (inglés) y `es` (español) disponibles)",
             "usage": "[idioma a cambiar]"
         },
+        "mute":{
+            "description": "Silencia a todos los miembros de un canal de voz por tiempo (i)limitado",
+            "usage": "everyone from  <canal> [for <cantidad> <unidad de tiempo>]"
+        },
         "removerole":{
             "description": "Remueve al miembro indicado un rol.",
             "usage": "<usuario> <rol>",
