@@ -15,6 +15,7 @@ export class RoleFinder {
 		 if (!matches){
 			 matches = mention.match(/\d{17,19}/)
 			 if (!matches) {
+				 if(mention === 'everyone') return g.roles.everyone
 				 for (const role of g.roles.cache.values()) {
 					if (mention.toLowerCase() == role.name.toLowerCase()) return role
 					}

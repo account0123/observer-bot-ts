@@ -19,6 +19,7 @@ export class FormatCommand implements ArgCommand {
 		var f = c.replace('\\n','\n').replace('\\t','\t').replace('\\r','\r').replace('\\b','\b').replace('\\v','\v').replace('\\0','\0').replace('\\f','\f')
 		const bot = msg.guild!.member(msg.client.user!)!
 		const user = msg.author
+		if(!FormatCommand.webhooks) FormatCommand.webhooks = new Map()
 		if (msg.channel instanceof DMChannel) {
 			await msg.channel.send(f)
 		} else {

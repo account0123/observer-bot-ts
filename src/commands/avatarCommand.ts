@@ -18,12 +18,13 @@ export class AvatarCommand implements ArgCommand {
   commandNames = ['avatar','icon', 'pfp', 'av']
   async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 	if (args.length > 0) {
-		const mention = args[0]
+		const mention = args.join(' ')
 		const user = UserFinder.getUser(msg,mention)!
 		if(!user){
 			if(msg.guild){	
 				const member = MemberFinder.getMember(msg, mention)
 				if(member) this.run(msg,l,[member.id])
+				else l.reply('errors.invalid_member', mention)
 				return
 			}
 			l.reply('errors.invalid_user',mention)

@@ -72,6 +72,7 @@
                 "title": "Details:",
                 "name": "Name",
                 "category": "Category",
+                "position": "Position",
                 "allowed": "Allowed Permissions",
                 "denied": "Denied Permissions",
                 "no_cat": "*No category*"
@@ -218,7 +219,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: deletedis.\n\nNew command: resetmember\n\nNew command: renameeveryone"
+                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: deletedis.\n\nNew command: resetmember\n\nNew command: renameeveryone\n\nNew command: createchannel"
             }
         },
 	    "kick": {
