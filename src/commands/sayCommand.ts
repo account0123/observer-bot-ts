@@ -1,6 +1,7 @@
 import ArgCommand from "./commandArgInterface";
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import { Lang } from "./lang/Lang";
+import { ChannelFinder } from "../util/ChannelFinder";
 
 export class SayCommand implements ArgCommand {
 	permission: string = ''
@@ -15,7 +16,19 @@ export class SayCommand implements ArgCommand {
 	usage: string = 'info.say.usage'
 	guildExclusive: boolean = false
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		await msg.channel.send(args.join(' '),{disableMentions: 'everyone'})
+		const text = args.join(' ')
+		const regex = /to ([\w]+)$/m
+		const m = text.match(regex)
+		const bot = msg.guild!.member(msg.client.user!)!
+		if(m){
+			const channel = ChannelFinder.getChannel(msg, m[1])
+			if(channel && channel.type === 'text' && channel.permissionsFor(bot)!.has('SEND_MESSAGES')){
+				const textchannel = <TextChannel> channel
+				await textchannel.send(text.replace(regex,''), {disableMentions: 'everyone'})
+				return
+			}
+		}
+		await msg.channel.send(text,{disableMentions: 'everyone'})
 		await msg.delete({timeout: 300,reason: await l.translate('reason',msg.author.tag)})
 	}
 	

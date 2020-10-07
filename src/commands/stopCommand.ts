@@ -15,6 +15,7 @@ export class StopCommand implements Command {
       return
     } 
     Connections.db.end()
+    if(!FormatCommand.webhooks) shutdown(message)
     for (const wh of FormatCommand.webhooks.values()) {
       const guild = message.client.guilds.resolve(wh.guildID)
       if(guild){
@@ -27,6 +28,10 @@ export class StopCommand implements Command {
       }
     }
     FormatCommand.webhooks.clear()
-    await message.channel.send('`Deteniendo...`').then( msg => msg.client.destroy());  
+    shutdown(message)
     }
+}
+
+function shutdown(msg: Message){
+  msg.channel.send('`Deteniendo...`').then( message => message.client.destroy());  
 }
