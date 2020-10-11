@@ -12,7 +12,10 @@ export class CallCommand implements ArgCommand {
 	examples: string[] = ['@user#1234 @user2#3221', '12335684247853234 987654321213456789 958372642132422']
 	permission: string = 'MENTION_EVERYONE'
 	async run(msg: Message, L: Lang, args: string[]): Promise<void> {
-		const users = args.map(arg=>'<@'+arg+'>')
+		const users = args.filter(arg=>{
+			if(arg.match(/d+/)) return true
+			else return false
+		}).map(arg=>'<@'+arg+'>');
 		const begin = await L.translate('info.call.start')
 		const mention = users.join(', ')
 		const end = '***'

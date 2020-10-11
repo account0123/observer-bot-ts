@@ -12,7 +12,8 @@ export class FocusKickCommand {
 	usage: string = 'info.focuskick.usage'
 	examples: string[] = ['10m @troll123 stop trolling', '10s 123456789987654321 10 9 8 7... 0']
 	permission: string = 'KICK_MEMBERS'
-	kick:KickCommand
+	private kick:KickCommand
+	private index: number | undefined
 	constructor(){
 		this.kick = new KickCommand()
 	}
@@ -48,8 +49,9 @@ export class FocusKickCommand {
 		await l.send('info.focuskick.success','' + ms/1000,member.displayName, reason)
 		const timeout = setTimeout(() => {
 			this.kick.run(msg,l,[member.id].concat(args))
+			if(this.index) CancelCommand.timers.splice(this.index,1)
 		}, ms);
-		CancelCommand.timers.push({user: member.id, command: 'Kick', timeout, reason})
+		this.index = CancelCommand.timers.push({user: member.id, command: 'Kick', timeout, reason})
 	}
 	checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		return this.kick.checkPermissions(msg,l)

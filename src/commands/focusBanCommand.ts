@@ -14,7 +14,8 @@ export class FocusBanCommand implements ArgCommand {
 	usage: string = 'info.focusban.usage'
 	examples: string[] = ['10m @troll123 bye bye', '10s 123456789987654321 admin abuse']
 	permission: string = 'BAN_MEMBERS'
-	ban:BanCommand
+	private ban:BanCommand
+	private index: number | undefined
 	constructor(){
 		this.ban = new BanCommand()
 	}
@@ -48,8 +49,9 @@ export class FocusBanCommand implements ArgCommand {
 		await l.send('info.focusban.success','' + ms/1000,member.displayName, reason)
 		const timeout = setTimeout(() => {
 			this.ban.run(msg,l,[member.id].concat(args))
+			if(this.index) CancelCommand.timers.splice(this.index,1)
 		}, ms);
-		CancelCommand.timers.push({user: member.id, timeout, command: 'Ban', reason});
+		this.index = CancelCommand.timers.push({user: member.id, timeout, command: 'Ban', reason})
 	}
 	checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		return this.ban.checkPermissions(msg,l)

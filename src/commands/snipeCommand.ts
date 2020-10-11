@@ -18,8 +18,9 @@ export class SnipeCommand implements Command {
 				l.send('info.snipe.no_msg')
 				return
 			}
+			const footer = await l.translate('info.snipe.success')
 			const lastrow = rows[rows.length - 1]
-			const embed = new MessageEmbed().setAuthor(lastrow.username,lastrow.avatar_url).setColor(color).setDescription(lastrow.content).setFooter(await l.translate('info.snipe.success')).setTimestamp(lastrow.time)
+			const embed = new MessageEmbed().setAuthor(lastrow.username,lastrow.avatar_url).setColor(color).setDescription(lastrow.content).setFooter(footer).setTimestamp(lastrow.time)
 			if(lastrow.image) embed.setImage(lastrow.image)
 			msg.channel.send(embed).catch(e=>{
 				l.reply('info.snipe.error')

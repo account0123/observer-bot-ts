@@ -14,10 +14,12 @@ export class HelpCommand implements ArgCommand {
 	usage: string = 'info.help.usage'
 	guildExclusive: boolean = false
 	lang: Lang | undefined
-	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
+	prefix: string | undefined
+	async run(msg: Message,l: Lang, args: string[], prefix: string): Promise<void> {
 		var embed
 		const bot = msg.client.user!
 		this.lang = l
+		this.prefix = prefix
 		if (args.length > 0) {
 			embed =	this.createHelpEmbed(args[0])
 		}else{
@@ -34,10 +36,11 @@ export class HelpCommand implements ArgCommand {
 	}
 	private async createCommandList():Promise<MessageEmbed> {
 		if(!this.lang) return new MessageEmbed()
+		if(!this.prefix) return new MessageEmbed()
 		const l = this.lang
 		const createList = async (c:Command | ArgCommand) => `**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`;
 		const array = CommandHandler.commands.map(async c=>await createList(c)).concat(CommandHandler.argCommands.map(async c=>await createList(c)))
-		return new MessageEmbed().setTitle(await l.translate('info.help.general.title')).setDescription((await Promise.all(array)).sort()).setFooter(await l.translate('info.help.general.footer',CommandHandler.prefix)).setTimestamp()
+		return new MessageEmbed().setTitle(await l.translate('info.help.general.title')).setDescription((await Promise.all(array)).sort()).setFooter(await l.translate('info.help.general.footer',this.prefix)).setTimestamp()
 	}
 	private async createHelpEmbed(commandName:string):Promise<MessageEmbed | undefined> {
 		if(!this.lang) return new MessageEmbed()
@@ -67,9 +70,9 @@ export class HelpCommand implements ArgCommand {
 			const name = argCommand.commandNames.shift()!
 			const embed = new MessageEmbed().setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,Permissions.DEFAULT.toString(16)))
 			if(argCommand.commandNames.length > 0) embed.addField(await l.translate(about + 'aliases'),argCommand.commandNames.join(', '),true)
-			embed.addField(await l.translate(about + 'usage'),`${CommandHandler.prefix}${name} \`${await l.translate(argCommand.usage)}\``,true)
+			embed.addField(await l.translate(about + 'usage'),`${this.prefix}${name} \`${await l.translate(argCommand.usage)}\``,true)
 			.addField(await l.translate(about + 'required'),await buildField(),true)
-			.addField(await l.translate(about + 'examples'),argCommand.examples.map(e=>`${CommandHandler.prefix}${name} ${e}\n`))
+			.addField(await l.translate(about + 'examples'),argCommand.examples.map(e=>`${this.prefix}${name} ${e}\n`))
 			.setFooter(await l.translate(about + 'footer'))
 			.setTimestamp();
 			return embed

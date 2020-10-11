@@ -16,7 +16,8 @@ export class EditSnipeCommand implements Command {
 		const [rows] = await connection.execute<RowDataPacket[]>('SELECT * FROM edited WHERE channel=? and guild=?',[msg.channel.id, msg.guild!.id]);
 		try {
 			const row = rows[rows.length - 1]
-			const embed = new MessageEmbed().setAuthor(row['username'],row['avatar_url']).setColor(color).setDescription(row['content']).setFooter(l.translate('info.editsnipe.success')).setTimestamp(row['time']);
+			const footer = await l.translate('info.editsnipe.success')
+			const embed = new MessageEmbed().setAuthor(row['username'],row['avatar_url']).setColor(color).setDescription(row['content']).setFooter(footer).setTimestamp(row['time']);
 			msg.channel.send(embed).catch(e=>{
 				l.reply('info.editsnipe.error')
 				console.error(e.stack)

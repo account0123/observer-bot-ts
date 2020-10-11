@@ -1,6 +1,4 @@
 import { Message, Snowflake } from "discord.js";
-import { FieldPacket } from "mysql2";
-import CommandHandler from "../commandHandler";
 import { Connections } from "../config/connections";
 import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";

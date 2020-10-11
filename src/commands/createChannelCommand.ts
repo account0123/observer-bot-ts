@@ -251,9 +251,11 @@ function createData(msg: Message,str:string): GuildCreateChannelOptions | undefi
   }
 function setParent(position: number, guild: Guild){
 	var i = 0
+	if(position === 0) return undefined
 	for (const channel of guild.channels.cache.values()) {
 		if(channel.type === 'category'){
 			const category = <CategoryChannel> channel
+			console.log(category.name)
 			// Verificar que position sea menor a la cantidad de canales de la categoría
 			const channels = category.children.size
 			if(position <= channels) return category.id

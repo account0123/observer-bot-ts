@@ -21,7 +21,6 @@ app.use('/', (request: Request, response: Response) => {
   response.sendStatus(200);
 });
 
-const commandHandler = new CommandHandler(config.prefix);
 const sniper = new SnipeHandler();
 
 //////////////////////////////////////////////////////////////////
@@ -33,7 +32,7 @@ client.on("ready", () => {
   console.log("Observer has started");
   new Connections(client)}
   );
-client.on("message", (message: Message) => { commandHandler.handleMessage(message); });
+client.on("message", (message: Message) => { new CommandHandler().handleMessage(message); });
 client.on('messageDelete',(deleted: Message| PartialMessage)=>sniper.saveDeletedMessage(deleted))
 client.on('messageUpdate',(old: Message | PartialMessage)=>sniper.saveEditedMessage(old))
 client.on("error", e => { console.error("Discord client error!", e); });

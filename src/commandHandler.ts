@@ -4,15 +4,16 @@ import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
 import { Lang } from "./commands/lang/Lang";
+import { Connections } from "./config/connections";
+import { RowDataPacket } from "mysql2";
 
 export default class CommandHandler {
 
   static commands: Command[];
   static argCommands: ArgCommand[]
+  prefix: string;
 
-  static prefix: string;
-
-  constructor(prefix: string) {
+  constructor() {
     // Clases aquí
     const commandClasses = [
       StopCommand,
@@ -56,9 +57,9 @@ export default class CommandHandler {
       SetCommand
     ];
 
-    CommandHandler.commands = commandClasses.map(commandClass => new commandClass());
+    CommandHandler.commands = commandClasses.map(c => new c());
     CommandHandler.argCommands = argCommandClasses.map(c=>new c())
-    CommandHandler.prefix = prefix;
+    this.prefix = '!!';
   }
 
   /** Executes user commands contained in a message if appropriate. */
@@ -66,14 +67,19 @@ export default class CommandHandler {
     if (message.author.bot || !this.isCommand(message)) {
       return;
     }
-
-    const commandParser = new CommandParser(message, CommandHandler.prefix);
+    
+    var lang: Lang
+    if (message.guild){
+      lang = new Lang(message)
+      const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix from guilds WHERE id=?')
+      console.log(JSON.stringify(rows))
+      console.log(JSON.stringify(fields))
+    }
+    else lang = new Lang(message,message.author.locale)
+    const commandParser = new CommandParser(message, this.prefix);
 
     const matchedCommand = CommandHandler.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
     const matchedArgCommand = CommandHandler.argCommands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
-    var lang: Lang
-    if (message.guild) lang = new Lang(message)
-    else lang = new Lang(message,message.author.locale)
     if(matchedCommand) {
       if (message.channel.type == "dm" && matchedCommand.guildExclusive) {
         lang.reply('errors.no_dms')
@@ -89,11 +95,11 @@ export default class CommandHandler {
         return
       }
       if (commandParser.args.length < matchedArgCommand.requiredArgs) {
-        lang.reply('errors.not_enough_args',CommandHandler.prefix,commandParser.parsedCommandName,await lang.translate(matchedArgCommand.usage))
+        lang.reply('errors.not_enough_args',this.prefix,commandParser.parsedCommandName,await lang.translate(matchedArgCommand.usage))
         return
       }
-      await matchedArgCommand.checkPermissions(message,lang).then(b=>{
-       if(b) matchedArgCommand.run(message,lang,commandParser.args).catch(error => {
+      await matchedArgCommand.checkPermissions(message,lang, this.prefix).then(b=>{
+       if(b) matchedArgCommand.run(message,lang,commandParser.args, this.prefix).catch(error => {
          lang.reply('errors.unknown')
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
       })});
@@ -103,12 +109,12 @@ export default class CommandHandler {
 
   /** Sends back the message content after removing the prefix. */
   echoMessage(message: Message): string {
-    return message.content.replace(CommandHandler.prefix, "").trim();
+    return message.content.replace(this.prefix, "").trim();
   }
 
   /** Determines whether or not a message is a user command. */
   private isCommand(message: Message): boolean {
     const c = message.content
-    return c.startsWith(CommandHandler.prefix) || c.startsWith('<@685645806069612621> ') || c.startsWith('<@!685645806069612621> ');
+    return c.startsWith(this.prefix) || c.startsWith('<@685645806069612621> ') || c.startsWith('<@!685645806069612621> ');
   }
 }

@@ -1,6 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, Permissions,Collection, Role} from "discord.js";
-import { utils, ModeOfOperation } from "aes-js";
+import { Message, Permissions, Role} from "discord.js";
 import { GetPassCommand } from ".";
 import console from "console";
 import { Lang } from "./lang/Lang";

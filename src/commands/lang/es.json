@@ -213,12 +213,12 @@
         "info":{
             "description": "Muestra información sobre mí.",
             "embed": {
-                "title": "Todo sobre mí",
+                "title": "Esta es toda la información sobre mí",
                 "language": "Lenguaje",
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevos comandos:\n- deletedis.\n- resetmember\n- renameeveryone\n- createchannel\n- mute\n- set\n- whisper"
+                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevos comandos:\n- deletedis.\n- resetmember\n- renameeveryone\n- createchannel\n- mute\n- set\n- whisper\n\nA lot of commands fixed."
             }
         },
         "kick": {
