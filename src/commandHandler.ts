@@ -71,7 +71,7 @@ export default class CommandHandler {
     var lang: Lang
     if (message.guild){
       lang = new Lang(message)
-      const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix from guilds WHERE id=?')
+      const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix from guilds WHERE id=?', [message.guild.id])
       console.log(JSON.stringify(rows))
       console.log(JSON.stringify(fields))
     }
