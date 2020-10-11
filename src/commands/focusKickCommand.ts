@@ -18,15 +18,17 @@ export class FocusKickCommand {
 	}
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const time = args.shift()!
-		const secondsEx = time.match(/\d+s/)
-		const minutesEx = time.match(/\d+m/)
-		const hoursEx = time.match(/\d+h/)
-		const daysEx = time.match(/\d+d/)
+		const secondsEx = time.match(/(\d+)s/)
+		const minutesEx = time.match(/(\d+)m/)
+		const hoursEx = time.match(/(\d+)h/)
+		const daysEx = time.match(/(\d+)d/)
+		const implicit_duarion = time.match(/d+/)
 		var s = 0,m = 0,h = 0,d = 0
-		if(secondsEx) s = parseInt(secondsEx[0])
-		if(minutesEx) m = parseInt(minutesEx[0])
-		if(hoursEx) h = parseInt(hoursEx[0])
-		if(daysEx) d = parseInt(daysEx[0])
+		if(secondsEx) s = parseInt(secondsEx[1])
+		if(implicit_duarion) s = parseInt(implicit_duarion[0])
+		if(minutesEx) m = parseInt(minutesEx[1])
+		if(hoursEx) h = parseInt(hoursEx[1])
+		if(daysEx) d = parseInt(daysEx[1])
 		const ms = d * 36000000 * 24 + h * 3600000 + m * 60000 +  s * 1000
 		if(ms > 2147483647){
 			l.send('errors.unsafe_integer')

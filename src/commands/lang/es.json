@@ -218,7 +218,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevo comando: deletedis.\n\nNuevo comando: resetmember\n\nNuevo comando: renameeveryone\n\nNuevo comando: createchannel"
+                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevos comandos:\n- deletedis.\n- resetmember\n- renameeveryone\n- createchannel\n- mute\n- set\n- whisper"
             }
         },
         "kick": {
@@ -318,6 +318,11 @@
                 "phone": "\n4. Tener el número verificado"
             }
         },
+        "set":{
+            "description": "Cambia mis ajustes (prefix,lang).",
+            "usage": "<ajuste a cambiar> <nuevo valor>",
+            "prefix_success": "Mi prefijo fue cambiado a `{prefix}`"
+        }, 
         "snipe":{
             "description": "Muestra el último mensaje borrado.",
             "fulldescription": "Muestra el último mensaje borrado de este canal.",
@@ -430,6 +435,7 @@
         "invalid_member": "no pude hacer nada porque el miembro {mention} no es válido o ya no está aquí como miembro",
         "invalid_password": "al menos un par de caracteres de las contraseña no representa un número, quizás esa contraseña no fue enviada por mi.",
         "invalid_role": "no pude hacer nada porque el rol {mention} no es válido",
+        "long_prefix": "mi prefijo no puede tener más de 4 caracteres.",
         "lower_bot": "no puedo hacerle nada a un miembro que esté a mi nivel o más arriba que yo",
         "lower_roles": "no puedo modificar un rol si está más arriba o es igual que mi rol más alto.",
         "NaN": "lo que sea que ingresaste no es un número válido. ¿O me vas a decir que {value} es un número?",

@@ -219,7 +219,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: deletedis.\n\nNew command: resetmember\n\nNew command: renameeveryone\n\nNew command: createchannel"
+                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: deletedis.\n\nNew commands:\n- resetmember\n- renameeveryone\n- createchannel\n- mute\n- set\n- whisper"
             }
         },
 	    "kick": {
@@ -314,6 +314,11 @@
                 "phone": "\n4. Have a verified phone"
             }
         },
+        "set":{
+            "description": "Changes my settings (prefix,lang).",
+            "usage": "<setting to change> <new value>",
+            "prefix_success": "My prefix was changed to `{prefix}`"
+        }, 
         "snipe":{
             "description": "Shows the last deleted message.",
             "fulldescription": "Shows the last deleted message in this channel",
@@ -405,6 +410,7 @@
         "invalid_member": "i couldn't do anything because the member {mention} either isn't valid or isn't in the server anymore",
         "invalid_password": "at least one pair of characters from the secret key doesn't represent a number, maybe your secret key was not sent by me.",
         "invalid_role": "i couldn't do anything because the role {mention} is invalid",
+        "long_prefix": "my prefix cannot be longer than 4 characters.",
 		"lower_bot": "i can do nothing to a member who is at my position or higher",
         "lower_roles": "'i can't manage a role if that's higher or equal than my highest role",
 		"NaN": "whatever you typed is not a valid number. Or are you gonna tell me {value} is a number?",

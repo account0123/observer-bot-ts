@@ -19,8 +19,8 @@ export class SayCommand implements ArgCommand {
 		const text = args.join(' ')
 		const regex = /to ([\w]+)$/m
 		const m = text.match(regex)
-		const bot = msg.guild!.member(msg.client.user!)!
-		if(m){
+		if(m && msg.guild){
+			const bot = msg.guild.member(msg.client.user!)!
 			const channel = ChannelFinder.getChannel(msg, m[1])
 			if(channel && channel.type === 'text' && channel.permissionsFor(bot)!.has('SEND_MESSAGES')){
 				const textchannel = <TextChannel> channel
