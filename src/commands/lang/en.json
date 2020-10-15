@@ -237,6 +237,11 @@
             "fulldescription": "Shows or changes the language i type (`en` (english) & `es` (spanish) available)",
             "usage": "[new language]"
         },
+        "rae":{
+            "description": "Defines a spanish word according to RAE",
+            "usage": "<word>",
+            "no_results": "*There's no result for {word}*"
+        },
         "removerole":{
             "description": "Removes from a given member the given role.",
             "usage": "<user> <role>",

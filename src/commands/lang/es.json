@@ -240,6 +240,11 @@
             "description": "Silencia a todos los miembros de un canal de voz por tiempo (i)limitado",
             "usage": "everyone from  <canal> [for <cantidad> <unidad de tiempo>]"
         },
+        "rae":{
+            "description": "Define una palabra según la RAE",
+            "usage": "<palabra>",
+            "no_results": "*No hay resultados para {word}*"
+        },
         "removerole":{
             "description": "Remueve al miembro indicado un rol.",
             "usage": "<usuario> <rol>",
