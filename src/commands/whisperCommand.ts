@@ -10,7 +10,7 @@ export class WhisperCommand implements ArgCommand {
 	shortdescription: string = 'info.whisper.description'
 	fulldescription: string = this.shortdescription
 	usage: string = 'info.whisper.usage'
-	examples: string[] = ['hiiii', 'this message is secret']
+	examples: string[] = ['@user#1234 hiiii', '123456789987654321 this message is secret']
 	permission: string = ''
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const mention = args.shift()!

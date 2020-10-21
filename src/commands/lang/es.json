@@ -218,7 +218,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevos comandos:\n- deletedis.\n- resetmember\n- renameeveryone\n- createchannel\n- mute\n- set\n- whisper\n\nA lot of commands fixed."
+                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevos comandos:\n- deletedis.\n- resetmember\n- renameeveryone\n- createchannel\n- mute\n- set\n- whisper\n\nMuchos comandos arreglados."
             }
         },
         "kick": {
@@ -237,8 +237,8 @@
             "usage": "[idioma a cambiar]"
         },
         "mute":{
-            "description": "Silencia a todos los miembros de un canal de voz por tiempo (i)limitado",
-            "usage": "everyone from  <canal> [for <cantidad> <unidad de tiempo>]"
+            "description": "Silencia a un miembro (o todos) de un canal de voz por tiempo (i)limitado",
+            "usage": "<everyone` o `miembro> from  <canal> [for <cantidad> <unidad de tiempo>]"
         },
         "rae":{
             "description": "Define una palabra según la RAE",
@@ -284,7 +284,8 @@
                 "creation": "Fecha de creación",
                 "hoist": "Destacado",
                 "mentionable": "Mentionable",
-                "all": "*Todos los permisos*"
+                "all": "*Todos los permisos*",
+                "none": "*Sin permisos*"
             }
         },
         "say": {
@@ -394,6 +395,10 @@
                 "activity": "Actividad actual",
                 "footer": "* Para ver el conjunto de valores agrega --details al comando"
             }
+        },
+        "whisper": {
+            "description": "Envía un MD a la persona elegida",
+            "usage": "<usuario> <texto>"
         }
     },
     "permissions": {

@@ -15,7 +15,11 @@ export class StopCommand implements Command {
       return
     } 
     Connections.db.end()
-    if(!FormatCommand.webhooks) shutdown(message)
+    console.log('Connection closed!')
+    if(!FormatCommand.webhooks){
+      shutdown(message)
+      return
+    }
     for (const wh of FormatCommand.webhooks.values()) {
       const guild = message.client.guilds.resolve(wh.guildID)
       if(guild){
@@ -33,5 +37,8 @@ export class StopCommand implements Command {
 }
 
 function shutdown(msg: Message){
-  msg.channel.send('`Deteniendo...`').then( message => message.client.destroy());  
+  msg.channel.send('`Deteniendo...`').then( message => {
+    message.client.destroy()
+    process.exit(1)
+  });  
 }

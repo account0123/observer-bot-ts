@@ -22,7 +22,7 @@ export class RoleInfoCommand implements ArgCommand {
 		}
 		const message = await msg.channel.send('`Cargando información de ' + role.name + '...`')
 		const e = 'info.roleinfo.embed.'
-		const [yes, no, title, position, hoist, mentionable, created, permissions,all] = await Promise.all([
+		const [yes, no, title, position, hoist, mentionable, created, permissions,all,none] = await Promise.all([
 			l.translate('yes'),
 			l.translate('no'),
 			l.translate(e+'title',role.name),
@@ -31,7 +31,8 @@ export class RoleInfoCommand implements ArgCommand {
 			l.translate(e+'mentionable'),
 			l.translate(e+'creation'),
 			l.translate(e+'permissions'),
-			l.translate(e+'all')
+			l.translate(e+'all'),
+			l.translate(e+'none')
 		]);
 		const isHoist = async ()=> role.hoist ? yes : no
 		const isMentionable = async ()=>role.mentionable? yes : no
@@ -39,6 +40,7 @@ export class RoleInfoCommand implements ArgCommand {
 		const dividePermissions = async () =>{
 			if(role.permissions.bitfield === Permissions.ALL) return [[all],['\u200B'],['\u200B']]
 			const a = await Promise.all(role.permissions.toArray().map(s=>l.translate('permissions.'+s)))
+			if(a.length === 0) return [[none],['\u200B'],['\u200B']]
 			if(a.length < 12) return [a,['\u200B'],['\u200B']]
 			if(a.length < 23) return [a.slice(0,11),a.slice(11),['\u200B']]
 			return [a.slice(0,11),a.slice(11,22),a.slice(22)]

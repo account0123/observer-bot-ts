@@ -219,7 +219,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: deletedis.\n\nNew commands:\n- resetmember\n- renameeveryone\n- createchannel\n- mute\n- set\n- whisper\n\nMuchos comandos arreglados"
+                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: deletedis.\n\nNew commands:\n- resetmember\n- renameeveryone\n- createchannel\n- mute\n- set\n- whisper\n\nA lot of commands fixed"
             }
         },
 	    "kick": {
@@ -236,6 +236,10 @@
             "description": "Language i'm using",
             "fulldescription": "Shows or changes the language i type (`en` (english) & `es` (spanish) available)",
             "usage": "[new language]"
+        },
+        "mute": {
+            "description": "Mutes a member (or everyone) from a voice channel for (un)limited time",
+            "usage": "<everyone` or `member> from  <channel> [for <quantity> <time unit>]"
         },
         "rae":{
             "description": "Defines a spanish word according to RAE",
@@ -280,7 +284,8 @@
                 "permissions": "Permissions",
                 "hoist": "Hoisted",
                 "mentionable": "Mentionable",
-                "all": "*All permissions*"
+                "all": "*All permissions*",
+                "none": "*No permissions*"
             }
         },
         "say": {
@@ -369,6 +374,10 @@
                 "activity": "Present Activity",
                 "footer": "* If you wanna see those values as array add --details to this command"
             }
+        },
+        "whisper": {
+            "description": "Sends a DM at chosen user",
+            "usage": "<user> <text>"
         }
     },
     "permissions": {
