@@ -28,15 +28,20 @@ const sniper = new SnipeHandler();
 //////////////////////////////////////////////////////////////////
 // Discord Events: https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-channelCreate
 
-client.on("ready", () => { 
+client.on("ready", () => {
   console.log("Observer has started");
   new Connections(client)}
   );
 client.on("message", (message: Message) => { new CommandHandler().handleMessage(message); });
 client.on('messageDelete',(deleted: Message| PartialMessage)=>sniper.saveDeletedMessage(deleted))
 client.on('messageUpdate',(old: Message | PartialMessage)=>sniper.saveEditedMessage(old))
-client.on("error", e => { console.error("Discord client error!", e); });
+client.on('guildCreate', guild => {
+  const q = Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [guild.id, guild.name, '!!', 'en']);
+  q.then(()=>console.log('Servidor registrado: ' + guild.id));
+  q.catch(e=>console.error(e));
+});
+client.on("error", e => console.error("Discord client error!", e))
 
 client.login(DISCORD_TOKEN).catch(e=>console.error(e));
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}!`));
+app.listen(PORT, () => console.log(`Server started on port ${PORT}!`))
