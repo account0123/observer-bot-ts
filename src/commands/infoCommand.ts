@@ -7,7 +7,7 @@ export class InfoCommand implements Command {
 	guildExclusive: boolean = false
 	shortdescription: string = 'info.info.description'
 	fulldescription: string = this.shortdescription
-	private readonly version:string = 'v1.1.0b'
+	private readonly version:string = 'v1.1.0c'
 	async run(msg: Message, l: Lang): Promise<void> {
 		var color = 0xffffff
 		if(msg.guild) color = msg.guild.member(msg.client.user!)!.displayColor

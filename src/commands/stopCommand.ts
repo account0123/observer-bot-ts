@@ -39,6 +39,6 @@ export class StopCommand implements Command {
 function shutdown(msg: Message){
   msg.channel.send('`Deteniendo...`').then( message => {
     message.client.destroy()
-    process.exit(1)
+    process.exit(0)
   });  
 }

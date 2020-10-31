@@ -36,12 +36,12 @@ client.on("message", (message: Message) => { new CommandHandler().handleMessage(
 client.on('messageDelete',(deleted: Message| PartialMessage)=>sniper.saveDeletedMessage(deleted))
 client.on('messageUpdate',(old: Message | PartialMessage)=>sniper.saveEditedMessage(old))
 client.on('guildCreate', guild => {
-  const q = Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [guild.id, guild.name, '!!', 'en']);
+  const q = Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [guild.id, guild.name, '!!', 'es']);
   q.then(()=>console.log('Servidor registrado: ' + guild.id));
   q.catch(e=>console.error(e));
 });
 client.on("error", e => console.error("Discord client error!", e))
-
+// Beta NzA4ODg0MjYwNjY0MjQ2MzI0.Xrd16g.3CkRz6-jepJ5P8d3qcSnjMKu1lo
 client.login(DISCORD_TOKEN).catch(e=>console.error(e));
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}!`))

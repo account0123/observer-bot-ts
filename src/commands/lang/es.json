@@ -484,6 +484,7 @@
     "reason": "Comando ejecutado por {author}",
     "yes": "Sí",
     "no": "No",
+    "none": "*Ninguno*",
     "cancelling": "Cancelando comando...",
     "canceled": "Comando cancelado.",
     "nothing_to_cancel": "*No hay nada que cancelar.*",

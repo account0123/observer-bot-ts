@@ -47,6 +47,7 @@ export class HelpCommand implements ArgCommand {
 				limit += limit
 			}
 		}
+		if(commands.length > 0) pages.push(commands)
 		const title = await l.translate('info.help.general.title')
 		const footer = await l.translate('info.help.general.footer',this.prefix)
 		const embed = new MessageEmbed().setTitle(title).setDescription(pages[0]).setFooter(footer).setTimestamp();
@@ -55,6 +56,8 @@ export class HelpCommand implements ArgCommand {
 		else embed.setColor(0xffffff)
 		embed.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!)
 		this.msg.channel.send(embed).then((msg)=>{
+			let page = 1
+			if(pages.length < 2) return
 			msg.react('➡️')
 			const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
 				if(reaction.emoji.name === '➡️' && user.id != bot.id) return true
@@ -62,8 +65,10 @@ export class HelpCommand implements ArgCommand {
 			};
 			const rc = new ReactionCollector(msg, f, {time: 60000})
 			rc.on('collect', (reaction)=>{
+				page++
+				if(pages.length === page) rc.stop('Last page')
 				reaction.remove()
-				const e2 = new MessageEmbed().setAuthor(bot.tag,bot.avatarURL({dynamic:true})!).setTitle(title).setDescription(pages[1]).setFooter(footer).setTimestamp()
+				const e2 = new MessageEmbed().setAuthor(bot.tag,bot.avatarURL({dynamic:true})!).setTitle(title).setDescription(pages[1]).setFooter(`Page ${page} of ${pages.length} |` + footer).setTimestamp()
 				if(msg.guild) e2.setColor(msg.guild.member(bot)!.displayColor)
 				else e2.setColor(0xffffff)
 				msg.edit(e2);
