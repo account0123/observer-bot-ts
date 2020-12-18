@@ -207,8 +207,14 @@ function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | unde
 	  const key = splits[0].trim()
 	  const sign = key.slice(0,1)
 	  const target = key.slice(1)
-	  if(key == 'hoist') splits[1] = 'true'
-	  if(key == 'mentionable') splits[1] = 'true'
+	  if(sign === '-'){
+		  if(target === 'hoist') properties.set('hoist', 'false')
+		  if(target === 'mentionable') properties.set('mentionable', 'false')
+	  }
+	  if(sign === '+'){
+		if(target === 'hoist') properties.set('hoist', 'true')
+		if(target === 'mentionable') properties.set('mentionable', 'true')
+	  }
 	  if (splits.length != 2) return
 	  properties.set(key,splits[1].trim())
 	});
@@ -234,7 +240,7 @@ function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | unde
 		data.permissions = parseInt(value,16)
 		if(isNaN(data.permissions)) data.permissions = oldRole.permissions
 		break
-		case 'above':
+	  case 'above':
 			const lowerRole = RoleFinder.getRole(msg,value)
 			if(!lowerRole) break
 			const pos = lowerRole.position + 1
@@ -244,7 +250,7 @@ function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | unde
 			}
 			data.position = pos
 		break
-		case 'below':
+	  case 'below':
 			const higherRole = RoleFinder.getRole(msg,value)
 			if (!higherRole) break
 			const pos_c = higherRole.position - 1
@@ -254,7 +260,7 @@ function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | unde
 			}
 			data.position = pos_c
 		break
-		case 'position': case 'pos':
+	  case 'position': case 'pos':
 		data.position = parseInt(value)
 		if (isNaN(data.position)) {
 			l.reply('info.editrole.position_NaN',value)
@@ -263,10 +269,12 @@ function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | unde
 		}
 		break
 	  case 'hoist':
-		if(value == 'true') data.hoist =true
+		if(value === 'true') data.hoist = true
+		if(value === 'false') data.hoist = false
 		break
 	  case 'mentionable':
-		if(value == 'true') data.mentionable =true
+		if(value === 'true') data.mentionable = true
+		if(value === 'false') data.mentionable = false
 		break
 	  }
 	}

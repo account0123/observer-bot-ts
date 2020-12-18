@@ -110,6 +110,24 @@
             "success": "**{author}** has demoted to **{member}**, they aren't **{role}** anymore. Now they're **{member.highest}.**",
             "error": "I couldn't demote because of this error: `{error}`"
         },
+        "editchannel":{
+            "description": "Edits a channel.",
+            "usage": "[<channel> [property:value]...]]",
+            "property_question": "¿Which property do you want to modify on that channel? Properties are `name`, `topic`, `position`, `permissions`",
+            "name_question": "What will be the new channel name?",
+            "topic_question": "What will be the new channel topic?",
+            "position_question": "Which position do you want to move that channel at? Answer typing a `number`",
+            "permissions_question": "What do you want to do? Answer typing `allow roles` if you want to allow permissions to one or more roles, `deny roles` if you want to deny them permissions, `allow users` if you want to allow permissions to one or more members or `deny users` if you want to deny them permissions",
+            "allow_role_question": "Which roles do you want to allow channel permissions to? You can type the role name, paste role IDs, or mention them. Split up each role with a line break.",
+            "deny_role_question": "Which roles do you want to deny channel permissions to? You can type the role name, paste role IDs, or mention them. Split up each role with a line break.",
+            "allow_user_question": "Which members do you want to allow channel permissions to? You can type the username (include the #xxxx part to avoid conflicts), paste user IDs, or mention them. Split up each member with a line break.",
+            "deny_user_question": "Which members do you want to deny channel permissions to? You can type the username (include the #xxxx part to avoid conflicts), paste user IDs, or mention them. Split up each member with a line break.",
+            "short_name": "{name} is too short, if it were longer maybe...",
+            "more_options_question": "Do you want to modify another channel property? Answer `yes` or `no`",
+            "permissions_list_question": "Which permissions do you want to modify to these {length} {type} ? You can type a number either decimal or hexadecimal OR a [permissions names] list(https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) splitted by line breaks.",
+            "long_name": "The name you typed is too ling, please, 100 characters at most",
+            "long_topic": "The topic you typed is too ling, please,1024 characters at most."
+        },
         "editrole":{
             "description": "Edits a role.",
             "fulldescription": "Edits a single property or various properties of chosen role in `property:value` format. Properties are:\n`name` - New role name\n`color` - New color as [hex number](https://htmlcolors.com/color-picker) or as [constant](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - The sum of [the permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna change as [hex number](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (eg: A role with all permissions [7fffffff] but administrator [8] should be 7ffffff7)\n**Togglables:**\nA togglable property hasn't a value associated, instead you use a `-` prefix to remove it or `+` prefix to add it.\n`hoist` - Wheter the role is visible in member list (+) or not (-)\n`mentionable` - Wheter the role is mentionable by any member (+), useful for helper roles, or not (-).\n`any_permission` - If you wanna add (+) or remove (-) a single permission, just need to use either of the signs as prefix and type the [official permission name](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags). Eg: +manage_roles",
@@ -139,8 +157,8 @@
                 "success": "**{role.name}** now has the following permissions: `{r.permissions.toArray}`",
                 "error": "i couldn't set {value} bitfield permission to role. Maybe you are asking for more permissions i can give.",
                 "NaN" : "hex number permission isn't valid, it must be the hexadecimal sum of all permissions to set on role. If you just wanna add/remove a single permission you can use `+permission` o `-permission` in the command args. Eg: +ban_members",
-                "add_success": "**{role}** now has **{flag}** added.",
-                "remove_success": "**{role}** now hasn't **{flag}** anymore."
+                "add_success": "**{role}** now has `**{flag}**` added.",
+                "remove_success": "**{role}** now hasn't `**{flag}**` anymore."
             },
             "hoist_change":{
                 "add_success": "**{role}** now **is hoisted**.",
@@ -219,7 +237,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "`focusban` & `focuskick` commands can be accumulated until 10 times, don't overcharge me. To cancel a command type `cancel` command and react at corresponding number.\n\nNew command: deletedis.\n\nNew commands:\n- resetmember\n- renameeveryone\n- createchannel\n- mute\n- set\n- whisper\n\nA lot of commands fixed"
+                "changes": "New command: editchannel."
             }
         },
 	    "kick": {

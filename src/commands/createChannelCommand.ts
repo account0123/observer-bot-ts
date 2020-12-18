@@ -67,7 +67,7 @@ export class CreateChannelCommand implements ArgCommand{
 					if(allows.length === 0) return none
 					else return allows
 				};			
-				const embed = new MessageEmbed().setTitle(l.translate(e+'title')).setColor(0)
+				const embed = new MessageEmbed().setTitle(await l.translate(e+'title')).setColor(0)
 				.addFields(
 					{ name: await l.translate(e+'name'), value: channel.name, inline: true},
 					{ name: await l.translate(e+'position'), value: channel.position, inline: true},
@@ -75,7 +75,7 @@ export class CreateChannelCommand implements ArgCommand{
 					{ name: await l.translate(e+'allowed'), value: allowValues(), inline: true},
 					{ name: await l.translate(e+'denied'), value: denyValues(), inline: true}
 				).setTimestamp();
-				l.reply('info.createchannel.success',channel.toString())
+				l.send('info.createchannel.success',channel.toString())
 				msg.channel.send(embed)
 				return
 			}).catch( (error) => {
@@ -130,7 +130,7 @@ export class CreateChannelCommand implements ArgCommand{
 				{ name: await l.translate(e+'allowed'), value: allowValues(), inline: true},
 				{ name: await l.translate(e+'denied'), value: denyValues(), inline: true}
 			).setTimestamp();
-			l.reply('info.createchannel.success',channel.toString())
+			l.send('info.createchannel.success', channel.toString())
 			msg.channel.send(embed)
 			return
 		}).catch( (error) => {

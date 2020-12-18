@@ -61,10 +61,11 @@
         "code": {
             "description": "Copia el mensaje usando [su ID](https://support.discord.com/hc/es/articles/206346498--D%C3%B3nde-puedo-encontrar-mi-ID-de-usuario-servidor-mensaje-) y lo pega en formato de código",
             "usage": "<ID del mensaje>"
-        },"createchannel":{
+        },
+        "createchannel":{
             "description": "Crea un canal con por lo menos el tipo de canal y el nombre",
             "fulldescription": "Crea un nuevo canal con el tipo (`text` o `voice` o `news` o `store` o `category`), un nombre sin espacios y opcionalmente, propiedades en el formato`propiedad:valor` y permisos de canal en el formato `rol/usuario:{permisos...}`. Las propiedades son:\n`position`: La posición del canal contando de arriba a abajo.\n`nsfw`: Si está presente, el canal será marcado como nsfw.\n\nLos permisos de canal corresponden a su [nombre oficial](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags).",
-            "usage": "<tipo> <nombre> [{[propiedad:valor]...}] [allow-roles {[rol:{[permisos]...]}]...}] [deny-roles {[rol:{[permisos]...]}]...}] [allow-users {usuario:{[permisos]...}]...}] [deny-users {[usuario:{[permisos]...}]...}]",
+            "usage": "<tipo>` `<nombre>` `[{[propiedad:valor]...}]` `[allow-roles` [`[rol:{[permisos]...]}]...`]`]` `[deny-roles `[`[rol:{[permisos]...]}]...`]]` [allow-users {usuario:{[permisos]...}]...}] [deny-users {[usuario:{[permisos]...}]...}]",
             "success":"El canal {channel} fue creado sin problemas!",
             "30013": "Error 30013: Cantidad máxima de canales del servidor alcanzada (500)",
             "embed":{
@@ -109,6 +110,24 @@
             "success": "**{author}** ha degradado a **{member}**, ahora ya no es **{role}**. Ahora es **{member.highest}.**",
             "error": "No pude degradar por el error `{error}`"
         },
+        "editchannel":{
+            "description": "Edita un canal.",
+            "usage": "[<canal> [propiedad:valor]...]]",
+            "property_question": "¿Qué propiedad quieres modificar este canal? Las propiedades son `nombre`, `tema`, `posicion`, `permisos`",
+            "name_question": "¿Cómo quieres que se llame el canal?",
+            "topic_question": "¿Cuál quieres que sea el tema del canal?",
+            "position_question": "¿A qué posición quieres mover el canal? Responde con un `número`",
+            "permissions_question": "¿Qué quieres hacer? Responde `allow roles` si quieres permitirle cosas a uno o más roles, `deny roles` si quieres negarles permisos, `allow users` si quieres permitirle cosas a uno o más miembros o `deny users` si quieres negarles permisos",
+            "allow_role_question": "¿A cuáles roles les quieres agregar permisos de canal? Puedes escribir el nombre de los roles, pegar sus IDs del rol, o mencionarlos. Separa cada rol con un salto de línea.",
+            "deny_role_question": "¿A cuáles roles les quieres negar permisos de canal? Puedes escribir el nombre de los roles, pegar sus IDs del rol, o mencionarlos. Separa cada rol con un salto de línea.",
+            "allow_user_question": "¿A cuáles miembros les quieres agregar permisos de canal? Puedes escribir el nombre de los usuarios (incluye la parte de #xxxx para evitar confusiones), pegar sus id, o mencionarlos. Separa cada usuario con un salto de línea.",
+            "deny_user_question": "¿A cuáles miembros les quieres negar permisos de canal? Puedes escribir el nombre de los usuarios (incluye la parte de #xxxx para evitar confusiones), pegar sus id, o mencionarlos. Separa cada usuario con un salto de línea.",
+            "short_name": "El nombre {name} es demasiado corto, si fuera más largo a lo mejor...",
+            "more_options_question": "¿Quieres cambiar otra cosa del canal? Responde `yes` o `no`",
+            "permissions_list_question": "¿Qué permisos les quieres dar a estos {length} {type} ? Puedes poner un número ya sea decimal o hexadecimal O una lista de los [nombres de los permisos oficiales](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) separados por saltos de línea.",
+            "long_name": "El nombre que pusiste es demasiado largo, por favor, máximo 100 caracteres",
+            "long_topic": "El tema de canal que pusiste es demasiado largo, por favor, máximo 1024 carateres"
+        },
         "editrole":{
             "description": "Edita un rol.",
             "fulldescription": "Edita una propiedad o varias propeiedades del rol indicado en el formato `propiedad:nuevo valor`. Las propiedades son:\n`name` - El nuevo nombre del rol\n`color` - El nuevo color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a cambiar en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n**Alternos:**\nA los alternos no se les asigna un valor, sino que se les antepone un `-` para quitarlo o un `+` para agregarlo.\n`hoist` - Determina si el rol será visible (+) o no (-) en la lista de miembros\n`mentionable` - Determina si el rol puede mencionarse por cualquier miembro (+), útil para roles de ayuda, o *solo* quienes tengan el permiso de mencionar a todos los roles (-).\n`cualquier_permiso` - Si solo quieres agregar (+) o quitar (-) un permiso solo basta con prefijar con un signo y poner el [nombre oficial](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) del permiso. Ejemplo: +manage_roles",
@@ -138,8 +157,8 @@
                 "success": "**{role.name}** ahora tiene los permisos `{r.permissions.toArray}`",
                 "error": "no pude cambiarle los permisos a {value} al rol. Quizás estás poniendo más permisos de los que puedo permitir.",
                 "NaN" : "el número en hexadecimal no es válido, tiene que ser la suma en hexadecimal de todos los permisos a poner en el rol. Si solo quieres agregar o quitar un permiso usa el argumento `+permiso` o `-permiso`. Ejemplo: +ban_members",
-                "add_success": "**{role}** ahora tiene el permiso **{flag}** agregado.",
-                "remove_success": "**{role}** ahora no tiene el permiso **{flag}**."
+                "add_success": "**{role}** ahora tiene el permiso `**{flag}**` agregado.",
+                "remove_success": "**{role}** ahora no tiene el permiso `**{flag}**`."
             },
             "hoist_change":{
                 "add_success": "**{role}** ahora **se muestra**",
@@ -218,7 +237,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Comandos `focusban` y `focuskick` se pueden acumular hasta 10 veces, no me sobreexplotes. Para cancelar un comando usa el comando `cancel` y reacciona al número correspondiente.\n\nNuevos comandos:\n- deletedis.\n- resetmember\n- renameeveryone\n- createchannel\n- mute\n- set\n- whisper\n\nMuchos comandos arreglados."
+                "changes": "Nuevo comando: editchannel."
             }
         },
         "kick": {
@@ -444,7 +463,7 @@
         "invalid_message": "la ID ({id}) no pudo resolverse como un mensaje de este canal, quizás fue borrado (?)",
         "invalid_member": "no pude hacer nada porque el miembro {mention} no es válido o ya no está aquí como miembro",
         "invalid_password": "al menos un par de caracteres de las contraseña no representa un número, quizás esa contraseña no fue enviada por mi.",
-        "invalid_role": "no pude hacer nada porque el rol {mention} no es válido",
+        "invalid_role": "no encontré el rol {mention}, puede que no sea válido",
         "long_prefix": "mi prefijo no puede tener más de 4 caracteres.",
         "lower_bot": "no puedo hacerle nada a un miembro que esté a mi nivel o más arriba que yo",
         "lower_roles": "no puedo modificar un rol si está más arriba o es igual que mi rol más alto.",
@@ -489,5 +508,6 @@
     "canceled": "Comando cancelado.",
     "nothing_to_cancel": "*No hay nada que cancelar.*",
     "nice_try": "Buen intento, pero no puedes cancelar este futuro {command}.",
-    "members": "humano(s)"
+    "members": "humano(s)",
+    "try_again": "Intenta otra vez"
 }
