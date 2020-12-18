@@ -126,7 +126,8 @@
             "more_options_question": "¿Quieres cambiar otra cosa del canal? Responde `yes` o `no`",
             "permissions_list_question": "¿Qué permisos les quieres dar a estos {length} {type} ? Puedes poner un número ya sea decimal o hexadecimal O una lista de los [nombres de los permisos oficiales](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) separados por saltos de línea.",
             "long_name": "El nombre que pusiste es demasiado largo, por favor, máximo 100 caracteres",
-            "long_topic": "El tema de canal que pusiste es demasiado largo, por favor, máximo 1024 carateres"
+            "long_topic": "El tema de canal que pusiste es demasiado largo, por favor, máximo 1024 carateres",
+            "success": "canal {name} modificado sin problemas."
         },
         "editrole":{
             "description": "Edita un rol.",

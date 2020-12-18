@@ -190,6 +190,7 @@ export class EditChannelCommand implements ArgCommand {
 				this.c = this.m.channel.createMessageCollector(f,{time: time})
 				this.c.on('collect', (m: Message)=>{
 					const reply = m.content.toLowerCase().trim()
+					console.log('Reply to permissions question: '+ reply)
 					switch(reply){
 						case 'allow roles':
 							this.askPermissionsTarget('allow', 'role')
@@ -213,11 +214,23 @@ export class EditChannelCommand implements ArgCommand {
 
 	
 	askPermissionsTarget(allowOrDeny: 'allow' |'deny', type: 'role' | 'member') {
-		let store: string[]
-		if(allowOrDeny === 'allow' && type === 'role') store = this.allowed_roles
-		if(allowOrDeny === 'allow' && type === 'member') store = this.allowed_users
-		if(allowOrDeny === 'deny' && type === 'role') store = this.denied_roles
-		if(allowOrDeny === 'deny' && type === 'member') store = this.denied_users
+		let store: string[] = []
+		if(allowOrDeny === 'allow' && type === 'role'){
+			store = this.allowed_roles
+			this.lang.send('info.editchannel.allow_role_question')
+		} 
+		if(allowOrDeny === 'allow' && type === 'member'){
+			this.lang.send('info.editchannel.allow_user_question')
+			store = this.allowed_users
+		} 
+		if(allowOrDeny === 'deny' && type === 'role'){
+			this.lang.send('info.editchannel.deny_role_question')
+			store = this.denied_roles
+		} 
+		if(allowOrDeny === 'deny' && type === 'member'){
+			this.lang.send('info.editchannel.deny_user_question')
+			store = this.denied_users
+		} 
 		const f = (m: Message)=> m.author.id === this.m.author.id ? true : false
 		const time = 120000
 		let completed = false
@@ -399,7 +412,7 @@ export class EditChannelCommand implements ArgCommand {
 				{ name: await this.lang.translate(e+'allowed'), value: allowValues(), inline: true},
 				{ name: await this.lang.translate(e+'denied'), value: denyValues(), inline: true}
 			).setTimestamp();
-			this.lang.send('info.createchannel.success', channel.toString())
+			this.lang.send('info.editchannel.success', channel.toString())
 			this.m.channel.send(embed)
 			return
 		});

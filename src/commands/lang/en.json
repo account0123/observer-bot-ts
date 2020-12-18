@@ -126,7 +126,8 @@
             "more_options_question": "Do you want to modify another channel property? Answer `yes` or `no`",
             "permissions_list_question": "Which permissions do you want to modify to these {length} {type} ? You can type a number either decimal or hexadecimal OR a [permissions names] list(https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) splitted by line breaks.",
             "long_name": "The name you typed is too ling, please, 100 characters at most",
-            "long_topic": "The topic you typed is too ling, please,1024 characters at most."
+            "long_topic": "The topic you typed is too ling, please,1024 characters at most.",
+            "success": "{name} channel modified successfully."
         },
         "editrole":{
             "description": "Edits a role.",
