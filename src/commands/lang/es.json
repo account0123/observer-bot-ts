@@ -112,7 +112,7 @@
         },
         "editchannel":{
             "description": "Edita un canal.",
-            "usage": "[<canal> [propiedad:valor]...]]",
+            "usage": "<canal> [propiedad a cambiar]",
             "property_question": "¿Qué propiedad quieres modificar este canal? Las propiedades son `nombre`, `tema`, `posicion`, `permisos`",
             "name_question": "¿Cómo quieres que se llame el canal?",
             "topic_question": "¿Cuál quieres que sea el tema del canal?",

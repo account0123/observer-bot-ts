@@ -13,7 +13,7 @@ export class EditChannelCommand implements ArgCommand {
 	shortdescription: string = 'info.editchannel.description'
 	fulldescription: string = this.shortdescription
 	usage: string = 'info.editchannel.usage'
-	examples: string[] = ['lounge', 'lewd-images nsfw:true']
+	examples: string[] = ['lounge', 'lewd-images topic']
 	permission: string = 'MANAGE_CHANNELS'
 	channel!: TextChannel
 	m!: Message
@@ -43,31 +43,27 @@ export class EditChannelCommand implements ArgCommand {
 			return
 		}
 		this.channel = channel
-		switch (args.length) {
-			case 1:
-				await l.send('info.editchannel.property_question')
-				this.askProperty()
-				break;
-			case 2:
-				switch (args[1].toLowerCase().trim()) {
-					case 'nombre': case 'name':
-						this.askValue('name')
-						break;
-					case 'nsfw':
-						this.askValue('nsfw')
-						break;
-					case 'posicion': case 'position':
-						this.askValue('pos')
-						break;
-					case 'permisos': case 'permissions': case 'perms':
-						this.askValue('perms')
-						break;
-					default:
-						this.lang.send('info.editchannel.property_question')
-						break;
-				}
-			default:
-				break;
+		if(args.length === 1){
+			await l.send('info.editchannel.property_question')
+			this.askProperty()
+		}else{
+			switch (args[1].toLowerCase().trim()) {
+				case 'nombre': case 'name':
+					this.askValue('name')
+					break;
+				case 'nsfw':
+					this.askValue('nsfw')
+					break;
+				case 'posicion': case 'position':
+					this.askValue('pos')
+					break;
+				case 'permisos': case 'permissions': case 'perms':
+					this.askValue('perms')
+					break;
+				default:
+					this.askProperty()
+					break;
+			}
 		}
 	}
 	private askProperty() {
@@ -76,7 +72,7 @@ export class EditChannelCommand implements ArgCommand {
 		let completed = false
 		const collector = msg.channel.createMessageCollector(f,{time: 15000})
 		collector.on('collect', m => {
-			switch (m.toLowerCase().trim()) {
+			switch (m.content.toLowerCase().trim()) {
 				case 'nombre': case 'name':
 					completed = true
 					this.askValue('name')

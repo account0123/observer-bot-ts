@@ -112,7 +112,7 @@
         },
         "editchannel":{
             "description": "Edits a channel.",
-            "usage": "[<channel> [property:value]...]]",
+            "usage": "<channel> [property to change]",
             "property_question": "¿Which property do you want to modify on that channel? Properties are `name`, `topic`, `position`, `permissions`",
             "name_question": "What will be the new channel name?",
             "topic_question": "What will be the new channel topic?",
