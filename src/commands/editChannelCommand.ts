@@ -329,36 +329,34 @@ export class EditChannelCommand implements ArgCommand {
 		};
 		const synthetizePermissions = ()=>{
 			const permissions_overwrites: OverwriteData[] = []
-			const og_overwrites = this.channel.permissionOverwrites.array()
-			for (const og_o of og_overwrites) {
-				if(og_o.type === 'role'){
-					for (const role of this.allowed_roles) {
-						if(og_o.id === role)
-							permissions_overwrites.push(uncolide(og_o, {allow: this.allowed_role_perms, deny: 0}))
-						else
-							permissions_overwrites.push({id: role, allow: this.allowed_role_perms, deny: 0, type: 'role'})
-					}
-					for (const role of this.denied_roles) {
-						if(og_o.id === role)
-							permissions_overwrites.push(uncolide(og_o, {allow: 0, deny: this.denied_role_perms}))
-						else
-							permissions_overwrites.push({id: role, allow: 0, deny: this.denied_role_perms, type: 'role'})
-					}
-				}
-				if(og_o.type === 'member'){
-					for (const member of this.allowed_users) {
-						if(og_o.id === member) 
-							permissions_overwrites.push(uncolide(og_o, {allow: this.allowed_role_perms, deny: 0}))
-						else 
-							permissions_overwrites.push({id: member, allow: this.allowed_role_perms, deny: 0, type: 'member'})
-					}
-					for (const member of this.denied_users) {
-						if(og_o.id === member)
-							permissions_overwrites.push(uncolide(og_o, {allow: 0, deny: this.denied_role_perms}))
-						else 
-							permissions_overwrites.push({id: member, allow: 0, deny: this.denied_role_perms, type: 'member'})
-					}
-				}
+			const og = this.channel.permissionOverwrites.array()
+			for(const id of this.allowed_roles){
+				let match: PermissionOverwrites | undefined
+				if(match = og.find((o)=>id === o.id))
+					permissions_overwrites.push(uncolide(match, {allow: this.allowed_role_perms, deny: 0}))
+				else
+					permissions_overwrites.push({id: id, allow: this.allowed_role_perms, deny: 0, type: 'role'})
+			}
+			for(const id of this.denied_roles){
+				let match: PermissionOverwrites | undefined
+				if(match = og.find((o)=>id === o.id))
+					permissions_overwrites.push(uncolide(match, {allow: 0, deny: this.denied_role_perms}))
+				else
+					permissions_overwrites.push({id: id, allow: 0, deny: this.denied_role_perms, type: 'role'})
+			}
+			for(const id of this.allowed_users){
+				let match: PermissionOverwrites | undefined
+				if(match = og.find((o)=>id === o.id))
+					permissions_overwrites.push(uncolide(match, {allow: this.allowed_user_perms, deny: 0}))
+				else
+					permissions_overwrites.push({id: id, allow: this.allowed_user_perms, deny: 0, type: 'member'})
+			}
+			for(const id of this.denied_users){
+				let match: PermissionOverwrites | undefined
+				if(match = og.find((o)=>id === o.id))
+					permissions_overwrites.push(uncolide(match, {allow: 0, deny: this.denied_user_perms}))
+				else
+					permissions_overwrites.push({id: id, allow: 0, deny: this.denied_user_perms, type: 'member'})
 			}
 			return permissions_overwrites
 		};
