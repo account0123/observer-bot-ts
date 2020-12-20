@@ -104,22 +104,25 @@ export class EditChannelCommand implements ArgCommand {
 		const next = ()=>{
 			this.lang.send('info.editchannel.more_options_question')
 			completed = false
-			const c3 = this.m.channel.createMessageCollector(f, {time: time})
+			const c3 = this.m.channel.createMessageCollector(f, {time: time/2})
 			c3.on('collect', (m: Message)=>{
 				const reply = m.content.toLowerCase().trim()
 				if(reply === 'yes'){
 					m.react('✅')
 					completed = true
-					collector.emit('end', m)
+					c3.emit('end', m)
 					this.askProperty()
 				}
 				if(reply === 'no'){
 					m.react('✅')
 					completed = true
-					collector.emit('end', m)
+					c3.emit('end', m)
 					this.editChannel()
 				}
 			});
+			c3.once('end', ()=>{
+				if(!completed) this.editChannel()
+			})
 		}
 		switch (property) {
 			case 'name':
