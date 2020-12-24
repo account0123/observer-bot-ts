@@ -71,12 +71,13 @@ export default class CommandHandler {
     }
     
     var lang: Lang
-    if (message.guild){
+    if (message.guild === null) lang = new Lang(message,message.author.locale || undefined)
+    else{
       lang = new Lang(message)
       const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix from guilds WHERE id=?', [message.guild.id])
-      this.prefix = rows[0].prefix
+      if(rows[0]['prefix']) this.prefix = rows[0].prefix
+      else  Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [message.guild.id, message.guild.name, '!!', 'es']).then(()=>console.log('Servidor registrado: ' + message.guild!.id)).catch(e=>console.error(e));
     }
-    else lang = new Lang(message,message.author.locale)
     const commandParser = new CommandParser(message, this.prefix);
 
     const matchedCommand = CommandHandler.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
