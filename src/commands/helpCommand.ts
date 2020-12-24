@@ -31,6 +31,7 @@ export class HelpCommand implements ArgCommand {
 		if(!this.prefix) return
 		if(!this.msg) return
 		const l = this.lang
+		// creates embed.description (all commands list)
 		const createList = async (c:Command | ArgCommand) => `**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`;
 		const array = CommandHandler.commands.map(async c=>await createList(c)).concat(CommandHandler.argCommands.map(async c=>await createList(c)))
 		const allcommands = (await Promise.all(array)).sort()
@@ -38,12 +39,17 @@ export class HelpCommand implements ArgCommand {
 		let limit = 2048
 		let characters = 0
 		let commands: string[] = []
-		for (const command of allcommands) {
-			characters += command.length
+		// loop for each command (string) of allcommands (string[])
+		for(const command of allcommands) {
+			// adds length of command
+			characters += command.length + 1
+			// while characters + command.length < or = 2048, commands <- command
 			if(characters <= limit) commands.push(command)
 			else {
+				// if characters + command.length > 2048, pages <- commands, commands will be empty, limit increases
 				pages.push(commands)
 				commands = []
+				commands.push(command)
 				limit += limit
 			}
 		}
@@ -60,18 +66,35 @@ export class HelpCommand implements ArgCommand {
 			if(pages.length < 2) return
 			msg.react('➡️')
 			const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
-				if(reaction.emoji.name === '➡️' && user.id != bot.id) return true
+				if(reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️' && user.id != bot.id) return true
 				else return false
 			};
 			const rc = new ReactionCollector(msg, f, {time: 60000})
 			rc.on('collect', (reaction)=>{
-				page++
-				if(pages.length === page) rc.stop('Last page')
-				reaction.remove()
-				const e2 = new MessageEmbed().setAuthor(bot.tag,bot.avatarURL({dynamic:true})!).setTitle(title).setDescription(pages[1]).setFooter(`Page ${page} of ${pages.length} |` + footer).setTimestamp()
-				if(msg.guild) e2.setColor(msg.guild.member(bot)!.displayColor)
-				else e2.setColor(0xffffff)
-				msg.edit(e2);
+				if(reaction.emoji.name === '➡️'){
+					page++
+					msg.react('⬅️')
+					reaction.remove()
+					if(pages.length < page){
+						page--
+						return
+					}
+					const e2 = new MessageEmbed().setAuthor(bot.tag,bot.avatarURL({dynamic:true})!).setTitle(title).setDescription(pages[page -1]).setFooter(`Page ${page} of ${pages.length} |` + footer).setTimestamp()
+					if(msg.guild) e2.setColor(msg.guild.member(bot)!.displayColor)
+					else e2.setColor(0xffffff)
+					msg.edit(e2);
+				}
+				if(reaction.emoji.name === '⬅️'){
+					page--
+					if(page === 0){
+						page = 1
+						return
+					}
+					const e2 = new MessageEmbed().setAuthor(bot.tag,bot.avatarURL({dynamic:true})!).setTitle(title).setDescription(pages[page - 1]).setFooter(`Page ${page} of ${pages.length} |` + footer).setTimestamp()
+					if(msg.guild) e2.setColor(msg.guild.member(bot)!.displayColor)
+					else e2.setColor(0xffffff)
+					msg.edit(e2);
+				}
 			});
 			console.log('Embed de ayuda enviado')});
 	}

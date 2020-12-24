@@ -94,6 +94,11 @@
                 "mentionable": "Mentionable"
             }
         },
+        "createwebhook": {
+            "description": "Creates a webhook for this channel",
+            "success": "Webhook URL you just created",
+            "30007": "Error 30007: Maximum number of webhooks reached (10)"
+        },
         "deletechannel":{
             "description": "Deletes a channel.",
             "fulldescription": "Deletes a channel. The secret key is got using `getpass` command, command only allowed for administrators.",
@@ -238,7 +243,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "New command: editchannel."
+                "changes": "New commands:\neditchannel\ncreatewebhook\nwebhooks"
             }
         },
 	    "kick": {
@@ -393,6 +398,10 @@
                 "activity": "Present Activity",
                 "footer": "* If you wanna see those values as array add --details to this command"
             }
+        },
+        "webhooks": {
+            "description": "Lists all webhooks of this channel or another one. Requires passcode.",
+            "usage": "<passcode from getpass command> [channel]"
         },
         "whisper": {
             "description": "Sends a DM at chosen user",

@@ -94,6 +94,12 @@
                 "mentionable": "Mentionable"
             }
         },
+        "createwebhook": {
+            "description": "Crea un nuevo webhook para este canal",
+            "name_question": "¿Cuál quieres que sea el nombre del webhook? Reacciona con :x: para cancelar",
+            "success": "URL del webhook que creaste",
+            "30007": "Error 30007: 10 webhooks ya existentes. No se pueden crear más."
+        },
         "deletechannel":{
             "description": "Borra un canal.",
             "fulldescription": "Borra un canal. La contraseña se adquiere con el comando `getpass` invocado por cualquier administrador.",
@@ -238,7 +244,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Nuevo comando: editchannel."
+                "changes": "Nuevos comandos:\neditchannel\ncreatewebhook\nwebhooks"
             }
         },
         "kick": {
@@ -416,6 +422,11 @@
                 "footer": "* Para ver el conjunto de valores agrega --details al comando"
             }
         },
+        "webhooks": {
+            "description": "Enlista los webhooks de este canal o de otro. Requiere clave.",
+            "usage": "<clave de seguridad de comando getpass> [canal]",
+            "start": "Estos son los webhooks de {channel}"
+        },
         "whisper": {
             "description": "Envía un MD a la persona elegida",
             "usage": "<usuario> <texto>"
@@ -477,6 +488,7 @@
             "ban": "no tengo permiso para banear. ||Permiso faltante: Banear miembros||",
             "clean": "no tengo permiso para limpiar este chat. ||Permiso faltante: Gestionar mensajes||",
             "create_role": "no tengo permiso para crear roles. ||Permiso faltante: Gestionar roles||",
+            "create_webhook": "no tengo permiso para crear webhooks . ||Permiso faltante: Gestionar webhooks||",
             "delete_channel": "no tengo permiso para borrar canales. ||Permiso faltante: Gestionar canales||",
             "edit_role": "no tengo permiso para editar roles. ||Permiso faltante: Gestionar roles||",
             "kick": "no tengo permiso para expulsar. ||Permiso faltante: Expulsar miembros||",
@@ -488,6 +500,7 @@
             "admin": "este comando es exclusivo para administradores. ||Necesitas: Administrador||",
             "ban": "no tienes permiso para banear. ||Necesitas: Banear miembros||",
             "clean": "no tienes permiso para limpiar este chat. ||Necesitas: Gestionar mensajes||",
+            "create_webhook": "no tienes permiso para crear webhooks . ||Necesitas: Gestionar webhooks||",
             "create_role": "no tienes permiso para crear roles. ||Necesitas: Gestionar roles||",
             "delete_channel": "no tienes permiso para borrar canales. ||Necesitas: Gestionar canales||",
             "edit_role": "no tienes permiso para editar roles. ||Necesitas: Gestionar roles||",
