@@ -13,9 +13,7 @@ export class UserActivity {
 	}
 	toString(): string{
 		const a = this.activity;
-		if (!a) {
-			return '*Sin actividades.*'
-		}
+		if (!a) return '*Sin actividades.*'
         switch (a.type) {
             case 'CUSTOM_STATUS':
                 return '*Estado personalizado*';
@@ -27,6 +25,8 @@ export class UserActivity {
                 return 'Escuchando' + ' ' + a.name;
             case 'WATCHING':
                 return 'Viendo' + ' ' + a.name;
+            case "COMPETING":
+                return 'Compitiendo en' + a.name
         }
 	}
 }

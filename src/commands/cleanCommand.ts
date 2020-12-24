@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, Permissions } from "discord.js";
+import { DMChannel, Message, Permissions } from "discord.js";
 import { Lang } from "./lang/Lang";
 
 export class CleanCommand implements ArgCommand {
@@ -16,6 +16,7 @@ export class CleanCommand implements ArgCommand {
 		if (isNaN(n)) {
 			l.reply('errors.NaN',args[0])
 		}
+		if(msg.channel instanceof DMChannel) return
 		await msg.channel.bulkDelete(n, true).then((msgs)=>l.send('info.clean.success','' + msgs.size).then(m=>m.delete({timeout: 5000})).catch(e=>{
 		if(e.code == 50016) l.send('info.clean.50016')
 		else l.send('info.clean.error',e)

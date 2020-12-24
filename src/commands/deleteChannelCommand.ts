@@ -1,7 +1,6 @@
 import ArgCommand from './commandArgInterface'
 import {ChannelFinder} from '../util/ChannelFinder'
-import {Message, Permissions, GuildChannel} from 'discord.js'
-import { utils, ModeOfOperation} from 'aes-js'
+import {Message, Permissions, GuildChannel, Channel} from 'discord.js'
 import { GetPassCommand } from './getPassCommand'
 import { Lang } from './lang/Lang'
 export class DeleteChannelCommand implements ArgCommand{
@@ -20,7 +19,7 @@ export class DeleteChannelCommand implements ArgCommand{
 			l.reply('errors.invalid_channel',args[0])
 			return
 		}
-		await channel.delete(await l.translate('reason',msg.author.tag)).then((c:GuildChannel)=>l.send('info.deletechannel.success',c.name))
+		await channel.delete(await l.translate('reason',msg.author.tag)).then((c: Channel)=>l.send('info.deletechannel.success', c.id))
 	}
 	async checkPermissions(msg: Message,l: Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
