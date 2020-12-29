@@ -28,16 +28,22 @@ const sniper = new SnipeHandler();
 //////////////////////////////////////////////////////////////////
 // Discord Events: https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-channelCreate
 
-client.on("ready", () => {
-  console.log("Observer has started");
-  new Connections(client)}
-  );
+client.on("ready", async () => {
+  console.log("Observer has started")
+  new Connections(client)
+  await new Promise(resolve => setTimeout(resolve, 10000));
+  for (const g of client.guilds.cache.values()) {
+    const q = Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [g.id, g.name, '!!', 'es']);
+    q.then(()=>console.log('Servidor registrado: ' + g.id));
+    q.catch(e=>console.error(e));
+  }
+});
 client.on("message", (message: Message) => { new CommandHandler().handleMessage(message); });
 client.on('messageDelete',(deleted: Message| PartialMessage)=>sniper.saveDeletedMessage(deleted))
 client.on('messageUpdate',(old: Message | PartialMessage)=>sniper.saveEditedMessage(old))
 client.on('guildCreate', guild => {
   const q = Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [guild.id, guild.name, '!!', 'es']);
-  q.then(()=>console.log('Servidor registrado: ' + guild.id));
+  q.then(()=>console.log('Servidor nuevo registrado: ' + guild.name));
   q.catch(e=>console.error(e));
 });
 client.on("error", e => console.error("Discord client error!", e))
