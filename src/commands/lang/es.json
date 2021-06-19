@@ -234,7 +234,8 @@
                 "no_permissions": "*No se necesitan permisos*",
                 "permission_or_admin": "{permission} o Administrador",
                 "admin_exclusive": "Administrador"
-            }
+            },
+            "not_found": "No conozco el comando `{command}`"
         },
         "info":{
             "description": "Muestra información sobre mí.",

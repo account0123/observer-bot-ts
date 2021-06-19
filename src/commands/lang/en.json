@@ -233,7 +233,8 @@
 				"no_permissions": "*There're no required permissions*",
 				"permission_or_admin": "{permission} or Administrator",
 				"admin_exclusive": "Administrator"
-			}			
+			},
+            "not_found": "I don't know the command named `{command}`"
         },
         "info":{
             "description": "Shows information about me.",

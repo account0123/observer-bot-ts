@@ -155,7 +155,11 @@ export class HelpCommand implements ArgCommand {
 			.setFooter(await l.translate(about + 'footer'))
 			.setTimestamp();
 		}
-		if(!embed) return
+		if(!embed){
+            this.msg.react('❌')
+            l.send('info.help.not_found', commandName)
+            return
+        }
 		const bot = this.msg.client.user!
 		if(this.msg.guild) embed.setColor(this.msg.guild!.member(bot)!.displayColor)
 		else embed.setColor(0xffffff)
