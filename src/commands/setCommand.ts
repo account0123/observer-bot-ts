@@ -15,13 +15,14 @@ export class SetCommand implements ArgCommand {
 	permission: string = 'ADMINISTRATOR'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const target = args.shift()!
+        const value = args[0]
 		switch (target.toLowerCase()) {
 			case 'prefix':
-				if(args[1].length > 4){
+				if(value.length > 4){
 					l.reply('errors.long_prefix')
 					return
 				}
-				this.setPrefix(args[1], msg.guild!.id, l)
+				this.setPrefix(value, msg.guild!.id, l)
 				break;
 			case 'lang':
 				new LangCommand().run(msg, l, args)
