@@ -90,6 +90,8 @@ export default class CommandHandler {
         return
       }
       await matchedCommand.run(message,lang).catch(error => {
+        message.react('❌')
+        lang.reply('errors.unknown')
         console.error(`"${this.echoMessage(message)}" falló por "${error}"`);
       });
     }
@@ -104,6 +106,7 @@ export default class CommandHandler {
       }
       await matchedArgCommand.checkPermissions(message,lang, this.prefix).then(b=>{
        if(b) matchedArgCommand.run(message,lang,commandParser.args, this.prefix).catch(error => {
+         message.react('❌')
          lang.reply('errors.unknown')
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
       })});
