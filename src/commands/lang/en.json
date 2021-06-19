@@ -268,6 +268,7 @@
         "rae":{
             "description": "Defines a spanish word according to RAE",
             "usage": "<word>",
+            "loading": "`Finding the definition for {word}...`",
             "no_results": "*There's no result for {word}*"
         },
         "removerole":{

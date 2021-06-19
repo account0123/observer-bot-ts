@@ -12,10 +12,11 @@ export class RAECommand implements ArgCommand {
 	examples: string[] = ['hola', 'meme']
 	permission: string = ''
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		const rae = new RAE()
+		const rae = new RAE(true)
+		const m = await l.send('info.rae.loading', args[0])
 		const search = await rae.searchWord(args[0])
 		if(search.getRes().length === 0){
-			l.send('info.rar.no_results',args[0])
+			l.send('info.rae.no_results',args[0])
 			return
 		}
 		const id = search.getRes()[0].getId()
@@ -23,7 +24,7 @@ export class RAECommand implements ArgCommand {
 		const word = await rae.fetchWord(id)
 		const definitions = word.getDefinitions()
 
-		msg.channel.send(`1. ${definitions[0].getDefinition()}`)
+		m.edit(`*${definitions[0].getType()}* ${definitions[0].getDefinition()}`)
 	}
 	async checkPermissions(): Promise<boolean> {
 		return true
