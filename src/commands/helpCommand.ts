@@ -27,9 +27,7 @@ export class HelpCommand implements ArgCommand {
 		return true
 	}
 	private async createCommandList() {
-		if(!this.lang) return
-		if(!this.prefix) return
-		if(!this.msg) return
+		if(!this.lang || !this.prefix || !this.msg) return
 		const l = this.lang
 		// creates embed.description (all commands list)
 		const createList = async (c:Command | ArgCommand) => `**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`;
@@ -54,6 +52,7 @@ export class HelpCommand implements ArgCommand {
 			}
 		}
 		if(commands.length > 0) pages.push(commands)
+		// Building an embed page
 		const title = await l.translate('info.help.general.title')
 		const footer = await l.translate('info.help.general.footer',this.prefix)
 		const embed = new MessageEmbed().setTitle(title).setDescription(pages[0]).setFooter(footer).setTimestamp();
@@ -61,16 +60,38 @@ export class HelpCommand implements ArgCommand {
 		if(this.msg.guild) embed.setColor(this.msg.guild.member(bot)!.displayColor)
 		else embed.setColor(0xffffff)
 		embed.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!)
+		// Creating message components
+		/** 
+		const prev_button = {
+			type: 2,
+			style: 2,
+			label: "<",
+			custom_id: "previous",
+			disabled: true
+		};
+		const next_button = {
+			type: 2,
+			style: 1,
+			label: ">",
+			custom_id: "next"
+		};
+		const row = {
+			type: 1,
+			components: [prev_button, next_button]
+		}
+		*/
+		// Sending embed page + reactions
 		this.msg.channel.send(embed).then((msg)=>{
 			let page = 1
 			if(pages.length < 2) return
 			msg.react('➡️')
 			const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
-				if(reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️' && user.id != bot.id) return true
+				if((reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️') && user.id != bot.id) return true
 				else return false
 			};
 			const rc = new ReactionCollector(msg, f, {time: 60000})
-			rc.on('collect', (reaction)=>{
+			rc.on('collect', (reaction, user)=>{
+				if(!f(reaction, user)) return
 				if(reaction.emoji.name === '➡️'){
 					page++
 					msg.react('⬅️')
@@ -85,6 +106,7 @@ export class HelpCommand implements ArgCommand {
 					msg.edit(e2);
 				}
 				if(reaction.emoji.name === '⬅️'){
+					msg.react('➡️')
 					page--
 					if(page === 0){
 						page = 1
@@ -96,11 +118,10 @@ export class HelpCommand implements ArgCommand {
 					msg.edit(e2);
 				}
 			});
-			console.log('Embed de ayuda enviado')});
+			console.log('Embed de ayuda enviado')})
 	}
 	private async createHelpEmbed(commandName:string) {
-		if(!this.lang) return
-		if(!this.msg) return
+		if(!this.lang || !this.msg) return
 		const l = this.lang
 		const command = CommandHandler.commands.find(command => command.commandNames.includes(commandName.toLowerCase()))
 		const argCommand = CommandHandler.argCommands.find(command => command.commandNames.includes(commandName.toLowerCase()))

@@ -269,6 +269,7 @@
         "rae":{
             "description": "Define una palabra según la RAE",
             "usage": "<palabra>",
+            "loading": "`Buscando la definición de {word}...`",
             "no_results": "*No hay resultados para {word}*"
         },
         "removerole":{
@@ -452,7 +453,7 @@
         "READ_MESSAGE_HISTORY": "Leer el historial de mensajes",
         "MENTION_EVERYONE": "Mencionar @everyone, @here y todos los roles",
         "USE_EXTERNAL_EMOJIS": "Usar emojis externos",
-        "VIEW_GUILD_INSIGHTS": "VIEW_GUILD_INSIGHTS",
+        "VIEW_GUILD_INSIGHTS": "Ver ajustes de comunidad",
         "CONNECT": "Conectar",
         "SPEAK": "Hablar",
         "MUTE_MEMBERS": "Silenciar miembros",

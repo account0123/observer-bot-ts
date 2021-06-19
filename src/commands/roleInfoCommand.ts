@@ -38,7 +38,7 @@ export class RoleInfoCommand implements ArgCommand {
 		const isMentionable = async ()=>role.mentionable? yes : no
 
 		const dividePermissions = async () =>{
-			if(role.permissions.bitfield === Permissions.ALL) return [[all],['\u200B'],['\u200B']]
+			if(role.permissions.bitfield === Permissions.ALL || role.permissions.bitfield === 8) return [[all],['\u200B'],['\u200B']]
 			const a = await Promise.all(role.permissions.toArray().map(s=>l.translate('permissions.'+s)))
 			if(a.length === 0) return [[none],['\u200B'],['\u200B']]
 			if(a.length < 12) return [a,['\u200B'],['\u200B']]
