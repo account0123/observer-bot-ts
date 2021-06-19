@@ -31,7 +31,6 @@
   },
   "homepage": "https://github.com/account0123/observer-bot-ts",
   "devDependencies": {
-    "@types/mysql2": "github:types/mysql2",
     "@typescript-eslint/eslint-plugin": "^3.6.0",
     "@typescript-eslint/parser": "^3.6.0",
     "copyfiles": "^2.3.0",
