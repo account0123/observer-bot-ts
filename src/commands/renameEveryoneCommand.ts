@@ -4,7 +4,7 @@ import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
 export class RenameEveryoneCommand implements ArgCommand {
-	requiredArgs: number = 0
+	requiredArgs: number = 1
 	commandNames: string[] = ['renameeveryone']
 	guildExclusive: boolean = true
 	shortdescription: string = 'info.renameeveryone.description'
