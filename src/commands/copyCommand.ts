@@ -61,7 +61,7 @@ export class CopyCommand implements ArgCommand {
 
 			FormatCommand.webhooks.set(msg.channel.id,webhook)
 			const user = msg.author
-			await webhook.send(`${message.content} ${[...files]}`,{
+			await webhook.send(`${message.content} ${files.join(' ')}`,{
 				username: user.username,
 				avatarURL: user.displayAvatarURL({dynamic:true}),
 				disableMentions: 'all'
