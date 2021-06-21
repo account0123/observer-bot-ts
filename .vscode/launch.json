@@ -5,7 +5,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"command": "npm start",
+			"command": "npm test",
 			"name": "Run npm start",
 			"request": "launch",
 			"type": "node-terminal"
@@ -18,6 +18,7 @@
 				"<node_internals>/**"
 			],
 			"program": "${workspaceFolder}\\build\\index.js",
+
 			"outFiles": [
 				"${workspaceFolder}/**/*.js"
 			]
