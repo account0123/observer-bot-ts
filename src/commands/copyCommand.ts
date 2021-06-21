@@ -79,7 +79,7 @@ export class CopyCommand implements ArgCommand {
 			if(message.attachments.size > 0)
 				message.attachments.forEach(a=>files.push(a.url));
 			
-			await msg.channel.send(`${message.content} ${[...files]}`)
+			await msg.channel.send(`${message.content} ${files.join(' ')}`)
 			return
 		}
 	}
