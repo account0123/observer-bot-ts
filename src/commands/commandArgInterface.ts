@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message } from "discord.js";
 import { Lang } from "./lang/Lang";
 
 export default interface ArgCommand {
