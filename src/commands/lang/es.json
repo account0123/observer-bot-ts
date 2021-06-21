@@ -282,6 +282,8 @@
         "renameeveryone": {
             "description": "Elimina los apodos de todos o agrega un prefijo a sus nombres",
             "usage": "<contraseña> [prefijo]",
+            "no_hit": "No hice nada, porque nadie tiene apodos",
+            "miss": "No tengo permitido cambiar el apodo de nadie. Pon alguno de mis roles más alto en los ajustes del servidor.",
             "success": "Todos fueron renombrados.",
             "error": "No pude renombrar a **{member}**\nOmitiendo..."
         },

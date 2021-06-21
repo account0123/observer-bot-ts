@@ -1,5 +1,4 @@
-import { match } from "assert";
-import { DMChannel, Message, Permissions, Snowflake, TextChannel, Webhook } from "discord.js";
+import { DMChannel, Message, Permissions, Snowflake, Webhook } from "discord.js";
 import { UserFinder } from "../util/UserFinder";
 import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";

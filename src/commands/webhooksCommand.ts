@@ -32,7 +32,7 @@ export class WebhooksCommand implements ArgCommand {
 		}
 	}
 
-	async checkPermissions(msg: Message, l: Lang, prefix?: string): Promise<boolean> {
+	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		return true
 	}
 	

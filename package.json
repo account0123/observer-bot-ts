@@ -12,7 +12,9 @@
     "build": "tsc",
     "postbuild": "copyfiles -u 1 \"./src/**/*.json\" ./build/",
     "prestart": "npm run build",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "test": "node build/index.js --beta",
+    "pretest": "npm run build"
   },
   "repository": {
     "type": "git",
