@@ -48,6 +48,7 @@ client.on('guildCreate', guild => {
 });
 client.on("error", e => console.error("Discord client error!", e))
 // Beta NzA4ODg0MjYwNjY0MjQ2MzI0.Xrd16g.3CkRz6-jepJ5P8d3qcSnjMKu1lo
-client.login(DISCORD_TOKEN).catch(e=>console.error(e));
+if(process.argv[2] == '--beta') client.login('NzA4ODg0MjYwNjY0MjQ2MzI0.Xrd16g.3CkRz6-jepJ5P8d3qcSnjMKu1lo').catch(e=>console.error(e));
+else client.login(DISCORD_TOKEN).catch(e=>console.error(e));
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}!`))
