@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, CallCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, MuteCommand, WhisperCommand, SetCommand, RAECommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand } from "./commands";
+import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, CallCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, MuteCommand, WhisperCommand, SetCommand, RAECommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
@@ -58,7 +58,8 @@ export default class CommandHandler {
       SetCommand,
       RAECommand,
       EditChannelCommand,
-      WebhooksCommand
+      WebhooksCommand,
+      CopyCommand
     ];
 
     CommandHandler.commands = commandClasses.map(c => new c());

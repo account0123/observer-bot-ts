@@ -62,6 +62,11 @@
             "description": "Copia el mensaje usando [su ID](https://support.discord.com/hc/es/articles/206346498--D%C3%B3nde-puedo-encontrar-mi-ID-de-usuario-servidor-mensaje-) y lo pega en formato de código",
             "usage": "<ID del mensaje>"
         },
+        "copy": {
+            "description": "Copia un mensaje usando su URL o su ID",
+            "usage": "<enlace al mensaje> o <ID del mensaje>",
+            "ext_guild": "Por privacidad, no puedo filtrar mensajes de otros servidores."
+        },
         "createchannel":{
             "description": "Crea un canal con por lo menos el tipo de canal y el nombre",
             "fulldescription": "Crea un nuevo canal con el tipo (`text` o `voice` o `news` o `store` o `category`), un nombre sin espacios y opcionalmente, propiedades en el formato`propiedad:valor` y permisos de canal en el formato `rol/usuario:{permisos...}`. Las propiedades son:\n`position`: La posición del canal contando de arriba a abajo.\n`nsfw`: Si está presente, el canal será marcado como nsfw.\n\nLos permisos de canal corresponden a su [nombre oficial](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags).",
