@@ -62,6 +62,11 @@
             "description": "Copies a message from the given [message ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-) and pastes it in code format",
             "usage": "<message id>"
         },
+        "copy": {
+            "description": "Copies a message using thir URL or ID",
+            "usage": "<link to the message> or <message ID>",
+            "ext_guild": "For privacy, i can't leak messages from other servers."
+        },
         "createchannel":{
             "description": "Creates a channel with at least a type and a name",
             "fulldescription": "Creates a new channel with a type (`text` or `voice` or `news` or `store` or `category`), a name without spaces, and optionally properties in `property:value` format and permissions overwrite in `role/user:{permissions}` format. The properties are:\n`position`: The position of the channel counted from top to bottom.\n`nsfw`: If present, the channel will be nsfw.\n\nThe permissions values are their [official permission name](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags).",
