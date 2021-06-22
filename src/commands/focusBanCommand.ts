@@ -30,8 +30,8 @@ export class FocusBanCommand implements ArgCommand {
 		if(minutesEx) m = parseInt(minutesEx[0])
 		if(hoursEx) h = parseInt(hoursEx[0])
 		if(daysEx) d = parseInt(daysEx[0])
-		const ms = d * 36000000 * 24 + h * 3600000 + m * 60000 +  s * 1000
-		if(ms > 2147483647){
+		const ms = d * 3600000 * 24 + h * 3600000 + m * 60000 +  s * 1000
+		if(isNaN(ms) || ms > 2147483647){
 			l.send('errors.unsafe_integer')
 			return
 		}
