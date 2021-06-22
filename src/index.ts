@@ -3,7 +3,6 @@ import Discord, { Message, PartialMessage } from "discord.js";
 import { DISCORD_TOKEN } from './config/secrets';
 import CommandHandler from './commandHandler';
 import SnipeHandler from './snipeHandler';
-import config from './config/botConfig';
 import { Connections } from './config/connections';
 
 const PORT = parseInt(process.argv[2]) || 5000;
