@@ -11,7 +11,6 @@
  * DO NOT export command classes using default
  */
 
-export * from "./activityCheckCommand"
 export * from "./addRoleCommand"
 export * from "./avatarCommand"
 export * from "./banCommand"
@@ -23,7 +22,6 @@ export * from "./createChannelCommand"
 export * from "./codeCommand"
 export * from "./copyCommand"
 export * from "./createRoleCommand"
-export * from "./deleteChannelCommand"
 export * from "./deleteDisCommand"
 export * from "./demoteCommand"
 export * from "./editChannelCommand"

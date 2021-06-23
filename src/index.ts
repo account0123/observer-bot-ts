@@ -8,7 +8,7 @@ import { Connections } from './config/connections';
 const PORT = parseInt(process.argv[2]) || 5000;
 
 const app = express();
-const client = new Discord.Client({ws:{intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_BANS', 'GUILD_INTEGRATIONS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_PRESENCES', 'GUILD_WEBHOOKS']}});
+const client = new Discord.Client({ws:{intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_BANS', 'GUILD_INTEGRATIONS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_WEBHOOKS']}});
 
 
 //////////////////////////////////////////////////////////////////

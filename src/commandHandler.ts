@@ -17,7 +17,6 @@ export default class CommandHandler {
     // Clases aquí
     const commandClasses = [
       StopCommand,
-      ActivitycheckCommand,
       ServerInfoCommand,
       SnipeCommand,
       EditSnipeCommand,
@@ -31,7 +30,6 @@ export default class CommandHandler {
       BanCommand,
       CreateRoleCommand,
       SayCommand,
-      DeleteChannelCommand,
       EditRoleCommand,
       AddRoleCommand,
       CleanCommand,
