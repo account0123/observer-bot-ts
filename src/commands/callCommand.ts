@@ -14,7 +14,7 @@ export class CallCommand implements ArgCommand {
 	permission: string = 'MENTION_EVERYONE'
 	async run(msg: Message, L: Lang, args: string[]): Promise<void> {
 		const users = args.filter(arg=>{
-			if(arg.match(/d+/)) return true
+			if(arg.match(/d+/) && !arg.startsWith('<@')) return true
 			else return false
 		}).map(arg=>'<@'+arg+'>');
 		const begin = await L.translate('info.call.start')

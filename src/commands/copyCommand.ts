@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface"
-import { Message, NewsChannel, Permissions, TextChannel } from "discord.js"
+import { Message, Permissions, TextChannel } from "discord.js"
 import { Lang } from "./lang/Lang"
 import { FormatCommand } from "./formatCommand"
 

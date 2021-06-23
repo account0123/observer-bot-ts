@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import {StopCommand, ActivitycheckCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, DeleteChannelCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, CallCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, MuteCommand, WhisperCommand, SetCommand, RAECommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand } from "./commands";
+import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, CallCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, MuteCommand, WhisperCommand, SetCommand, RAECommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
@@ -74,7 +74,6 @@ export default class CommandHandler {
     else{
       lang = new Lang(message)
       const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix FROM guilds WHERE id=?', [message.guild.id])
-      console.log(rows)
       if(rows[0].prefix) this.prefix = rows[0].prefix
       else Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [message.guild.id, message.guild.name, '!!', 'es']).then(()=>console.log('Servidor registrado: ' + message.guild!.id)).catch(e=>console.error(e));
     }
@@ -93,8 +92,7 @@ export default class CommandHandler {
         lang.reply('errors.unknown')
         console.error(`"${this.echoMessage(message)}" falló por "${error}"`);
       });
-    }
-    if (matchedArgCommand) {
+    }else if (matchedArgCommand) {
       if (message.channel.type == "dm" && matchedArgCommand.guildExclusive) {
         lang.reply('errors.no_dms')
         return
@@ -109,7 +107,7 @@ export default class CommandHandler {
          lang.reply('errors.unknown')
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
       })});
-    }
+    }else return
     console.log(`Comando '${this.echoMessage(message)}' ejecutado por ${message.author.tag}`);
   }
 

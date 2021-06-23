@@ -29,7 +29,7 @@ export class SayCommand implements ArgCommand {
 				return
 			}
 		}
-		await msg.channel.send(text,{disableMentions: 'everyone'})
+		await msg.channel.send(text,{disableMentions: 'all'})
 		await msg.delete({timeout: 300,reason: await l.translate('reason',msg.author.tag)})
 	}
 	
