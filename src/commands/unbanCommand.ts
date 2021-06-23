@@ -62,6 +62,7 @@ export class UnbanCommand implements ArgCommand {
     await g.fetchBans().then(banCollection=>{
       banCollection.each(async banInfo=>{
        const user = banInfo.user
+       await new Promise<void>((res,rej)=>setTimeout(()=>res(), 500))
        await manager.unban(user,await this.lang.translate('reason',msg.author.tag)).then(()=>count++).catch(e=>{
          errors++
          this.lang.send('info.unban.massunban-error',user.tag)
@@ -71,13 +72,6 @@ export class UnbanCommand implements ArgCommand {
       });
     });
     this.lang.send('info.unban.massunban-success','' + count)
-    if(count == 0 && errors > 5){
-      this.lang.send('errors.no_hit')
-      // Ejecuta !!clean <cantidad de miembros>
-      new CleanCommand().run(msg,this.lang,[`${errors}`])
-      // Si falla en eso dice....
-      .catch(()=>this.lang.send('errors.clean_up_failed'));
-    }
   }
 
 }

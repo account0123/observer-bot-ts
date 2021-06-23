@@ -40,6 +40,7 @@ export class ResetAllRolesCommand implements ArgCommand {
 		})
 		const asyncForEach = async (a:Role[], callback: { (r: Role): Promise<void>; (arg0: Role, arg1: number, arg2: Role[]): any; }) => {
 		  for (let i = 0; i < a.length; i++) {
+			await new Promise<void>((res,rej)=>setTimeout(()=>res(), 500))
 			await callback(a[i], i, a)
 		  }
 		}

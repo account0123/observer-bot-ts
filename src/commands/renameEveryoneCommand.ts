@@ -36,7 +36,8 @@ export class RenameEveryoneCommand implements ArgCommand {
 		}
 		const asyncForEach = async (a:GuildMember[], callback: { (r: GuildMember): Promise<void>; (arg0: GuildMember, arg1: number, arg2: GuildMember[]): any; }) => {
 			for (let i = 0; i < a.length; i++) {
-			  await callback(a[i], i, a)
+                await new Promise<void>((res,rej)=>setTimeout(()=>res(), 500))
+                await callback(a[i], i, a)
 			}
 		  }
 		const restart = async () => {
