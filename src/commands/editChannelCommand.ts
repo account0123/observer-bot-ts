@@ -1,5 +1,4 @@
-import { ChannelData, CollectorFilter, DMChannel, GuildChannel, GuildMember, Message, MessageCollector, MessageEmbed, NewsChannel, OverwriteData, PermissionOverwrites, Permissions, PermissionString, Role, TextChannel } from "discord.js";
-import { CleanCommand } from ".";
+import { ChannelData, GuildMember, Message, MessageCollector, MessageEmbed, OverwriteData, PermissionOverwrites, Permissions, PermissionString, Role, TextChannel } from "discord.js";
 import { ChannelFinder } from "../util/ChannelFinder";
 import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
@@ -15,6 +14,7 @@ export class EditChannelCommand implements ArgCommand {
 	usage: string = 'info.editchannel.usage'
 	examples: string[] = ['lounge', 'lewd-images topic']
 	permission: string = 'MANAGE_CHANNELS'
+	type = 'manage'
 	channel!: TextChannel
 	m!: Message
 	lang!: Lang
@@ -29,7 +29,7 @@ export class EditChannelCommand implements ArgCommand {
 	private denied_user_perms = 0
 	permissioncompleted = false
 	c: MessageCollector | undefined;
-	async run(msg: Message, l: Lang, args: string[], prefix?: string): Promise<void> {
+	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		this.m = msg
 		this.lang = l
 		const channel = ChannelFinder.getTextChannel(msg, args[0])

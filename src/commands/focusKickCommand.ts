@@ -12,6 +12,7 @@ export class FocusKickCommand {
 	usage: string = 'info.focuskick.usage'
 	examples: string[] = ['10m @troll123 stop trolling', '10s 123456789987654321 10 9 8 7... 0']
 	permission: string = 'KICK_MEMBERS'
+	type = 'mod'
 	private kick:KickCommand
 	private index: number | undefined
 	constructor(){
@@ -30,8 +31,8 @@ export class FocusKickCommand {
 		if(minutesEx) m = parseInt(minutesEx[1])
 		if(hoursEx) h = parseInt(hoursEx[1])
 		if(daysEx) d = parseInt(daysEx[1])
-		const ms = d * 36000000 * 24 + h * 3600000 + m * 60000 +  s * 1000
-		if(ms > 2147483647){
+		const ms = d * 3600000 * 24 + h * 3600000 + m * 60000 +  s * 1000
+		if(isNaN(ms) || ms > 2147483647){
 			l.send('errors.unsafe_integer')
 			return
 		}

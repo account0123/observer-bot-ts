@@ -12,6 +12,7 @@ export class RenameEveryoneCommand implements ArgCommand {
 	usage: string = 'info.renameeveryone.usage'
 	examples: string[] = ['532bac343f35cd2331', '532bac343f35cd2331 [Hunter]']
 	permission: string = ''
+	type = 'manage'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		if(!GetPassCommand.validatePassword(msg.author.id, l, args.shift()!)) return
         const bot_role = msg.guild!.member(msg.client.user!)!.roles.highest
@@ -35,7 +36,8 @@ export class RenameEveryoneCommand implements ArgCommand {
 		}
 		const asyncForEach = async (a:GuildMember[], callback: { (r: GuildMember): Promise<void>; (arg0: GuildMember, arg1: number, arg2: GuildMember[]): any; }) => {
 			for (let i = 0; i < a.length; i++) {
-			  await callback(a[i], i, a)
+                await new Promise<void>((res,rej)=>setTimeout(()=>res(), 500))
+                await callback(a[i], i, a)
 			}
 		  }
 		const restart = async () => {

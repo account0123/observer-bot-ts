@@ -13,6 +13,7 @@ export class ResetMemberCommand implements ArgCommand {
 	usage: string = 'info.resetmember.usage'
 	examples: string[] = ['@user#1234 3bac6424af', '123456789987654321 3bac6424af 345678912398765432', 'user 3bac6424af 678912345543219876 345678912398765432 891234567876543219']
 	permission: string = ''
+	type = 'manage'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const member_mention = args.shift()!
 		const member = MemberFinder.getMember(msg, member_mention)

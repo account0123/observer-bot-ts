@@ -13,6 +13,7 @@ export class BanCommand implements ArgCommand {
 	requiredArgs: number = 1;
 	examples: string[] = ['@user#1234 because reasons', '123456789987654321 multiaccount use'];
 	usage: string = 'info.ban.usage'
+	type = 'mod'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const mod = msg.guild!.member(msg.author)!
 		const mention = args.splice(0,1).toString()

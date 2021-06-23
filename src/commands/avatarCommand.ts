@@ -16,6 +16,7 @@ export class AvatarCommand implements ArgCommand {
   requiredArgs: number = 0
   usage: string = 'info.avatar.usage'
   commandNames = ['avatar','icon', 'pfp', 'av']
+  type = 'info'
   async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 	if (args.length > 0) {
 		const mention = args.join(' ')

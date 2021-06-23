@@ -12,6 +12,7 @@ export class KickCommand implements ArgCommand {
 	requiredArgs: number = 1;
 	examples: string[] = ['plskickme','@user#1234 for some reasons', '123456789987654321 read the rules'];
 	usage: string = 'info.kick.usage';
+	type = 'mod'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const mod = msg.guild!.member(msg.author)!
 		const mention = args.splice(0,1).toString()

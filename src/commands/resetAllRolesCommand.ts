@@ -13,6 +13,7 @@ export class ResetAllRolesCommand implements ArgCommand {
 	usage: string = 'info.resetallroles.usage'
 	examples: string[] = ['832abc370fa879d2', '832abc370fa879d2 13b9c4']
 	permission: string = 'MANAGE_ROLES'
+	type = 'manage'
 	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
 		if(!GetPassCommand.validatePassword(msg.author.id, l, args[0])) return
 		var perms = 0
@@ -39,6 +40,7 @@ export class ResetAllRolesCommand implements ArgCommand {
 		})
 		const asyncForEach = async (a:Role[], callback: { (r: Role): Promise<void>; (arg0: Role, arg1: number, arg2: Role[]): any; }) => {
 		  for (let i = 0; i < a.length; i++) {
+			await new Promise<void>((res,rej)=>setTimeout(()=>res(), 500))
 			await callback(a[i], i, a)
 		  }
 		}

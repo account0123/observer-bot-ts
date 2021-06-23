@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, Permissions } from "discord.js";
+import { GuildMember, Message, Permissions } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 import { CleanCommand } from "./cleanCommand";
@@ -9,6 +9,7 @@ export class AddRoleCommand implements ArgCommand {
 	permission: string = 'MANAGE_ROLES'
 	shortdescription: string = 'info.addrole.description'
 	fulldescription: string = this.shortdescription
+	type = 'manage'
 	async checkPermissions(msg: Message,l:Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
@@ -32,7 +33,7 @@ export class AddRoleCommand implements ArgCommand {
 		const membermention = args.shift()!
 		const member = MemberFinder.getMember(msg,membermention)
 		if (!member) {
-			l.reply('errors.invalid_role',membermention)
+			l.reply('errors.invalid_member',membermention)
 			return
 		}
 		const rolemention = args.join(' ')
@@ -47,10 +48,31 @@ export class AddRoleCommand implements ArgCommand {
 			l.send('info.addrole.massrole-start',role.name)
 			var count = 0
 			var errors = 0
-			// Si falla en alguien dice "Omitiendo..."
-			g.members.cache.each(m=>m.roles.add(role).then(()=>count++).catch(()=>{l.send('info.addrole.massrole-error',m.user.tag);errors++}))
+			
+			const memberlist = await g.members.fetch()
+			const asyncForEach = async (a:GuildMember[], callback: { (r: GuildMember): Promise<void>; (arg0: GuildMember, arg1: number, 	arg2: GuildMember[]): any; }) => {
+				for (let i = 0; i < a.length; i++) {
+                    await new Promise<void>((res,rej)=>setTimeout(()=>res(), 500))
+                    await callback(a[i], i, a)
+				}
+		  	}
+			const add = async () => {
+				await asyncForEach(memberlist.array(), async (member:GuildMember) => {
+					await member.roles.add(role)
+						.then(()=>count++)
+						.catch(e=>{
+							// Si falla en alguien dice "Omitiendo..."
+							l.send('info.addrole.massrole-error', member.user.tag)
+							console.error(e.stack)
+							errors++
+						})
+				});
+			}
+
+			await add()
+			 
 			if(count==0 && errors > 5){
-		// Si falla en TODOS dice
+				// Si falla en TODOS dice
 				l.send('errors.no_hit')
 				// Ejecuta !!clean <cantidad de miembros>
 				new CleanCommand().run(msg,l,[`${g.memberCount}`])
@@ -58,6 +80,7 @@ export class AddRoleCommand implements ArgCommand {
 				.catch(()=>l.send('errors.clean_up_failed'));
 				return
 			}
+
 			l.send('info.addrole.massrole-success',role.name,'' + count)
 			return
 		}

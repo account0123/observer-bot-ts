@@ -6,6 +6,7 @@ import { Lang } from "./lang/Lang";
 import { RowDataPacket } from "mysql2";
 
 export class SnipeCommand implements Command {
+	type: string | undefined;
 	commandNames: string[] = ['snipe']
 	guildExclusive: boolean = true
 	shortdescription: string = 'info.snipe.description'

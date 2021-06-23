@@ -13,6 +13,7 @@ export class LangCommand implements ArgCommand {
 	usage: string = 'info.lang.usage'
 	examples: string[] = ['', 'es']
 	permission: string = 'ADMINISTRATOR'
+	type = 'config'
 	async run(msg: Message, l: Lang,args: string[]): Promise<void> {
 		const sql = Connections.db
 		const g = msg.guild!

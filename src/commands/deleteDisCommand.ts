@@ -3,6 +3,7 @@ import Command from "./commandInterface";
 import { Lang } from "./lang/Lang";
 
 export class DeleteDisCommand implements Command {
+	type: string | undefined;
 	commandNames: string[] = ['deletedis', 'deletethis', 'supr']
 	guildExclusive: boolean = false
 	shortdescription: string = 'info.deletedis.description'

@@ -4,6 +4,7 @@ import { Lang } from "./lang/Lang";
 import { ChannelFinder } from "../util/ChannelFinder";
 
 export class SayCommand implements ArgCommand {
+	type: string | undefined;
 	permission: string = ''
 	shortdescription: string = 'info.say.description'
 	fulldescription: string = this.shortdescription
@@ -28,7 +29,7 @@ export class SayCommand implements ArgCommand {
 				return
 			}
 		}
-		await msg.channel.send(text,{disableMentions: 'everyone'})
+		await msg.channel.send(text,{disableMentions: 'all'})
 		await msg.delete({timeout: 300,reason: await l.translate('reason',msg.author.tag)})
 	}
 	

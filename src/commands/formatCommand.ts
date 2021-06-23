@@ -4,6 +4,7 @@ import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
 export class FormatCommand implements ArgCommand {
+	type: string | undefined;
 	requiredArgs: number = 1
 	commandNames: string[] = ['format','f']
 	guildExclusive: boolean = false

@@ -14,6 +14,7 @@ export class UserInfoCommand implements ArgCommand {
 	usage: string = 'info.userinfo.usage'
 	examples: string[] = ['', '123456789987654321', '@user#1234', '@nickname#1234']
 	permission: string = ''
+	type = 'info'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		var embed: Promise<MessageEmbed>
 		const details = args.includes('--details')

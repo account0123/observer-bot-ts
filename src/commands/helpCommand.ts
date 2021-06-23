@@ -4,7 +4,12 @@ import CommandHandler from "../commandHandler";
 import { Lang } from "./lang/Lang";
 import Command from "./commandInterface";
 
+type BotCommand = {
+	name: string
+	summary: string
+}
 export class HelpCommand implements ArgCommand {
+	type: string | undefined;
 	permission: string = ''
 	shortdescription: string = 'info.help.description'
 	fulldescription: string = 'info.help.fulldescription'
@@ -28,38 +33,60 @@ export class HelpCommand implements ArgCommand {
 	}
 	private async createCommandList() {
 		if(!this.lang || !this.prefix || !this.msg) return
-		const l = this.lang
-		// creates embed.description (all commands list)
-		const createList = async (c:Command | ArgCommand) => `**${c.commandNames[0]}** - ${await l.translate(c.shortdescription)}`;
-		const array = CommandHandler.commands.map(async c=>await createList(c)).concat(CommandHandler.argCommands.map(async c=>await createList(c)))
-		const allcommands = (await Promise.all(array)).sort()
-		const pages:string[][] = []
-		let limit = 2048
-		let characters = 0
-		let commands: string[] = []
-		// loop for each command (string) of allcommands (string[])
-		for(const command of allcommands) {
-			// adds length of command
-			characters += command.length + 1
-			// while characters + command.length < or = 2048, commands <- command
-			if(characters <= limit) commands.push(command)
-			else {
-				// if characters + command.length > 2048, pages <- commands, commands will be empty, limit increases
-				pages.push(commands)
-				commands = []
-				commands.push(command)
-				limit += limit
+		const l = this.lang, t = 'categories.', [manage, info, misc, mod, config] = await Promise.all([l.translate(t+'manage'), l.translate(t+'info'),l.translate(t+'misc'), l.translate(t+'mod'), l.translate(t+'config')])
+		const managers: BotCommand[] = [], informers: BotCommand[] = [], random: BotCommand[] = [],  
+		moderators: BotCommand[] = [], configurators: BotCommand[] = []
+		// separates commands by their type
+		const divideList = async (c:Command | ArgCommand) => {
+			const o = {name: c.commandNames[0], summary: c.shortdescription}
+			if(!c.type){
+				random.push(o)
+				return
 			}
+			switch(c.type){
+				case 'info': informers.push(o); break;
+				case 'manage': managers.push(o); break;
+				case 'mod': moderators.push(o); break;
+				case 'config': configurators.push(o)
+			}
+		};
+		CommandHandler.argCommands.forEach(c=>divideList(c))
+		CommandHandler.commands.forEach(c=>divideList(c))
+
+		// creates embed.description (all commands list)
+		const createList = async (commands: BotCommand[]) =>{
+			const a: string[] = []
+			for await (const c of commands) {
+				const description = await l.translate(c.summary);
+				a.push(`\`${c.name}\` - ${description}`)
+			}
+			return a
 		}
-		if(commands.length > 0) pages.push(commands)
+		
 		// Building an embed page
 		const title = await l.translate('info.help.general.title')
-		const footer = await l.translate('info.help.general.footer',this.prefix)
-		const embed = new MessageEmbed().setTitle(title).setDescription(pages[0]).setFooter(footer).setTimestamp();
+		const footer = await l.translate('info.help.general.footer', '1', '3', this.prefix)
+		const embed = new MessageEmbed().setTitle(title).setFooter(footer).setTimestamp();
 		const bot = this.msg.client.user!
 		if(this.msg.guild) embed.setColor(this.msg.guild.member(bot)!.displayColor)
 		else embed.setColor(0xffffff)
 		embed.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!)
+		// copy
+		const embed2 = new MessageEmbed(embed)
+		const embed3 = new MessageEmbed(embed)
+		// Field to embed 1
+		embed.addField(mod, await createList(moderators))
+
+		// Fiels to embed 2
+		embed2.addFields(
+			{name: manage, value: await createList(managers)},
+			{name: info, value: await createList(informers)}
+		);
+		// Fields to embed 3
+		embed3.addFields(
+			{name: config, value: await createList(configurators)},
+			{name: misc, value: await createList(random)}
+		);
 		// Creating message components
 		/** 
 		const prev_button = {
@@ -81,45 +108,52 @@ export class HelpCommand implements ArgCommand {
 		}
 		*/
 		// Sending embed page + reactions
+		
 		this.msg.channel.send(embed).then((msg)=>{
+			const pages = 3
 			let page = 1
-			if(pages.length < 2) return
 			msg.react('➡️')
 			const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
-				if((reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️') && user.id != bot.id) return true
+				if((reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️') && user.id == this.msg!.author.id) return true
 				else return false
 			};
-			const rc = new ReactionCollector(msg, f, {time: 60000})
-			rc.on('collect', (reaction, user)=>{
+			const rc = new ReactionCollector(msg, f, {idle: 120000})
+			rc.on('collect', async (reaction, user)=>{
 				if(!f(reaction, user)) return
-				if(reaction.emoji.name === '➡️'){
+				if(reaction.emoji.name == '➡️'){
 					page++
-					msg.react('⬅️')
-					reaction.remove()
-					if(pages.length < page){
-						page--
-						return
-					}
-					const e2 = new MessageEmbed().setAuthor(bot.tag,bot.avatarURL({dynamic:true})!).setTitle(title).setDescription(pages[page -1]).setFooter(`Page ${page} of ${pages.length} |` + footer).setTimestamp()
-					if(msg.guild) e2.setColor(msg.guild.member(bot)!.displayColor)
-					else e2.setColor(0xffffff)
-					msg.edit(e2);
+					await msg.reactions.removeAll()
+					await msg.react('⬅️')
+					if(page == 2) msg.react('➡️')
+					loadPage(page)
 				}
+
 				if(reaction.emoji.name === '⬅️'){
-					msg.react('➡️')
 					page--
-					if(page === 0){
-						page = 1
-						return
+					await msg.reactions.removeAll()
+					if(page == 2) await msg.react('⬅️')
+					msg.react('➡️')
+					loadPage(page)
+				}
+
+				async function loadPage(p: number){
+					let e: MessageEmbed = new MessageEmbed()
+					switch(p){
+						case 1: e = embed; break;
+						case 2: e = embed2; break;
+						case 3: e = embed3
 					}
-					const e2 = new MessageEmbed().setAuthor(bot.tag,bot.avatarURL({dynamic:true})!).setTitle(title).setDescription(pages[page - 1]).setFooter(`Page ${page} of ${pages.length} |` + footer).setTimestamp()
-					if(msg.guild) e2.setColor(msg.guild.member(bot)!.displayColor)
-					else e2.setColor(0xffffff)
-					msg.edit(e2);
+					e.setFooter(await l.translate('info.help.general.footer', `${p}`, `${pages}`, this.prefix))
+					msg.edit(e);
 				}
 			});
-			console.log('Embed de ayuda enviado')})
+			rc.once('end', ()=>{
+				msg.reactions.removeAll()
+			});
+			console.log('Embed de ayuda enviado')
+		})	
 	}
+
 	private async createHelpEmbed(commandName:string) {
 		if(!this.lang || !this.msg) return
 		const l = this.lang

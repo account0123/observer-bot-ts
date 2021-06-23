@@ -11,6 +11,7 @@ export class CleanCommand implements ArgCommand {
 	examples: string[] = ['30']
 	usage: string= 'info.clean.usage'
 	guildExclusive: boolean = true
+	type = 'mod'
 	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
 		const n = parseInt(args[0])
 		if (isNaN(n)) {

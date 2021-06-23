@@ -8,6 +8,7 @@ export class ServerInfoCommand implements Command {
 	guildExclusive: boolean = true
 	shortdescription: string = 'info.serverinfo.description'
 	fulldescription: string = 'info.serverinfo.fulldescription'
+	type = 'info'
 	g!: Guild;
 	lang!: Lang;
 	async run(msg: Message, l: Lang): Promise<void> {
@@ -28,8 +29,11 @@ export class ServerInfoCommand implements Command {
 		const phone = await l.translate(v+'phone')
 		const e = 'info.serverinfo.embed.'
 		const mfa = async ()=> this.g.mfaLevel == 1 ? await l.translate('yes'): await l.translate('no')
+		const partner = async ()=> this.g.partnered ? await l.translate('yes'): await l.translate('no')
 		const buildSafety = ()=>{switch(this.g.verificationLevel){case 'NONE':return none;case 'LOW':return email;case 'MEDIUM':return email+fivemin;case 'HIGH':return email+fivemin+tenmin;case 'VERY_HIGH':return email+fivemin+tenmin+phone}};
 		if (url) serverEmbed.addField(await l.translate(e+'vanity'),url,true)
+		const boosts = this.g.premiumSubscriptionCount
+		const verified = ()=>this.g.verified ? 'yes' : 'no'
 		serverEmbed.addFields(
 			{ name: 'ID', value: this.g.id, inline: true},
 			{ name: await l.translate(e+'region'), value:this.g.region,inline: true},
@@ -39,7 +43,8 @@ export class ServerInfoCommand implements Command {
 			{ name: await l.translate(e+'emojis'), value: this.g.emojis.cache.size, inline:true},
 			{name: await l.translate(e+'safety'), value: intro + buildSafety(), inline:true},
 			{ name: await l.translate(e+'mfa'), value: await mfa(),inline: true},
-			{ name: await  l.translate(e+'boost'), value: this.g.premiumTier,inline: true},
+			{name: 'Verified', value: verified(), inline: true},
+			{ name: await  l.translate(e+'boost'), value: `${this.g.premiumTier} (${boosts} boosts)`,inline: true},
 			{ name: await l.translate(e+'created'), value: new Time(this.g.id,l).toString()}
 		);
 		const d = this.g.description
@@ -48,7 +53,12 @@ export class ServerInfoCommand implements Command {
 		if (icon) serverEmbed.setThumbnail(icon)
 		const banner = this.g.bannerURL()
 		if (banner) serverEmbed.setImage(banner)
+		const vanity = this.g.vanityURLCode
+		if(vanity) serverEmbed.addField('Vanity code', `${vanity} (used ${this.g.vanityURLUses} times)`, true)
+
+
 		await msg.channel.send(serverEmbed)
+		
 	}
 	private getChannelsType(type:string):number {
 		var count = 0;

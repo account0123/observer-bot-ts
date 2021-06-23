@@ -10,6 +10,7 @@ export class CreateRoleCommand implements ArgCommand{
 	requiredArgs: number = 1
 	examples: string[] = ['{name:strong red, color: #ff0000}', '{ name:Admin, color:ffff00, permissions:0x7fffffff,hoist, mentionable}', '{name: users, hoist}']
 	usage:string = 'info.createrole.usage'
+	type = 'manage'
 	guildExclusive: boolean = true
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const bot = msg.guild!.member(msg.client.user!)!
