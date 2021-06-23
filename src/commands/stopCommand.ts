@@ -5,6 +5,7 @@ import { Lang } from "./lang/Lang"
 import { FormatCommand } from "./formatCommand"
 
 export class StopCommand implements Command {
+  type: string | undefined
   shortdescription: string = 'info.stop.description'
   fulldescription: string = this.shortdescription
   guildExclusive: boolean = false

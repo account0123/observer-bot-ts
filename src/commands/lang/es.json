@@ -1,4 +1,11 @@
 {
+    "categories": {
+        "manage": "Gestión",
+        "info": "Información",
+        "misc": "Misceláneos",
+        "mod": "Moderación",
+        "config": "Configuración"
+    },
     "info": {
         "activity": {
             "description": "Muestra los estados de actividad.",
@@ -224,7 +231,7 @@
             "usage": "[comando]",
             "general":{
                 "title": "Todos los comandos de Observador",
-                "footer": "Usa {prefix}help <comando> para ver cómo usar el comando"
+                "footer": "Página {n} de {pages} | Usa {prefix}help <comando> para saber usar el comando"
             },
             "about":{
                 "title": "Detalles de {commandName}",

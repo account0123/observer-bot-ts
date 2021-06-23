@@ -12,6 +12,7 @@ export class FocusKickCommand {
 	usage: string = 'info.focuskick.usage'
 	examples: string[] = ['10m @troll123 stop trolling', '10s 123456789987654321 10 9 8 7... 0']
 	permission: string = 'KICK_MEMBERS'
+	type = 'mod'
 	private kick:KickCommand
 	private index: number | undefined
 	constructor(){

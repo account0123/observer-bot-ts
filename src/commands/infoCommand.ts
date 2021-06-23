@@ -7,6 +7,7 @@ export class InfoCommand implements Command {
 	guildExclusive: boolean = false
 	shortdescription: string = 'info.info.description'
 	fulldescription: string = this.shortdescription
+	type = 'info'
 	// cada arreglo de bug es una letra (a, b, c, d...)
 	// cada nuevo día de creación de comandos es un número terciario (v1.1.0, v1.1.1, v1.1.2)
 	// cada nuevo mecanismo, por ejemplo seguridad o database en un número secundario (v1.1, v1.2, v1.3...)

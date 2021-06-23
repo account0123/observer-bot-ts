@@ -30,6 +30,8 @@ export default interface ArgCommand {
   /** El permiso necesario (además de administrador) para utilizar el comando */
   readonly permission: string
   
+  /** Clasificación para el comando help */
+  readonly type: string | undefined
   /** Ejecución del comando. La función debe ser asincrónica. */
  run(msg: Message,l: Lang, args: string[], prefix?: string): Promise<void>
 

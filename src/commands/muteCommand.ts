@@ -5,6 +5,7 @@ import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
 export class MuteCommand implements ArgCommand {
+	type: string | undefined;
 	requiredArgs: number = 3
 	commandNames: string[] = ['mute']
 	guildExclusive: boolean = true

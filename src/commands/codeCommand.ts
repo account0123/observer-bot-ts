@@ -3,6 +3,7 @@ import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
 export class CodeCommand implements ArgCommand {
+	type: string | undefined;
 	requiredArgs: number = 1
 	commandNames: string[] = ['code','unformat']
 	guildExclusive: boolean = false

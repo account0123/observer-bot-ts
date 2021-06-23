@@ -7,6 +7,7 @@ export class CreateWebhookCommand implements Command {
 	guildExclusive: boolean = true
 	shortdescription: string = 'info.createwebhook.description'
 	fulldescription: string = this.shortdescription
+	type = 'mod'
 	async run(msg: Message, l: Lang): Promise<void> {
 		const bot = msg.guild!.member(msg.client.user!)!
 		const mod = msg.guild!.member(msg.author)!

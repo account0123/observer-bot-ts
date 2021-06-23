@@ -15,6 +15,7 @@ export class EditChannelCommand implements ArgCommand {
 	usage: string = 'info.editchannel.usage'
 	examples: string[] = ['lounge', 'lewd-images topic']
 	permission: string = 'MANAGE_CHANNELS'
+	type = 'manage'
 	channel!: TextChannel
 	m!: Message
 	lang!: Lang

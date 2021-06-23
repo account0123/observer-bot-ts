@@ -1,4 +1,11 @@
 {
+    "categories": {
+        "manage": "Management",
+        "info": "Informative",
+        "misc": "Miscellaneous",
+        "mod": "Moderation",
+        "config": "Configuration"
+    },
     "info": {
         "activity": {
             "description":"Shows activity status",
@@ -223,6 +230,7 @@
             "usage": "[command]",
 			"general":{
 				"title": "All Observador's commands",
+                "page": "Page {n} of {pages} | ",
 				"footer": "Use {prefix}help <command> to see how to use a command"
 			},
 			"about":{

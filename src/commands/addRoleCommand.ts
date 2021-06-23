@@ -9,6 +9,7 @@ export class AddRoleCommand implements ArgCommand {
 	permission: string = 'MANAGE_ROLES'
 	shortdescription: string = 'info.addrole.description'
 	fulldescription: string = this.shortdescription
+	type = 'manage'
 	async checkPermissions(msg: Message,l:Lang): Promise<boolean> {
 		const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!

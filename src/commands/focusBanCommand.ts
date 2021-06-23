@@ -14,6 +14,7 @@ export class FocusBanCommand implements ArgCommand {
 	usage: string = 'info.focusban.usage'
 	examples: string[] = ['10m @troll123 bye bye', '10s 123456789987654321 admin abuse']
 	permission: string = 'BAN_MEMBERS'
+	type = 'mod'
 	private ban:BanCommand
 	private index: number | undefined
 	constructor(){

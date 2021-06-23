@@ -13,6 +13,7 @@ export class ResetAllRolesCommand implements ArgCommand {
 	usage: string = 'info.resetallroles.usage'
 	examples: string[] = ['832abc370fa879d2', '832abc370fa879d2 13b9c4']
 	permission: string = 'MANAGE_ROLES'
+	type = 'manage'
 	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
 		if(!GetPassCommand.validatePassword(msg.author.id, l, args[0])) return
 		var perms = 0

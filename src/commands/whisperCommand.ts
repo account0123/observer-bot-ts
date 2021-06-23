@@ -4,6 +4,7 @@ import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
 export class WhisperCommand implements ArgCommand {
+	type: string | undefined;
 	requiredArgs: number = 2
 	commandNames: string[] = ['whisper', 'tell']
 	guildExclusive: boolean = false

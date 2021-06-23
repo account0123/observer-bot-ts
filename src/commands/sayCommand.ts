@@ -4,6 +4,7 @@ import { Lang } from "./lang/Lang";
 import { ChannelFinder } from "../util/ChannelFinder";
 
 export class SayCommand implements ArgCommand {
+	type: string | undefined;
 	permission: string = ''
 	shortdescription: string = 'info.say.description'
 	fulldescription: string = this.shortdescription

@@ -13,14 +13,15 @@ export class CreateChannelCommand implements ArgCommand{
 	examples: string[] = ['text gaming-chat {topic:Channel for all gamers}', 'text booster-channel allow-roles [server booster:{view_channel}] deny-role [everyone:{view_channel}]', 'text John\'s-channel allow-user [John:{send_messages,manage_channel,manage_webhooks}] deny-role {everyone:send_messages}', 'text hentai {nsfw}','category bots {position:4}']
 	usage:string = 'info.createchannel.usage'
 	guildExclusive: boolean = true
-	type!: GuildCreateChannelOptions["type"]
+	type = 'manage'
+	channel_type!: GuildCreateChannelOptions["type"]
 	lang!: Lang;
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		this.lang = l
 		const first_arg = args.shift()!.toLowerCase()
 		switch (first_arg) {
 			case 'text': case 'voice': case 'news': case 'store': case 'category':
-				this.type = first_arg
+				this.channel_type = first_arg
 				break;
 			default:
 				l.send('errors.invalid_type',first_arg)
@@ -33,7 +34,7 @@ export class CreateChannelCommand implements ArgCommand{
 		let data: GuildCreateChannelOptions | undefined
 		if(arg) data = this.createData(msg, arg)
 		if (!data) {
-			msg.guild!.channels.create(name, {type: this.type}).then(async (channel) => {
+			msg.guild!.channels.create(name, {type: this.channel_type}).then(async (channel) => {
 				const e = 'info.createchannel.embed.'
 				const getCategory = ()=>{
 					if(channel.parent) return channel.parent.name
@@ -87,7 +88,7 @@ export class CreateChannelCommand implements ArgCommand{
 			return
 		}
 		// Ejecución
-		data!.type = this.type
+		data!.type = this.channel_type
         msg.guild!.channels.create(name,data!).then(async (channel) => {
 			const e = 'info.createchannel.embed.'
 			const getCategory = ()=>{
@@ -297,7 +298,7 @@ export class CreateChannelCommand implements ArgCommand{
 				console.error('valor position (' + value + ') no es un número')
 				data.position = 0
 			}
-			if(this.type !== 'category') data.parent = setParent(data.position, msg.guild!)
+			if(this.channel_type !== 'category') data.parent = setParent(data.position, msg.guild!)
 			break
 		  case 'topic':
 			  data.topic = value

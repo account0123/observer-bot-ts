@@ -8,6 +8,7 @@ export class ServerInfoCommand implements Command {
 	guildExclusive: boolean = true
 	shortdescription: string = 'info.serverinfo.description'
 	fulldescription: string = 'info.serverinfo.fulldescription'
+	type = 'info'
 	g!: Guild;
 	lang!: Lang;
 	async run(msg: Message, l: Lang): Promise<void> {

@@ -8,6 +8,7 @@ export class CancelCommand implements Command {
 	guildExclusive: boolean = true
 	shortdescription: string = 'info.cancel.description'
 	fulldescription: string = this.shortdescription
+	type = 'mod'
 	static timers: TimerData[] = []
 	async run(msg: Message, l: Lang): Promise<void> {
 		if(CancelCommand.timers.length === 0){

@@ -13,6 +13,7 @@ export class WebhooksCommand implements ArgCommand {
 	usage: string = 'info.webhooks.usage'
 	examples: string[] = ['1234567890abcdef', '1234567890abcdef general']
 	permission: string = ''
+	type = 'info'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const allowed = GetPassCommand.validatePassword(msg.author.id, l, args[0])
 		if(!allowed) return

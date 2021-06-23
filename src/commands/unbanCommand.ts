@@ -3,11 +3,13 @@ import ArgCommand from "./commandArgInterface"
 import { Lang } from "./lang/Lang"
 import { utils, ModeOfOperation } from "aes-js"
 import { GetPassCommand, CleanCommand } from "."
+
 export class UnbanCommand implements ArgCommand {
   requiredArgs: number = 1
   usage: string = 'info.unban.usage'
   examples: string[] = ['123456789987654321 ban expired']
   permission: string = 'BAN_MEMBERS'
+  type = 'mod'
   async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
     const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!

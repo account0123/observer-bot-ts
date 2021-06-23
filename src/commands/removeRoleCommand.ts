@@ -13,6 +13,7 @@ export class RemoveRoleCommand implements ArgCommand {
 	examples: string[] = ['123456789987654321 @Mods', '@usuario#1234 trial admin'];
 	usage: string = 'info.removerole.usage'
 	guildExclusive: boolean = true
+	type = 'manage'
 	async run(msg: Message, l:Lang, args: string[]): Promise<void> {
 		const mention = args.shift()!
 		const member = MemberFinder.getMember(msg,mention)

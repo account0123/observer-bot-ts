@@ -13,6 +13,7 @@ export class SetCommand implements ArgCommand {
 	usage: string = 'info.set.usage'
 	examples: string[] = ['set prefix <']
 	permission: string = 'ADMINISTRATOR'
+	type = 'config'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const target = args.shift()!
         const value = args[0]

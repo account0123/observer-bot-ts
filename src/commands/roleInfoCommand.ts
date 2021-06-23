@@ -13,6 +13,7 @@ export class RoleInfoCommand implements ArgCommand {
 	usage: string = 'info.roleinfo.usage'
 	examples: string[] = ['123456789987654321', '@Mod', 'new role']
 	permission: string = ''
+	type = 'info'
 	async run(msg: Message, l:Lang, args: string[]): Promise<void> {
 		const mention = args.join(' ').trim()
 		const role = RoleFinder.getRole(msg,mention)

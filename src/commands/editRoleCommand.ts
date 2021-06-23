@@ -12,6 +12,7 @@ export class EditRoleCommand implements ArgCommand {
 	examples: string[] = ['123456789987654321 pos: 10', '@any rolename {name:another name,color:RED}', '"mod" +manage_roles']
 	usage: string = 'info.editrole.usage'
 	guildExclusive: boolean = true
+	type = 'manage'
 	async run(msg: Message, l:Lang, args: string[]): Promise<void> {
 		const botposition = msg.guild!.member(msg.client.user!)!.roles.highest.position
 		// Se asume a la mención de rol como la primera palabra de los argumentos

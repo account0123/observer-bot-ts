@@ -12,7 +12,7 @@ export class CopyCommand implements ArgCommand {
   fulldescription: string = this.shortdescription
   guildExclusive: boolean = true
   commandNames = ['copy']
-
+  type = 'mod'
   async run(msg: Message, l:Lang, args: string[]): Promise<void> {
     const linkOrID = args[0]
 	const isLink = isNaN(parseInt(linkOrID, 10))

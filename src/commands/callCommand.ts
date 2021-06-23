@@ -3,6 +3,7 @@ import { Message, Permissions } from "discord.js";
 import { Lang } from "./lang/Lang";
 
 export class CallCommand implements ArgCommand {
+	type: string | undefined;
 	requiredArgs: number = 1
 	commandNames: string[] = ['call', 'summon']
 	guildExclusive: boolean = true

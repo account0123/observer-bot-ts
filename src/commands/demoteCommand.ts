@@ -12,6 +12,7 @@ export class DemoteCommand implements ArgCommand {
 	examples: string[] = ['@usuario#1234 abuso de poder']
 	usage: string = 'info.demote.usage'
 	guildExclusive: boolean = true
+	type = 'manage'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const mention = args.shift()!
 		const member = MemberFinder.getMember(msg,mention)
