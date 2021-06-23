@@ -68,7 +68,7 @@ export default class CommandHandler {
   /** Executes user commands contained in a message if appropriate. */
   async handleMessage(message: Message): Promise<void> {
     if(message.author.bot) return
-    
+
     var lang: Lang
     if (message.guild === null) lang = new Lang(message,message.author.locale || undefined)
     else{
@@ -78,6 +78,7 @@ export default class CommandHandler {
       else Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [message.guild.id, message.guild.name, '!!', 'es']).then(()=>console.log('Servidor registrado: ' + message.guild!.id)).catch(e=>console.error(e));
     }
     if(!this.isCommand(message)) return
+
     const commandParser = new CommandParser(message, this.prefix);
 
     const matchedCommand = CommandHandler.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
