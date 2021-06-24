@@ -24,7 +24,7 @@ export class Lang {
 			const row = rows[0]
 			return row.language
 		} catch (error) {
-			console.error('COULDN\'T FIND GUILD ' + guild_id + ' PLEASE UPADTE')
+			console.error('COULDN\'T FIND GUILD ' + guild_id + ' PLEASE UPDATE')
 			console.error('Continuando con idioma inglés')
 			return 'en'
 		}

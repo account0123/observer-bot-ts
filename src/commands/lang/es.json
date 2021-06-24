@@ -282,6 +282,7 @@
         "rae":{
             "description": "Define una palabra según la RAE",
             "usage": "<palabra>",
+            "title": "Definición de {word}",
             "loading": "`Buscando la definición de {word}...`",
             "no_results": "*No hay resultados para {word}*"
         },
