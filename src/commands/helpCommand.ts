@@ -117,6 +117,16 @@ export class HelpCommand implements ArgCommand {
 				if((reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️') && user.id == this.msg!.author.id) return true
 				else return false
 			};
+			const loadPage = async (p: number)=>{
+				let e: MessageEmbed = new MessageEmbed()
+				switch(p){
+					case 1: e = embed; break;
+					case 2: e = embed2; break;
+					case 3: e = embed3
+				}
+				e.setFooter(await l.translate('info.help.general.footer', `${p}`, `${pages}`, `${this.prefix}`))
+				msg.edit(e);
+			};
 			const rc = new ReactionCollector(msg, f, {idle: 120000})
 			rc.on('collect', async (reaction, user)=>{
 				if(!f(reaction, user)) return
@@ -134,17 +144,6 @@ export class HelpCommand implements ArgCommand {
 					if(page == 2) await msg.react('⬅️')
 					msg.react('➡️')
 					loadPage(page)
-				}
-
-				async function loadPage(p: number){
-					let e: MessageEmbed = new MessageEmbed()
-					switch(p){
-						case 1: e = embed; break;
-						case 2: e = embed2; break;
-						case 3: e = embed3
-					}
-					e.setFooter(await l.translate('info.help.general.footer', `${p}`, `${pages}`, this.prefix))
-					msg.edit(e);
 				}
 			});
 			rc.once('end', ()=>{
