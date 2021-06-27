@@ -22,15 +22,17 @@ export class FocusBanCommand implements ArgCommand {
 	}
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const time = args.shift()!
-		const secondsEx = time.match(/\d+s/)
-		const minutesEx = time.match(/\d+m/)
-		const hoursEx = time.match(/\d+h/)
-		const daysEx = time.match(/\d+d/)
+		const secondsEx = time.match(/(\d+)s/)
+		const minutesEx = time.match(/(\d+)m/)
+		const hoursEx = time.match(/(\d+)h/)
+		const daysEx = time.match(/(\d+)d/)
+		const implicit_duarion = time.match(/d+/)
 		var s = 0,m = 0,h = 0,d = 0
-		if(secondsEx) s = parseInt(secondsEx[0])
-		if(minutesEx) m = parseInt(minutesEx[0])
-		if(hoursEx) h = parseInt(hoursEx[0])
-		if(daysEx) d = parseInt(daysEx[0])
+		if(secondsEx) s = parseInt(secondsEx[1])
+		if(implicit_duarion) s = parseInt(implicit_duarion[0])
+		if(minutesEx) m = parseInt(minutesEx[1])
+		if(hoursEx) h = parseInt(hoursEx[1])
+		if(daysEx) d = parseInt(daysEx[1])
 		const ms = d * 3600000 * 24 + h * 3600000 + m * 60000 +  s * 1000
 		if(isNaN(ms) || ms > 2147483647){
 			l.send('errors.unsafe_integer')
@@ -45,6 +47,13 @@ export class FocusBanCommand implements ArgCommand {
 		if(CancelCommand.timers.length > 9){
 			l.reply('errors.enough_timers')
 			return
+		}
+		// Verificación de timers
+		for(const t of CancelCommand.timers){
+			if(member.id == t.user){
+				msg.channel.send('El miembro `' + t.user + '` ya será expulsado/baneado')
+				return
+			}
 		}
 		const reason = args.join(' ') || await l.translate('info.focusban.default')
 		await l.send('info.focusban.success','' + ms/1000,member.displayName, reason)

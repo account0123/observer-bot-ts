@@ -3,6 +3,7 @@ import { Message, MessageEmbed, Permissions } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { Lang } from "./lang/Lang";
 import console from "console";
+import { PermissionsChecker } from "../util/PermissionsChecker";
 
 export class BanCommand implements ArgCommand {
 	permission: string = 'BAN_MEMBERS'
@@ -20,11 +21,13 @@ export class BanCommand implements ArgCommand {
 		const reason = args.join(' ')  || await l.translate('info.ban.embed.default_reason')
 		const member = MemberFinder.getMember(msg, mention);
 		if(!member){
+			msg.react('❌')
 			l.reply('errors.invalid_member',mention)
 			return
 		}
 		if(!member.bannable){
-			l.reply('errors.bot_lower')
+			msg.react('❌')
+			l.reply('errors.lower_bot')
 			return
 		}
 		await member.ban({days:1, reason: reason}).then(async banned => {
@@ -51,6 +54,6 @@ export class BanCommand implements ArgCommand {
 			l.reply('errors.modperms.ban')
 			return false
 		}
-		return true
+		return PermissionsChecker.check(new Permissions(['SEND_MESSAGES']), msg, l)
 	}
 }

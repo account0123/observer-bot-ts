@@ -3,17 +3,17 @@ import { Connections } from "../../config/connections";
 import { Message } from "discord.js";
 import { RowDataPacket } from 'mysql2';
 export class Lang {
-	locale:string | undefined
+	language:string | undefined
 	private msg:Message
 	constructor(msg: Message,locale?:string){
 		this.msg = msg
 		if(!msg.guild) {
 			switch(locale){
 				case '': case 'es':
-					this.locale = 'es'
+					this.language = 'es'
 					break
 				case 'en': default:
-					this.locale = 'en'
+					this.language = 'en'
 					break
 			}
 		}
@@ -30,10 +30,10 @@ export class Lang {
 		}
 	}
 	async send(code:string,...values:string[]):Promise<Message>{
-		if (!this.locale) {
-			this.locale = await this.request(this.msg.guild!.id)
+		if (!this.language) {
+			this.language = await this.request(this.msg.guild!.id)
 		}
-		const content = fs.readFileSync(`./build/commands/lang/${this.locale}.json`,{encoding: 'utf-8'})
+		const content = fs.readFileSync(`./build/commands/lang/${this.language}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {
@@ -62,10 +62,10 @@ export class Lang {
 		return this.msg.channel.send(script, {disableMentions: 'everyone'})
 	}
 	async reply(code:string,...values:string[]):Promise<Message>{
-		if (!this.locale) {
-			this.locale = await this.request(this.msg.guild!.id)
+		if (!this.language) {
+			this.language = await this.request(this.msg.guild!.id)
 		}
-		const content = fs.readFileSync(`./build/commands/lang/${this.locale}.json`,{encoding: 'utf-8'})
+		const content = fs.readFileSync(`./build/commands/lang/${this.language}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {
@@ -94,10 +94,10 @@ export class Lang {
 		return this.msg.reply(script, {disableMentions: 'everyone'})
 	}
 	async translate(code:string,...values:string[]):Promise<string>{
-		if (!this.locale) {
-			this.locale = await this.request(this.msg.guild!.id)
+		if (!this.language) {
+			this.language = await this.request(this.msg.guild!.id)
 		}
-		const content = fs.readFileSync(`./build/commands/lang/${this.locale}.json`,{encoding: 'utf-8'})
+		const content = fs.readFileSync(`./build/commands/lang/${this.language}.json`,{encoding: 'utf-8'})
 		var obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {

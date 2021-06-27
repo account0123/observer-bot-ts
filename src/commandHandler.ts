@@ -80,7 +80,6 @@ export default class CommandHandler {
     if(!this.isCommand(message)) return
 
     const commandParser = new CommandParser(message, this.prefix);
-
     const matchedCommand = CommandHandler.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
     const matchedArgCommand = CommandHandler.argCommands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
     if(matchedCommand) {
@@ -91,7 +90,7 @@ export default class CommandHandler {
       await matchedCommand.run(message,lang).catch(error => {
         message.react('❌')
         lang.reply('errors.unknown')
-        console.error(`"${this.echoMessage(message)}" falló por "${error}"`);
+        console.error(`"${this.echoMessage(message)}" falló por "${error}"`)
       });
     }else if (matchedArgCommand) {
       if (message.channel.type == "dm" && matchedArgCommand.guildExclusive) {

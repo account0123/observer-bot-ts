@@ -1,7 +1,8 @@
-import { Message, MessageReaction, ReactionCollector, CollectorFilter, User} from "discord.js";
+import { Message, MessageReaction, ReactionCollector, CollectorFilter, User, Permissions} from "discord.js";
 import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
-import { RAE } from "rae-api";
+import {RAE}  from "rae-api"
+import { PermissionsChecker } from "../util/PermissionsChecker";
 export class RAECommand implements ArgCommand {
 	requiredArgs: number = 1
 	commandNames: string[] = ['rae', 'definir', 'buscar']
@@ -20,58 +21,91 @@ export class RAECommand implements ArgCommand {
 			m.edit(await l.translate('info.rae.no_results',args[0]))
 			return
 		}
-		const res = search.getRes()[0]
-		const id = res.getId()
+		let r = 0
+		const results = search.getRes()
+		let res = results[r]
+		let id = res.getId()
 
-		const word = await rae.fetchWord(id)
-		const definitions = word.getDefinitions()
+		let word = await rae.fetchWord(id)
+		let definitions = word.getDefinitions()
+
 		let t: string
-		if(await l.request(msg.guild!.id) == 'en'){
+		if(l.language == 'en'){
 			const p = res.getHeader()
 			const pC = p.replace(p.charAt(0), p.charAt(0).toUpperCase())
 			t = await l.translate('info.rae.title', pC)
 		}else t = await l.translate('info.rae.title', res.getHeader())
 
 		await m.edit(`**${t}**\n**1.** *${definitions[0].getType()}* ${definitions[0].getDefinition()}`)
-        const pages = definitions.length
+        let pages = definitions.length
 		let page = 1
-		await m.react('➡️')
+		if(results.length > 1) await m.react('⬇️')
+		const d_react = await m.react('▶️')
 		const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
-			if((reaction.emoji.name == '➡️' || reaction.emoji.name == '⬅️') && user.id == msg.author.id) return true
+			const e = reaction.emoji.name
+			if((e == '▶️' || e == '◀️' || e == '⬇️') && user.id == msg.author.id) return true
 			else return false
 		};
             const rc = new ReactionCollector(m, f, {idle: 30000})
             rc.on('collect', async (reaction, user)=>{
 				if(!f(reaction, user)) return
-				if(reaction.emoji.name == '➡️'){
-                    if(page == pages) return
-					page++
-					loadPage(page)
-					await m.reactions.removeAll()
-					await m.react('⬅️')
-					if(page < pages) m.react('➡️')
+
+				if(reaction.emoji.name == '⬇️'){
+					reaction.remove()
+					if(results.length < 2) return
+					if(r == results.length) d_react.remove()
+					r++
+					page = 1
+					fetchWord()
 				}
 
-				if(reaction.emoji.name === '⬅️'){
+				if(reaction.emoji.name == '▶️'){
+                    if(page == pages) return
+					loadPage(++page)
+					if(page == 2){
+						await m.reactions.removeAll()
+						await m.react('◀️')
+						if(page < pages) m.react('▶️')
+					}else reaction.remove()
+				}
+
+				if(reaction.emoji.name === '◀️'){
                     if(page == 1) return
-					page--
-					loadPage(page)
-					await m.reactions.removeAll()
-					if(page > 1) await m.react('⬅️')
-					m.react('➡️')
+					loadPage(--page)
+					if(page == pages - 1){
+						await m.reactions.removeAll()
+						if(page > 1) await m.react('◀️')
+						m.react('▶️')
+					}else reaction.remove()
+				}
+
+				async function fetchWord(){
+					res = results[r]
+					id = res.getId()
+			
+					word = await rae.fetchWord(id)
+					definitions = word.getDefinitions()
+					if(l.language == 'en'){
+						const p = res.getHeader()
+						const pC = p.replace(p.charAt(0), p.charAt(0).toUpperCase())
+						t = await l.translate('info.rae.title', pC)
+					}else t = await l.translate('info.rae.title', res.getHeader())
+					loadPage(1)
 				}
 
 				async function loadPage(p: number){
-					const def = definitions[p - 1]
-                    m.edit(`**${t}**\n**${p}.** *${def.getType()}* ${def.getDefinition()}`)
+					const d = definitions[p - 1]
+                    m.edit(`**${t}**\n**${p}.** *${d.getType()}* ${d.getDefinition()}`)
 				}
+
 			});
 			rc.once('end', ()=>{
 				m.reactions.removeAll()
 			});
 	}
-	async checkPermissions(): Promise<boolean> {
-		return true
+	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
+		if(msg.channel.type == 'dm') return true
+		return PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS', 'MANAGE_MESSAGES']), msg, l)
 	}
 	
 }

@@ -46,6 +46,13 @@ export class FocusKickCommand {
 			l.reply('errors.enough_timers')
 			return
 		}
+		// Verificación de timers
+		for(const t of CancelCommand.timers){
+			if(member.id == t.user){
+				msg.channel.send('El miembro `' + t.user + '` ya será expulsado/baneado')
+				return
+			}
+		}
 		const reason = args.join(' ') || await l.translate('info.focusban.default')
 		await l.send('info.focuskick.success','' + ms/1000,member.displayName, reason)
 		const timeout = setTimeout(() => {
