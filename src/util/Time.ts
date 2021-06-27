@@ -17,7 +17,7 @@ export class Time {
 			return '*Fecha desconocida*'
 		}
 		// If english, pls use the official toString function from Date class
-		if(this.lang.locale === 'en') return new Date(this.date).toISOString()
+		if(this.lang.language === 'en') return new Date(this.date).toISOString()
 		return this.getDay(this.date.getDay()) + ', ' + this.date.getDate() + ' de ' + this.getMonth(this.date.getMonth()) + ' del ' + this.date.getFullYear() + ', a las ' + this.date.toTimeString()
 	}
 	private getDay(day:number):string{
