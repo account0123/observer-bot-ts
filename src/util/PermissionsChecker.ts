@@ -17,9 +17,11 @@ export class PermissionsChecker {
 		if(rejected.length == 0) return true
 		if(bot.hasPermission('ADD_REACTIONS')) msg.react('❌')
 		const first = await l.translate('checking.first')
+        let m: Message
+        if(bot.hasPermission('SEND_MESSAGES')) m = await msg.channel.send(first)
 		const missing = await l.translate('checking.missing')
 		const list = PermissionsChecker.createPermissionsList(allowed, rejected, missing)
-		if(bot.hasPermission('SEND_MESSAGES')) msg.channel.send(first + '\n\n' + list)
+		if(m) m.edit(first + '\n\n' + list)
 		return false
 	}
 
