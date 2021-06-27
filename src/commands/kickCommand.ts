@@ -2,6 +2,7 @@ import ArgCommand from "./commandArgInterface";
 import { Message, MessageEmbed, Permissions } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { Lang } from "./lang/Lang";
+import { PermissionsChecker } from "../util/PermissionsChecker";
 
 export class KickCommand implements ArgCommand {
 	permission: string = 'KICK_MEMBERS'
@@ -33,7 +34,7 @@ export class KickCommand implements ArgCommand {
 				.setTitle(await l.translate(e+'reason'))
 				.setDescription(reason)
 				.setFooter(await l.translate(e+'footer',mod.user.tag));
-			kicked.send(embed);
+			kicked.send(embed).catch(e=>console.error(`No se pudo enviar el mensaje a ${kicked.displayName} por ${e}`));
 		});
 	}
 	async checkPermissions(msg: Message, l:Lang): Promise<boolean> {
@@ -47,6 +48,6 @@ export class KickCommand implements ArgCommand {
 			l.reply('errors.modperms.kick')
 			return false
 		}
-		return true
+		return PermissionsChecker.check(new Permissions(['SEND_MESSAGES']), msg, l)
 	}
 }

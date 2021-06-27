@@ -6,6 +6,10 @@
         "mod": "Moderation",
         "config": "Configuration"
     },
+    "checking": {
+        "first": "`Checking my permissions...`",
+        "missing": "`I lack the next permissions, please add them to use this command`"
+    },
     "info": {
         "activity": {
             "description":"Shows activity status",
@@ -257,7 +261,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "New commands:\neditchannel\ncreatewebhook\nwebhooks"
+                "changes": "New command: editchannel\n\nIf a command fails by missing permissions, it shows required permissions"
             }
         },
 	    "kick": {

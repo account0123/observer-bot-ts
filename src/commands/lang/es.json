@@ -6,6 +6,10 @@
         "mod": "Moderación",
         "config": "Configuración"
     },
+    "checking": {
+        "first": "`Comando falló. Verificando mis permisos...`",
+        "missing": "`Me faltan los siguientes permisos, por favor añádelos para usar el comando`"
+    },
     "info": {
         "activity": {
             "description": "Muestra los estados de actividad.",
@@ -257,7 +261,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Nuevos comandos:\neditchannel\ncreatewebhook\nwebhooks"
+                "changes": "Nuevos comando: rae\n\nSi un comando falla por falta de permisos muestra los permisos necesarios"
             }
         },
         "kick": {

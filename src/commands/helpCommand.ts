@@ -3,6 +3,7 @@ import { CollectorFilter, Message, MessageEmbed, MessageReaction, Permissions, R
 import CommandHandler from "../commandHandler";
 import { Lang } from "./lang/Lang";
 import Command from "./commandInterface";
+import { PermissionsChecker } from "../util/PermissionsChecker";
 
 type BotCommand = {
 	name: string
@@ -28,8 +29,9 @@ export class HelpCommand implements ArgCommand {
 		if (args.length > 0) this.createHelpEmbed(args[0])
 		else this.createCommandList()
 	}
-	async checkPermissions(): Promise<boolean> {
-		return true
+	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
+		if(msg.channel.type == 'dm') return true
+		return PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS', 'MANAGE_MESSAGES']), msg, l)
 	}
 	private async createCommandList() {
 		if(!this.lang || !this.prefix || !this.msg) return
@@ -112,6 +114,7 @@ export class HelpCommand implements ArgCommand {
 		this.msg.channel.send(embed).then((msg)=>{
 			const pages = 3
 			let page = 1
+			try{
 			msg.react('➡️')
 			const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
 				if((reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️') && user.id == this.msg!.author.id) return true
@@ -128,6 +131,7 @@ export class HelpCommand implements ArgCommand {
 				msg.edit(e);
 			};
 			const rc = new ReactionCollector(msg, f, {idle: 120000})
+			
 			rc.on('collect', async (reaction, user)=>{
 				if(!f(reaction, user)) return
 				if(reaction.emoji.name == '➡️'){
@@ -149,8 +153,12 @@ export class HelpCommand implements ArgCommand {
 			rc.once('end', ()=>{
 				msg.reactions.removeAll()
 			});
+			}catch(error){
+				const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS', 'MANAGE_MESSAGES']), this.msg!, this.lang!)
+				p.then((c)=>{if(c) console.error(error)}).catch(err=>console.error(err))
+			}
 			console.log('Embed de ayuda enviado')
-		})	
+		})
 	}
 
 	private async createHelpEmbed(commandName:string) {
@@ -196,6 +204,10 @@ export class HelpCommand implements ArgCommand {
 		const bot = this.msg.client.user!
 		if(this.msg.guild) embed.setColor(this.msg.guild!.member(bot)!.displayColor)
 		else embed.setColor(0xffffff)
-		this.msg.channel.send(embed.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!)).then(()=>console.log('Embed de ayuda enviado'));
+		this.msg.channel.send(embed.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!))
+		.then(()=>console.log('Embed de ayuda enviado')).catch(e=>{
+			const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES']), this.msg!, this.lang!)
+			p.then((c)=>{if(c) console.error(e)}).catch(err=>console.error(err))
+		});
 	}
 }

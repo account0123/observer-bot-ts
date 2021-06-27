@@ -4,6 +4,7 @@ import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 import { CleanCommand } from "./cleanCommand";
 import { Lang } from "./lang/Lang";
+import { PermissionsChecker } from "../util/PermissionsChecker";
 
 export class AddRoleCommand implements ArgCommand {
 	permission: string = 'MANAGE_ROLES'
@@ -21,7 +22,7 @@ export class AddRoleCommand implements ArgCommand {
 			l.reply('errors.modperms.add_role')
 			return false
 		}
-		return true
+		return PermissionsChecker.check(new Permissions(['SEND_MESSAGES',]), msg, l)
 	}
 	commandNames: string[] = ['addrole']
 	requiredArgs: number = 2
