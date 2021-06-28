@@ -111,7 +111,7 @@ export class HelpCommand implements ArgCommand {
 		*/
 		// Sending embed page + reactions
 		
-		this.msg.channel.send(embed).then((msg)=>{
+		this.msg.channel.send(embed).then(async (msg)=>{
 			const pages = 3
 			let page = 1
 			try{
@@ -145,7 +145,7 @@ reaction.remove();if(page==1) return;page--;
 				}
 			});
 			rc.once('end', ()=>{
-				if(this.msg.guild.member(bot)!.hasPermission("MANAGE_MESSAGES")) msg.reactions.removeAll()
+				if(msg.guild!.member(bot)!.hasPermission("MANAGE_MESSAGES")) msg.reactions.removeAll()
 			});
 			}catch(error){
 				const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS', 'MANAGE_MESSAGES']), this.msg!, this.lang!)
