@@ -8,7 +8,7 @@ export class PermissionsChecker {
 		const rejected: string[] = []
 		const allowed: string[] = []
 		for(const p of perms){
-			if(bot.hasPermission(p)){
+			if(bot.permissionsIn(msg.channel).has(p) || bot.hasPermission(p)){
 				allowed.push(await l.translate('permissions.' + p))
 				continue
 			}

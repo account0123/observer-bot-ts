@@ -1,4 +1,4 @@
-import ArgCommand from "./commandArgInterface";
+ import ArgCommand from "./commandArgInterface";
 import { Message, Permissions, MessageEmbed, RoleData} from "discord.js";
 import { Lang } from "./lang/Lang";
 
@@ -18,16 +18,19 @@ export class CreateRoleCommand implements ArgCommand{
 		const arg = args.join(' ')
 		const data = createData(arg)
 		if (!data) {
+			
 			msg.guild!.roles.create({data: {name: arg,permissions:Permissions.DEFAULT,color:'RANDOM'}, reason: await l.translate('reason',msg.author.tag)}).then(async (role) => {
+				const isHoist = async ()=> role.hoist ? await l.translate('yes') : await l.translate('no')
+				const isMentionable = async ()=>role.mentionable?await l.translate('yes'):await l.translate('no')
 				const e = 'info.createrole.embed.'
-				const embed = new MessageEmbed().setTitle(l.translate(e+'title')).setColor(role.color || 0)
+				const embed = new MessageEmbed().setTitle(await l.translate(e+'title')).setColor(role.color || 0)
 					.addFields(
 						{ name: await l.translate(e+'name')       , value: role.name                 , inline: true},
 						{ name: 'Color'  						  , value: role.hexColor             , inline: true},
 						{ name: await l.translate(e+'position')   , value: role.position             , inline: true},
-						{ name: await l.translate(e+'hoist')      , value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
-						{ name: await l.translate(e+'mentionable'), value: (()=>role.hoist?l.translate('yes'):l.translate('no')), inline: true},
-						{ name: await l.translate(e+'permissions'), value: role.permissions.toJSON()}
+						{ name: await l.translate(e+'hoist')      , value: await isHoist(), inline: true},
+						{ name: await l.translate(e+'mentionable'), value: await isMentionable(), inline: true},
+						{ name: await l.translate(e+'permissions'), value: role.permissions.toJSON(), inline: true}
 						)
 					.setTimestamp();
 				l.reply('info.createrole.success',role.toString())
@@ -56,7 +59,7 @@ export class CreateRoleCommand implements ArgCommand{
 				{ name: await l.translate(e+'position')   , value: role.position             , inline: true},
 				{ name: await l.translate(e+'hoist')      , value: await isHoist(), inline: true},
 				{ name: await l.translate(e+'mentionable'), value: await isMentionable(), inline: true},
-				{ name: await l.translate(e+'permissions'), value: role.permissions.toJSON()}
+				{ name: await l.translate(e+'permissions'), value: role.permissions.toJSON(), inline: true}
 				)
             	.setTimestamp();
             msg.reply(`el rol ${role} fue creado sin problemas.`, embed)
