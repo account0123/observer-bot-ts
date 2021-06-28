@@ -31,7 +31,7 @@ export class HelpCommand implements ArgCommand {
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		if(msg.channel.type == 'dm') return true
-		return PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS', 'MANAGE_MESSAGES']), msg, l)
+		return PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS']), msg, l)
 	}
 	private async createCommandList() {
 		if(!this.lang || !this.prefix || !this.msg) return
@@ -115,7 +115,7 @@ export class HelpCommand implements ArgCommand {
 			const pages = 3
 			let page = 1
 			try{
-			msg.react('➡️')
+			await msg.react('⬅️');await msg.react('➡️')
 			const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
 				if((reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️') && user.id == this.msg!.author.id) return true
 				else return false
@@ -135,23 +135,17 @@ export class HelpCommand implements ArgCommand {
 			rc.on('collect', async (reaction, user)=>{
 				if(!f(reaction, user)) return
 				if(reaction.emoji.name == '➡️'){
-					page++
-					await msg.reactions.removeAll()
-					await msg.react('⬅️')
-					if(page == 2) msg.react('➡️')
+					reaction.remove(); if(page==pages) return;page++;
 					loadPage(page)
 				}
 
 				if(reaction.emoji.name === '⬅️'){
-					page--
-					await msg.reactions.removeAll()
-					if(page == 2) await msg.react('⬅️')
-					msg.react('➡️')
+reaction.remove();if(page==1) return;page--;
 					loadPage(page)
 				}
 			});
 			rc.once('end', ()=>{
-				msg.reactions.removeAll()
+				if(this.msg.guild.member(bot)!.hasPermission("MANAGE_MESSAGES")) msg.reactions.removeAll()
 			});
 			}catch(error){
 				const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS', 'MANAGE_MESSAGES']), this.msg!, this.lang!)
