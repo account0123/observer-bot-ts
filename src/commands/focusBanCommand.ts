@@ -26,10 +26,10 @@ export class FocusBanCommand implements ArgCommand {
 		const minutesEx = time.match(/(\d+)m/)
 		const hoursEx = time.match(/(\d+)h/)
 		const daysEx = time.match(/(\d+)d/)
-		const implicit_duarion = time.match(/d+/)
-		var s = 0,m = 0,h = 0,d = 0
+		const implicit_duration = parseInt(time, 10)
+		let s = 0,m = 0,h = 0,d = 0
 		if(secondsEx) s = parseInt(secondsEx[1])
-		if(implicit_duarion) s = parseInt(implicit_duarion[0])
+		if(!isNaN(implicit_duration)) s = implicit_duration
 		if(minutesEx) m = parseInt(minutesEx[1])
 		if(hoursEx) h = parseInt(hoursEx[1])
 		if(daysEx) d = parseInt(daysEx[1])
@@ -44,17 +44,18 @@ export class FocusBanCommand implements ArgCommand {
 			l.reply('errors.invalid_member',mention)
 			return
 		}
+		
+		// Verificación de timers
+		if(CancelCommand.timers.some(t=>t.user==member.id)){
+			msg.channel.send('El miembro `' + member.id + '` ya será expulsado/baneado')
+			return
+		}
+		
 		if(CancelCommand.timers.length > 9){
 			l.reply('errors.enough_timers')
 			return
 		}
-		// Verificación de timers
-		for(const t of CancelCommand.timers){
-			if(member.id == t.user){
-				msg.channel.send('El miembro `' + t.user + '` ya será expulsado/baneado')
-				return
-			}
-		}
+
 		const reason = args.join(' ') || await l.translate('info.focusban.default')
 		await l.send('info.focusban.success','' + ms/1000,member.displayName, reason)
 		const timeout = setTimeout(() => {
@@ -63,6 +64,7 @@ export class FocusBanCommand implements ArgCommand {
 		}, ms);
 		this.index = CancelCommand.timers.push({user: member.id, timeout, command: 'Ban', reason})
 	}
+
 	checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		return this.ban.checkPermissions(msg,l)
 	}

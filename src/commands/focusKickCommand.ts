@@ -24,10 +24,10 @@ export class FocusKickCommand {
 		const minutesEx = time.match(/(\d+)m/)
 		const hoursEx = time.match(/(\d+)h/)
 		const daysEx = time.match(/(\d+)d/)
-		const implicit_duarion = time.match(/d+/)
-		var s = 0,m = 0,h = 0,d = 0
+		const implicit_duration = parseInt(time, 10)
+		let s = 0,m = 0,h = 0,d = 0
 		if(secondsEx) s = parseInt(secondsEx[1])
-		if(implicit_duarion) s = parseInt(implicit_duarion[0])
+		if(!isNaN(implicit_duration)) s = implicit_duration
 		if(minutesEx) m = parseInt(minutesEx[1])
 		if(hoursEx) h = parseInt(hoursEx[1])
 		if(daysEx) d = parseInt(daysEx[1])
