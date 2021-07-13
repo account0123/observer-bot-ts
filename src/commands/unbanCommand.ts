@@ -9,7 +9,7 @@ export class UnbanCommand implements ArgCommand {
   examples: string[] = ['123456789987654321 ban expired']
   permission: string = 'BAN_MEMBERS'
   type = 'mod'
-  private static locked_guilds: string = []
+  private static locked_guilds: string[] = []
   async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
     const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!

@@ -15,8 +15,7 @@ export class WebhooksCommand implements ArgCommand {
 	permission: string = ''
 	type = 'info'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		const allowed = GetPassCommand.validatePassword(msg.author.id, l, args[0])
-		if(!allowed) return
+		if(!GetPassCommand.validatePassword(msg.author.id, msg.guild!.id, l, args[0])) return
 		let channel
 		if(args.length === 1) channel = msg.channel
 		else channel = ChannelFinder.getChannel(msg, args[1])
@@ -26,11 +25,12 @@ export class WebhooksCommand implements ArgCommand {
 		}
 		if(channel instanceof DMChannel || !channel.isText()) return
 		const wh = await channel.fetchWebhooks()
-		const start = await l.translate('info.webhooks.start', channel.toString())
-		msg.channel.send(start)
+		const start = await l.send('info.webhooks.start', channel.toString())
+        const e = new MessageEmbed().setTitle('Webhooks')
 		for (const w of wh.values()) {
-			msg.channel.send(`\`\`\`\n ${w.url}\n\`\`\``)
+            e.addField(w.name, `\`${w.url}\``)
 		}
+        start.edit(e)
 	}
 
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {

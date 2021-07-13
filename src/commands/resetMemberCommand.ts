@@ -17,7 +17,7 @@ export class ResetMemberCommand implements ArgCommand {
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const member_mention = args.shift()!
 		const member = MemberFinder.getMember(msg, member_mention)
-		if(!GetPassCommand.validatePassword(msg.author.id, l, args.shift()!)) return
+		if(!GetPassCommand.validatePassword(msg.author.id, msg.guild!.id, l, args.shift()!)) return
 		if(!member){
 			l.reply('errors.invalid_member', member_mention)
 			return
