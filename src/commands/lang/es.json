@@ -23,7 +23,7 @@
             "massrole-start": "Añadiendo el rol **{role}** a todos.",
             "usage": "<usuario> <rol>",
             "massrole-error": "No se pudo agregar el rol a **{member}**. Omitiendo..",
-            "massrole-success": "Rol **{role.name}** agregado a ${count} miembros.",
+            "massrole-success": "Rol **{role.name}** agregado a {count} miembros.",
             "success": "¡Rol **{role}** asignado a **{member}** exitosamente!",
             "error": "No pude asignar el rol **{role}** a **{member}** por el error `{error}`."
         },
@@ -298,7 +298,7 @@
         },
         "renameeveryone": {
             "description": "Elimina los apodos de todos o agrega un prefijo a sus nombres",
-            "usage": "<contraseña> [prefijo]",
+            "usage": "<contraseña (vease comando getpass)> [prefijo]",
             "no_hit": "No hice nada, porque nadie tiene apodos",
             "miss": "No tengo permitido cambiar el apodo de nadie. Pon alguno de mis roles más alto en los ajustes del servidor.",
             "success": "Todos fueron renombrados.",
@@ -503,7 +503,7 @@
         "NaN": "lo que sea que ingresaste no es un número válido. ¿O me vas a decir que {value} es un número?",
         "no_dms": "este comando solo puede ejecutarse en servidores.",
         "no_hit": "Vaya, 0 miembros... mejor limpio",
-        "not_enough_args": "no pude hacer nada por falta de argumentos. El uso correcto del comando sería\n{prefix}{commandName} `{usage}`",
+        "not_enough_args": "no pude hacer nada por falta de argumentos.",
         "botperms": {
             "add_role": "no tengo permiso para asignar roles. ||Permiso faltante: Gestionar roles||",
             "ban": "no tengo permiso para banear. ||Permiso faltante: Banear miembros||",
