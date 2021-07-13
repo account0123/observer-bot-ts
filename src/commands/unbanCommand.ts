@@ -1,7 +1,6 @@
 import { Message, Guild, GuildMemberManager, Permissions} from "discord.js"
 import ArgCommand from "./commandArgInterface"
 import { Lang } from "./lang/Lang"
-import { utils, ModeOfOperation } from "aes-js"
 import { GetPassCommand, CleanCommand } from "."
 
 export class UnbanCommand implements ArgCommand {
@@ -10,6 +9,7 @@ export class UnbanCommand implements ArgCommand {
   examples: string[] = ['123456789987654321 ban expired']
   permission: string = 'BAN_MEMBERS'
   type = 'mod'
+  private static locked_guilds: string = []
   async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
     const mod = msg.guild!.member(msg.author)!
 		const bot = msg.guild!.member(msg.client.user!)!
@@ -33,12 +33,11 @@ export class UnbanCommand implements ArgCommand {
     const g = msg.guild!
     const manager = g.members
     if (args[0] == 'everyone') {
-      const encryptedBytes = utils.hex.toBytes(args[1])
-      const decryptedBytes = new ModeOfOperation.cbc(GetPassCommand.key,GetPassCommand.iv).decrypt(encryptedBytes)
-		  if(utils.utf8.fromBytes(decryptedBytes) != msg.author.id.substring(0,16)){
-			  l.send('errors.wrong_password')
-			  return
-		  }
+      if(UnbanCommand.locked_guilds.includes(g.id)){
+          l.send('running')
+          return
+      }
+      if(!GetPassCommand.validatePassword(msg.author.id, g.id, l, args.shift()!)) return
       this.unbaneveryone(g,manager,msg)
       return
     }
@@ -51,7 +50,7 @@ export class UnbanCommand implements ArgCommand {
       if (e.code == 10026) l.send('info.unban.10026')
       else {
         l.reply('errors.unknown')
-        console.error('No se pudo desbanear a {id} por el siguiente error {e}')
+        console.error(`No se pudo desbanear a ${id} por el siguiente error ${e}`)
     }
     });
   }
@@ -59,6 +58,7 @@ export class UnbanCommand implements ArgCommand {
     var count = 0
     var errors = 0
     this.lang.send('info.unban.start')
+    UnbanCommand.locked_guilds.push(g.id)
     await g.fetchBans().then(banCollection=>{
       banCollection.each(async banInfo=>{
        const user = banInfo.user
@@ -71,6 +71,7 @@ export class UnbanCommand implements ArgCommand {
        });
       });
     });
+    UnbanCommand.locked_guilds.splice(UnbanCommand.locked_guilds.indexOf(g.id), 1)
     this.lang.send('info.unban.massunban-success','' + count)
   }
 

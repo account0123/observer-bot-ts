@@ -23,7 +23,7 @@
             "massrole-start": "Adding **{role}** role to everyone.",
             "usage": "<member> <role>",
             "massrole-error": "I couldn't add that role to **{member}**. Skipping..",
-            "massrole-success": "**${role.name}** role added to ${count} members.",
+            "massrole-success": "**{role.name}** role added to {count} members.",
             "success": "**{role}** role added to **{member}** successfully!",
             "error": "I couldn't add **{role}** role to **{member}** because that error: `{error}`."
         },
@@ -297,15 +297,15 @@
             "error": "I couldn't remove the role because of this error: `{e}`"
         },
         "renameeveryone": {
-            "description": "Removes everyone nicknames or adds prefix to their names",
-            "usage": "<secret key> [prefix]",
+            "description": "Removes/changes nicknames to everyone or adds names prefix",
+            "usage": "<secret key (see getkey command)> [nickname]",
             "success": "Everyone has been renamed",
             "error": "I couldn't rename **{member}**\nSkipping..."
         },
         "resetallroles":{
             "description": "Resets all roles.",
             "fulldescription": "Resets all permissions of each role in the server (if i can), if you don't wanna set permissions to 0, you can include [the sum](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) of [permissions](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) you wanna set all roles. Requires a secret key you can get using `getPass` command.",
-            "usage": "<key> [permissions]",
+            "usage": "<secret key (see getkey command)> [permissions]",
             "permission_limit": "i can't set `{permissions.array}` permissions",
             "start": "Resseting {count} roles with `{permissions.array}` permissions",
             "success": "All roles resetted.",
@@ -314,7 +314,7 @@
         "resetmember":{
             "description": "Removes all roles from a member.",
             "fulldescription": "Removes all roles from a member of this server (if i can modify them). Requires a secret key you can get using `getPass` command.",
-            "usage": "<user> <secret key>",
+            "usage": "<user> <secret key (see getkey command)>",
             "success": "**{member}** hasn't any role."
         },
         "roleinfo":{
@@ -518,5 +518,7 @@
     "canceled": "Command canceled.",
     "nothing_to_cancel": "*There's nothing to cancel.*",
     "nice_try": "Nice try, but you can't cancel this future {command}.",
-    "members": "human(s)"
+    "members": "human(s)",
+    "running": "I am already busy by another commmand. Try later",
+    "try_again": "Try again"
 }

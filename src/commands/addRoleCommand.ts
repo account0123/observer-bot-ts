@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { GuildMember, Message, Permissions } from "discord.js";
+import { GuildMember, Message, Permissions, Snowflake } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 import { CleanCommand } from "./cleanCommand";
@@ -29,6 +29,7 @@ export class AddRoleCommand implements ArgCommand {
 	examples: string[] = ['@user#1234 1234567899878654321', '123456789987654321 @Mod']
 	usage: string = 'info.addrole.usage'
 	guildExclusive: boolean = true
+	static locked_guilds: Snowflake[] = []
 	async run(msg: Message, l: Lang,args: string[]): Promise<void> {
 		const g = msg.guild!
 		const membermention = args.shift()!
@@ -43,10 +44,19 @@ export class AddRoleCommand implements ArgCommand {
 			l.reply('errors.invalid_role',rolemention)
 			return
 		}
-		// Si pones !!addrole @rol @everyone pasa esto
-		if(args[1] == ('@everyone' || 'everyone')) {
+		// Si pones !!addrole @everyone @rol  pasa esto
+		if(args[0] == ('@everyone' || 'everyone')) {
+			if(AddRoleCommand.locked_guilds.includes(g.id)){
+				msg.react('❌').catch(()=>{})
+				l.send('running')
+				return
+			}
+			
 			// El bot dice "@usuario, añadiendo el rol @rol a todos"
-			l.send('info.addrole.massrole-start',role.name)
+			const s = l.send('info.addrole.massrole-start',role.name)
+			s.then(m=>m.react('🔒').catch(()=>{}))
+			const start = await s
+			AddRoleCommand.locked_guilds.push(g.id)
 			var count = 0
 			var errors = 0
 			
@@ -71,7 +81,7 @@ export class AddRoleCommand implements ArgCommand {
 			}
 
 			await add()
-			 
+			AddRoleCommand.locked_guilds.splice(AddRoleCommand.locked_guilds.indexOf(g.id), 1)
 			if(count==0 && errors > 5){
 				// Si falla en TODOS dice
 				l.send('errors.no_hit')
@@ -82,7 +92,7 @@ export class AddRoleCommand implements ArgCommand {
 				return
 			}
 
-			l.send('info.addrole.massrole-success',role.name,'' + count)
+			l.send('info.addrole.massrole-success',role.name,'' + count).then(()=>start.delete()).then(m=>m.react('🔓').catch(()=>{}))
 			return
 		}
         
