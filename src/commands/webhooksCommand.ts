@@ -1,4 +1,4 @@
-import { DMChannel, GuildChannel, Message, NewsChannel, TextChannel } from "discord.js";
+import { DMChannel, GuildChannel, Message, NewsChannel, TextChannel, MessageEmbed } from "discord.js";
 import { ChannelFinder } from "../util/ChannelFinder";
 import ArgCommand from "./commandArgInterface";
 import { GetPassCommand } from "./getPassCommand";
