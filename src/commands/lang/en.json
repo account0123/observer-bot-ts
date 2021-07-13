@@ -518,5 +518,7 @@
     "canceled": "Command canceled.",
     "nothing_to_cancel": "*There's nothing to cancel.*",
     "nice_try": "Nice try, but you can't cancel this future {command}.",
-    "members": "human(s)"
+    "members": "human(s)",
+    "running": "I am already busy by another commmand. Try later",
+    "try_again": "Try again"
 }
