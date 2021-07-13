@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, SetCommand, RAECommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
@@ -95,12 +95,18 @@ export default class CommandHandler {
         return
       }
       if (commandParser.args.length < matchedArgCommand.requiredArgs) {
-        lang.reply('errors.not_enough_args',this.prefix,commandParser.parsedCommandName,await lang.translate(matchedArgCommand.usage))
+        message.react('❌').catch(()=>{})
+        const t = await lang.translate('errors.not_enough_args')
+        const n = matchedArgCommand.commandNames[0]
+        const u = `${this.prefix}${n} \`${await lang.translate(matchedArgCommand.usage)}\``
+        const e = new MessageEmbed().addField(await lang.translate('info.help.about.usage'), u)
+        e.addField(await lang.translate('info.help.about.examples'), matchedArgCommand.examples.map(e=>`${this.prefix}${n} ${e}`))
+        message.channel.send(t, {embed: e})
         return
       }
       await matchedArgCommand.checkPermissions(message,lang, this.prefix).then(b=>{
        if(b) matchedArgCommand.run(message,lang,commandParser.args, this.prefix).catch(error => {
-         message.react('❌')
+         message.react('❌').catch(()=>{})
          lang.reply('errors.unknown')
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
       })});
