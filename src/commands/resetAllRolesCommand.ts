@@ -15,7 +15,7 @@ export class ResetAllRolesCommand implements ArgCommand {
 	permission: string = 'MANAGE_ROLES'
 	type = 'manage'
 	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
-		if(!GetPassCommand.validatePassword(msg.author.id, l, args[0])) return
+		if(!GetPassCommand.validatePassword(msg.author.id, msg.guild!.id, l, args[0])) return
 		var perms = 0
 		if (args[1]) {
 			perms = parseInt(args[1],16)
