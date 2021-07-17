@@ -131,10 +131,19 @@
             "success": "**{author}** has demoted to **{member}**, they aren't **{role}** anymore. Now they're **{member.highest}.**",
             "error": "I couldn't demote because of this error: `{error}`"
         },
+        "disable": {
+            "description": "Disables command for actual channel",
+            "fulldescription": "",
+            "disabled": "This command is already disabled.",
+            "forbidden": "You cannot disable my configuration commands, on this way Terminator happened",
+            "usage": "<command>",
+            "global-success": "`{command}` command disabled for all channels.",
+            "success": "`{command}` command disabled for this channel."
+        },
         "editchannel":{
             "description": "Edits a channel.",
             "usage": "<channel> [property to change]",
-            "property_question": "¿Which property do you want to modify on that channel? Properties are `name`, `topic`, `position`, `permissions`",
+            "property_question": "¿Which property do you want to modify on that channel? Properties are `name`, `topic`, `position`, `permissions` (if you wanna toggle nsfw, do it by yourself)",
             "name_question": "What will be the new channel name?",
             "topic_question": "What will be the new channel topic?",
             "position_question": "Which position do you want to move that channel at? Answer typing a `number`",
@@ -201,6 +210,13 @@
             "no_msg": "*There're no messages to show*",
             "success": "Edited message.",
             "error": "There was an error sending editsnipe."
+        },
+        "enable": {
+            "description": "Enables command already disabled for actual channel",
+            "enabled": "This command is not disabled.",
+            "usage": "<command>",
+            "global-success": "`{command}` enabled for all channel",
+            "success": "`{command}` command enabled for this channel."
         },
         "focusban": {
             "description": "Will ban a member from this server with(out) any reason.",
@@ -448,7 +464,7 @@
         "READ_MESSAGE_HISTORY": "Read Message History",
         "MENTION_EVERYONE": "Mention @everyone, @here and All Roles",
         "USE_EXTERNAL_EMOJIS": "Use External Emojis",
-        "VIEW_GUILD_INSIGHTS": "VIEW_GUILD_INSIGHTS",
+        "VIEW_GUILD_INSIGHTS": "View Guild Insights",
         "CONNECT": "Connect",
         "SPEAK": "Speak",
         "MUTE_MEMBERS": "Mute Members",
@@ -464,7 +480,8 @@
     "errors": {
 		"clean_up_failed": "I'm sorry... i don't think I can clean up this mess either. You should use MEE6 or a bot of those.",
         "dm_closed": "i couldn't send you a private message, maybe you closed it or deactivated the private messages from this server.",
-        "enough_timers": "I have to focus on many punishment. I can't support it, I'm a bot but it doesn't mean I deserve these treatments.",
+        "enough_timers": "I have to focus on many punishments. I can't support it, I'm a bot but it doesn't mean I deserve these treatments.",
+        "invalid_command": "`{command}` is not a known command",
 		"invalid_channel": "i couldn't find {mention} channel",
         "invalid_duration": "please, send a valid duration time on format `n`d`n`h`n`m`n`s being `nd` n days, `nh` n hours, `nm` n minutes and `ns` n seconds. I require at least one time unit to valid the duration",
         "invalid_user": "i couldn't do anyhing beacuse the user {mention} isn't valid",
@@ -516,6 +533,7 @@
     "none": "*None*",
     "cancelling": "Cancelling command...",
     "canceled": "Command canceled.",
+    "disabled": "❌ Command disabled.",
     "nothing_to_cancel": "*There's nothing to cancel.*",
     "nice_try": "Nice try, but you can't cancel this future {command}.",
     "members": "human(s)",
