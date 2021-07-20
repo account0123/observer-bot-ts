@@ -96,7 +96,7 @@
         },
         "createrole":{
             "description": "Crea un rol con propiedades opcionales.",
-            "fulldescription": "Crea un rol con todas sus propiedades opcionales en el formato de `propiedad:valor`, en el caso de crear un rol con solo el nombre el nuevo rol tendrá los permisos básicos({default}), sin color, ni será destacado, ni mencionable. Los propiedades son:\n`name` - El nombre del nuevo rol\n`color` - El color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a incluir en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n`hoist` - Si se incluye, el rol será visible en la lista de miembros\n`mentionable` - Si se incluye, el rol puede mencionarse por cualquier miembro. Útil para roles de ayuda.",
+            "fulldescription": "Crea un rol con todas sus propiedades opcionales en el formato de `propiedad:valor`, si crea un rol con solo el nombre, el rol tendrá los permisos básicos({default}), color aleatorio, no destacado, ni mencionable. Los propiedades son:\n`name` - El nombre del nuevo rol\n`color` - El color en [número hexadecimal](https://htmlcolors.com/color-picker) o como [constante](https://discord.js.org/#/docs/main/stable/typedef/ColorResolvable)\n`permissions` - La suma de [todos los permisos](https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) a incluir en el rol [en hexadecimal](https://calcuonline.com/calculadoras/calculadora-hexadecimal/#suma-hexadecimal) (Ejemplo: Un rol con todos los permisos [7fffffff] excepto administrador [8] tendría el número 7ffffff7)\n`hoist` - Si se incluye esa palabra, el rol será visible en la lista de miembros\n`mentionable` - Si se incluye esa palabra, el rol puede mencionarse por cualquier miembro. Útil para roles de ayuda.",
             "usage": "<solo el nombre>`  o `<{propiedad:valor[,propiedad:valor]...}>",
             "success": "el rol {role} fue creado sin problemas.",
             "high_position": "el rol que vas a crear está igual o más alto que todos mis roles juntos, así que hasta aquí hemos llegado",
@@ -131,6 +131,14 @@
             "asbuddy": "no puedes degradar a un compañero o superior, que malo.",
             "success": "**{author}** ha degradado a **{member}**, ahora ya no es **{role}**. Ahora es **{member.highest}.**",
             "error": "No pude degradar por el error `{error}`"
+        },
+        "disable": {
+            "description": "Deshabilita un comando para el canal actual.",
+            "disabled": "Este comando ya está deshabilitado.",
+            "forbidden": "No puedes deshabilitar mis comandos de configuración, así empezó Terminator",
+            "usage": "<comando>",
+            "global-success": "Comando `{command}` deshabilitado para todos los canales",
+            "success": "Comando `{command}` deshabilitado para este canal."
         },
         "editchannel":{
             "description": "Edita un canal.",
@@ -203,6 +211,12 @@
             "success": "Mensaje editado.",
             "error": "Hubo un error al enviar el editsnipe."
         },
+        "enable": {
+            "description": "Habilita un comando ya deshabilitado para el canal actual",
+            "enabled": "Este comando no está deshabilitado.",
+            "usage": "<comando>",
+            "success": "Comando {command} habilitado para este canal."
+        },
         "focusban": {
             "description": "Baneará por (ning)una razón.",
             "usage": "<duración> <usuario> [razón]",
@@ -261,7 +275,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Nuevos comando: rae\n\nSi un comando falla por falta de permisos muestra los permisos necesarios"
+                "changes": "Nuevos comandos:\n·disable\n·enable\n·rae\n\nSi un comando falla por falta de permisos muestra los permisos necesarios"
             }
         },
         "kick": {
@@ -473,7 +487,7 @@
         "READ_MESSAGE_HISTORY": "Leer el historial de mensajes",
         "MENTION_EVERYONE": "Mencionar @everyone, @here y todos los roles",
         "USE_EXTERNAL_EMOJIS": "Usar emojis externos",
-        "VIEW_GUILD_INSIGHTS": "Ver ajustes de comunidad",
+        "VIEW_GUILD_INSIGHTS": "Ver información del servidor",
         "CONNECT": "Conectar",
         "SPEAK": "Hablar",
         "MUTE_MEMBERS": "Silenciar miembros",
@@ -490,6 +504,7 @@
         "clean_up_failed": "Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Chocolat o algún bot de esos.",
         "dm_closed": "no pude enviarte un mensaje privado, quizás lo tienes cerrado o tienes desactivado los mensajes privados desde este servidor.",
         "enough_timers": "Tengo demasiados focos donde concentrarme. No puedo con tanto, que sea un bot no significa que merezca estos tratos.",
+        "invalid_command": "`{command}` no es un comando que reconozca",
         "invalid_channel": "no pude identificar el canal {mention}",
 		"invalid_duration": "por favor, ingrese una duración válida en el formato `n`d`n`h`n`m`n`s siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida.",
         "invalid_user": "no pude hacer nada porque el usuario {mention} no es válido",
@@ -541,6 +556,7 @@
     "none": "*Ninguno*",
     "cancelling": "Cancelando comando...",
     "canceled": "Comando cancelado.",
+    "disabled": "❌ Comando deshabilitado",
     "nothing_to_cancel": "*No hay nada que cancelar.*",
     "nice_try": "Buen intento, pero no puedes cancelar este futuro {command}.",
     "members": "humano(s)",

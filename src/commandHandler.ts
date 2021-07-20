@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, SetCommand, RAECommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand } from "./commands";
+import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, SetCommand, RAECommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
@@ -54,7 +54,9 @@ export default class CommandHandler {
       RAECommand,
       EditChannelCommand,
       WebhooksCommand,
-      CopyCommand
+      CopyCommand,
+      DisableCommand,
+      EnableCommand
     ];
 
     CommandHandler.commands = commandClasses.map(c => new c());
@@ -79,7 +81,17 @@ export default class CommandHandler {
     const commandParser = new CommandParser(message, this.prefix);
     const matchedCommand = CommandHandler.commands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
     const matchedArgCommand = CommandHandler.argCommands.find(command => command.commandNames.includes(commandParser.parsedCommandName))
+    
     if(matchedCommand) {
+      if(message.guild){
+        const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=? OR global=?', [message.guild.id, message.channel.id, 1])
+        for(const row of rows){
+          if(row['command'] == matchedCommand.commandNames[0]){
+            lang.send('disabled')
+            return
+          }
+        }
+      }
       if (message.channel.type == "dm" && matchedCommand.guildExclusive) {
         lang.reply('errors.no_dms')
         return
@@ -90,6 +102,16 @@ export default class CommandHandler {
         console.error(`"${this.echoMessage(message)}" falló por "${error}"`)
       });
     }else if (matchedArgCommand) {
+      if(message.guild){
+        const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=? OR global=?', [message.guild.id, message.channel.id, 1])
+        console.log(rows)
+        for(const row of rows){
+          if(row['command'] == matchedArgCommand.commandNames[0]){
+            lang.send('disabled')
+            return
+          }
+        }
+      }
       if (message.channel.type == "dm" && matchedArgCommand.guildExclusive) {
         lang.reply('errors.no_dms')
         return
