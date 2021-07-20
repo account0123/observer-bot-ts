@@ -275,7 +275,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Nuevos comando: rae\n\nSi un comando falla por falta de permisos muestra los permisos necesarios"
+                "changes": "Nuevos comandos:\n·disable\n·enable\n·rae\n\nSi un comando falla por falta de permisos muestra los permisos necesarios"
             }
         },
         "kick": {

@@ -277,7 +277,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "New command: editchannel\n\nIf a command fails by missing permissions, it shows required permissions"
+                "changes": "New commands:\n·disable\n·enable\n·editchannel\n\nIf a command fails by missing permissions, it shows required permissions"
             }
         },
 	    "kick": {
