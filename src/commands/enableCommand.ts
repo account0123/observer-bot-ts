@@ -24,15 +24,21 @@ export class EnableCommand implements ArgCommand {
 			return
 		}
 		const g_id = msg.guild!.id, c_id = msg.channel.id
-		const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=?', [g_id, c_id])
+        const [rows, f] = await Connections.db.execute<RowDataPacket[]>('SELECT command, global FROM disabled WHERE guild_id=?', [g_id])
 		console.log(rows)
 		for(const row of rows){
 			if(row['command'] == c.commandNames[0]){
 				//Ejecución
-				Connections.db.execute('DELETE FROM disabled WHERE guild_id=? AND channel_id=? AND command=?', [g_id, c_id, c.commandNames[0]])
-				// Éxito
-				l.send('info.enable.success', c.commandNames[0])
-				return
+                if(!!row['global']){
+                     Connections.db.execute('DELETE FROM disabled WHERE guild_id=? AND command=?', [g_id, c.commandNames[0]])
+                     console.log("Comando habilitado globalmente")
+                     l.send('info.enable.success', c.commandNames[0])
+                     return
+                }else{
+                    Connections.db.execute('DELETE FROM disabled WHERE guild_id=? AND channel_id=? AND command=?', [g_id, c_id, c.commandNames[0]])
+                    l.send('info.enable.success', c.commandNames[0])
+                    return
+                }
 			}
 		}
 		l.send('info.enable.enabled')

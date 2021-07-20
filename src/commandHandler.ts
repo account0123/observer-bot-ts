@@ -84,7 +84,7 @@ export default class CommandHandler {
     
     if(matchedCommand) {
       if(message.guild){
-        const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=?', [message.guild.id, message.channel.id])
+        const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=? OR global=?', [message.guild.id, message.channel.id, 1])
         for(const row of rows){
           if(row['command'] == matchedCommand.commandNames[0]){
             lang.send('disabled')
@@ -103,7 +103,8 @@ export default class CommandHandler {
       });
     }else if (matchedArgCommand) {
       if(message.guild){
-        const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=? OR channel_id=all', [message.guild.id, message.channel.id])
+        const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=? OR global=?', [message.guild.id, message.channel.id, 1])
+        console.log(rows)
         for(const row of rows){
           if(row['command'] == matchedArgCommand.commandNames[0]){
             lang.send('disabled')
