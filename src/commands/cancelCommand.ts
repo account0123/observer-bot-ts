@@ -5,8 +5,8 @@ import { Lang } from "./lang/Lang";
 
 export class CancelCommand implements Command {
 	commandNames: string[] = ['cancel']
-	guildExclusive: boolean = true
-	shortdescription: string = 'info.cancel.description'
+	guildExclusive = true
+	shortdescription = 'info.cancel.description'
 	fulldescription: string = this.shortdescription
 	type = 'mod'
 	static timers: TimerData[] = []
@@ -17,8 +17,8 @@ export class CancelCommand implements Command {
 		}
 		const e = 'info.cancel.embed.'
 		const [target, command, reason] = await Promise.all([l.translate(e+'user'),l.translate(e+'command'), l.translate(e+'reason')]);
-		var text = `   ${target}          ${command}  ${reason}\n`
-		var i = 0
+		let text = `   ${target}          ${command}  ${reason}\n`
+		let i = 0
 		const typeReason = (reason: string): string=>{
 			if(reason.length > 12) return reason.slice(0,12) + '\n                               ' + typeReason(reason.slice(12));
 			else return reason;
@@ -50,7 +50,8 @@ export class CancelCommand implements Command {
 			}
 		}
 		const f = (reaction: MessageReaction, user: User) =>{
-			if(user.id === msg.client.user!.id) return false
+			if(!msg.client.user) return false
+			if(user.id === msg.client.user.id) return false
 			switch (reaction.emoji.name) {
 			case '1️⃣': case '2️⃣': case '3️⃣': case '4️⃣': case '5️⃣': case '6️⃣': case '7️⃣': case '8️⃣':
 			case '9️⃣': case '🔟': return true	
@@ -58,7 +59,7 @@ export class CancelCommand implements Command {
 		}};
 		const collector = message.createReactionCollector(f,{time:150000,max:10,maxUsers:3})
 		collector.on('collect',(reaction, user)=>{
-			var index = 0
+			let index = 0
 			switch(reaction.emoji.name){
 				case '1️⃣': index = 1; break;
 				case '2️⃣': index = 2; break;
@@ -84,7 +85,7 @@ export class CancelCommand implements Command {
 		});
 		collector.once('dispose',()=>l.send('info.cancel.timeout'));
 	}
-	checkPermissions(msg: Message, id: string, command: string) {
+	checkPermissions(msg: Message, id: string, command: string): boolean {
 		const member = MemberFinder.getMember(msg, id)
 		if(member){
 			switch (command) {

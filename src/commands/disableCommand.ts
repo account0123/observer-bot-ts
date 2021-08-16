@@ -6,15 +6,15 @@ import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
 export class DisableCommand implements ArgCommand {
-	requiredArgs: number = 1
+	requiredArgs = 1
 	commandNames: string[] = ['disable']
-	guildExclusive: boolean = true
-	shortdescription: string = 'info.disable.description'
-	fulldescription: string = 'info.disabled.fulldescription'
-	usage: string = 'info.disable.usage'
+	guildExclusive = true
+	shortdescription = 'info.disable.description'
+	fulldescription = 'info.disabled.fulldescription'
+	usage = 'info.disable.usage'
 	examples: string[] = ['snipe', 'say', 'globally roleinfo']
-	permission: string = 'ADMINISTRATOR'
-	type: string = 'config'
+	permission = 'ADMINISTRATOR'
+	type = 'config'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		// Verificación
 		const global = args[0].toLowerCase() == 'globally'
@@ -28,12 +28,14 @@ export class DisableCommand implements ArgCommand {
 			l.send('info.disable.forbidden')
 			return
 		}
-		const g_id = msg.guild!.id, c_id = msg.channel.id
-		const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT command, channel_id, global FROM disabled WHERE guild_id=?', [g_id])
+		if(!msg.guild) return
+		const g_id = msg.guild.id
+		const c_id = msg.channel.id
+		const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT command, channel_id, global FROM disabled WHERE guild_id=?', [g_id])
 		console.log(rows)
 		for(const row of rows){
 			if(row['command'] == c.commandNames[0]){
-                if(!!row['global']){
+                if(row['global']){
                     l.send('info.disable.disabled')
                     return
                 }else if(row['channel_id'] == c_id){
@@ -50,7 +52,9 @@ export class DisableCommand implements ArgCommand {
 	}
 
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		const mod = msg.guild!.member(msg.author)!
+		if(!msg.guild || !msg.client.user) return false
+		const mod = msg.guild.member(msg.author)
+		if(!mod) return false
 		if (!mod.hasPermission(8)) {
 			l.reply('errors.modperms.admin')
 			return false

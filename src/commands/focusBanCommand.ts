@@ -6,14 +6,14 @@ import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
 export class FocusBanCommand implements ArgCommand {
-	requiredArgs: number = 2
+	requiredArgs = 2
 	commandNames: string[] = ['focusban','fb']
-	guildExclusive: boolean = true
-	shortdescription: string = 'info.focusban.description'
+	guildExclusive = true
+	shortdescription = 'info.focusban.description'
 	fulldescription: string = this.shortdescription
-	usage: string = 'info.focusban.usage'
+	usage = 'info.focusban.usage'
 	examples: string[] = ['10m @troll123 bye bye', '10s 123456789987654321 admin abuse']
-	permission: string = 'BAN_MEMBERS'
+	permission = 'BAN_MEMBERS'
 	type = 'mod'
 	private ban:BanCommand
 	private index: number | undefined
@@ -21,7 +21,7 @@ export class FocusBanCommand implements ArgCommand {
 		this.ban = new BanCommand()
 	}
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		const time = args.shift()!
+		const time = args.shift() || ''
 		const secondsEx = time.match(/(\d+)s/)
 		const minutesEx = time.match(/(\d+)m/)
 		const hoursEx = time.match(/(\d+)h/)
@@ -38,7 +38,7 @@ export class FocusBanCommand implements ArgCommand {
 			l.send('errors.unsafe_integer')
 			return
 		}
-		const mention = args.shift()!
+		const mention = args.shift() || ''
 		const member = MemberFinder.getMember(msg,mention)
 		if(!member){
 			l.reply('errors.invalid_member',mention)

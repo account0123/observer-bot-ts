@@ -6,14 +6,14 @@ import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
 export class EditChannelCommand implements ArgCommand {
-	requiredArgs: number = 1
+	requiredArgs = 1
 	commandNames: string[] = ['editchannel', 'ec', 'edit channel']
-	guildExclusive: boolean = true
-	shortdescription: string = 'info.editchannel.description'
+	guildExclusive = true
+	shortdescription = 'info.editchannel.description'
 	fulldescription: string = this.shortdescription
-	usage: string = 'info.editchannel.usage'
+	usage = 'info.editchannel.usage'
 	examples: string[] = ['lounge', 'lewd-images topic']
-	permission: string = 'MANAGE_CHANNELS'
+	permission = 'MANAGE_CHANNELS'
 	type = 'manage'
 	channel!: TextChannel
 	m!: Message
@@ -216,7 +216,7 @@ export class EditChannelCommand implements ArgCommand {
 	}
 
 	
-	askPermissionsTarget(allowOrDeny: 'allow' |'deny', type: 'role' | 'member') {
+	askPermissionsTarget(allowOrDeny: 'allow' |'deny', type: 'role' | 'member'): void{
 		let store: string[] = []
 		if(allowOrDeny === 'allow' && type === 'role'){
 			store = this.allowed_roles
@@ -237,8 +237,7 @@ export class EditChannelCommand implements ArgCommand {
 		const f = (m: Message)=> m.author.id === this.m.author.id ? true : false
 		const time = 120000
 		let completed = false
-		let perms_collector: MessageCollector
-		perms_collector = this.m.channel.createMessageCollector(f, {time: time})
+		const perms_collector = this.m.channel.createMessageCollector(f, {time: time})
 		perms_collector.on('collect', (r: Message)=>{
 			const mentions = r.content.toLowerCase().trim().split('\n')
 			if(mentions.length > 1){
@@ -277,7 +276,7 @@ export class EditChannelCommand implements ArgCommand {
 		});
 	}
 
-	askPermissions(allowOrDeny: 'allow' | 'deny',  type: 'member' | 'role'){
+	askPermissions(allowOrDeny: 'allow' | 'deny',  type: 'member' | 'role'): void{
 		const f = (m: Message)=> m.author.id === this.m.author.id ? true : false
 		const time = 120000
 		let length = 0
@@ -321,7 +320,7 @@ export class EditChannelCommand implements ArgCommand {
 		});
 	}
 
-	async editChannel() {
+	async editChannel(): Promise<void> {
 		const uncolide = (object1: PermissionOverwrites, permissions: {allow: number, deny: number})=>{
 			const allows = object1.allow.bitfield | permissions.allow
 			const denies = object1.deny.bitfield | permissions.deny
@@ -331,29 +330,29 @@ export class EditChannelCommand implements ArgCommand {
 			const permissions_overwrites: OverwriteData[] = []
 			const og = this.channel.permissionOverwrites.array()
 			for(const id of this.allowed_roles){
-				let match: PermissionOverwrites | undefined
-				if(match = og.find((o)=>id === o.id))
+				const match = og.find((o)=>id === o.id)
+				if(match)
 					permissions_overwrites.push(uncolide(match, {allow: this.allowed_role_perms, deny: 0}))
 				else
 					permissions_overwrites.push({id: id, allow: this.allowed_role_perms, deny: 0, type: 'role'})
 			}
 			for(const id of this.denied_roles){
-				let match: PermissionOverwrites | undefined
-				if(match = og.find((o)=>id === o.id))
+				const match = og.find((o)=>id === o.id)
+				if(match)
 					permissions_overwrites.push(uncolide(match, {allow: 0, deny: this.denied_role_perms}))
 				else
 					permissions_overwrites.push({id: id, allow: 0, deny: this.denied_role_perms, type: 'role'})
 			}
 			for(const id of this.allowed_users){
-				let match: PermissionOverwrites | undefined
-				if(match = og.find((o)=>id === o.id))
+				const match = og.find((o)=>id === o.id)
+				if(match)
 					permissions_overwrites.push(uncolide(match, {allow: this.allowed_user_perms, deny: 0}))
 				else
 					permissions_overwrites.push({id: id, allow: this.allowed_user_perms, deny: 0, type: 'member'})
 			}
 			for(const id of this.denied_users){
-				let match: PermissionOverwrites | undefined
-				if(match = og.find((o)=>id === o.id))
+				const match = og.find((o)=>id === o.id)
+				if(match)
 					permissions_overwrites.push(uncolide(match, {allow: 0, deny: this.denied_user_perms}))
 				else
 					permissions_overwrites.push({id: id, allow: 0, deny: this.denied_user_perms, type: 'member'})
@@ -418,9 +417,11 @@ export class EditChannelCommand implements ArgCommand {
 			return
 		});
 	}
-	async checkPermissions(msg: Message, l: Lang, prefix?: string): Promise<boolean> {
-		const mod = msg.guild!.member(msg.author)!
-		const bot = msg.guild!.member(msg.client.user!)!
+	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
+		if(!msg.guild || !msg.client.user) return false
+		const mod = msg.guild.member(msg.author)
+		const bot = msg.guild.member(msg.client.user)
+		if(!mod || !bot) return false
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_CHANNELS)) {
 			l.reply('errors.botperms.create_channel')
 			return false

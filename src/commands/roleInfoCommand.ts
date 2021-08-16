@@ -5,14 +5,14 @@ import { Time } from "../util/Time";
 import { Lang } from "./lang/Lang";
 
 export class RoleInfoCommand implements ArgCommand {
-	requiredArgs: number = 1
+	requiredArgs = 1
 	commandNames: string[] = ['roleinfo', 'ri']
-	guildExclusive: boolean = true
-	shortdescription: string = 'info.roleinfo.description'
-	fulldescription: string = 'info.roleinfo.fulldescription'
-	usage: string = 'info.roleinfo.usage'
+	guildExclusive = true
+	shortdescription = 'info.roleinfo.description'
+	fulldescription = 'info.roleinfo.fulldescription'
+	usage = 'info.roleinfo.usage'
 	examples: string[] = ['123456789987654321', '@Mod', 'new role']
-	permission: string = ''
+	permission = ''
 	type = 'info'
 	async run(msg: Message, l:Lang, args: string[]): Promise<void> {
 		const mention = args.join(' ').trim()

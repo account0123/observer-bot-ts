@@ -5,17 +5,19 @@ import { Lang } from "./lang/Lang";
 import { PermissionsChecker } from "../util/PermissionsChecker";
 
 export class KickCommand implements ArgCommand {
-	permission: string = 'KICK_MEMBERS'
-	shortdescription: string = 'info.kick.description'
+	permission = 'KICK_MEMBERS'
+	shortdescription = 'info.kick.description'
 	fulldescription: string = this.shortdescription
-	guildExclusive: boolean = true
+	guildExclusive = true
 	commandNames: string[] = ['kick'];
-	requiredArgs: number = 1;
+	requiredArgs = 1;
 	examples: string[] = ['plskickme','@user#1234 for some reasons', '123456789987654321 read the rules'];
-	usage: string = 'info.kick.usage';
+	usage = 'info.kick.usage';
 	type = 'mod'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		const mod = msg.guild!.member(msg.author)!
+		if(!msg.guild || !msg.client.user) return
+		const mod = msg.guild.member(msg.author)
+		if(!mod) return
 		const mention = args.splice(0,1).toString()
 		const reason = args.join(' ') || await l.translate('info.kick.embed.default_reason')
 		const member = MemberFinder.getMember(msg, mention);
@@ -28,9 +30,12 @@ export class KickCommand implements ArgCommand {
 			return
 		}
 		await member.kick(reason).then(async kicked => {
+			if(!msg.guild || !msg.client.user) return
+			const a = msg.client.user.avatarURL({dynamic: true})
+			if(!a) return
 			const e = 'info.kick.embed.'
 			const embed = new MessageEmbed()
-				.setAuthor(await l.translate(e+'title',msg.guild!.name), msg.client.user!.avatarURL()!)
+				.setAuthor(await l.translate(e+'title',msg.guild.name), a)
 				.setTitle(await l.translate(e+'reason'))
 				.setDescription(reason)
 				.setFooter(await l.translate(e+'footer',mod.user.tag));
@@ -38,8 +43,10 @@ export class KickCommand implements ArgCommand {
 		});
 	}
 	async checkPermissions(msg: Message, l:Lang): Promise<boolean> {
-		const mod = msg.guild!.member(msg.author)!
-		const bot = msg.guild!.member(msg.client.user!)!
+		if(!msg.guild || !msg.client.user) return false
+		const mod = msg.guild.member(msg.author)
+		const bot = msg.guild.member(msg.client.user)
+		if(!mod || !bot) return false
 		if (!bot.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) {
 			l.reply('errors.botperms.kick')
 			return false

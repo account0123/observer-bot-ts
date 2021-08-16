@@ -6,9 +6,9 @@ import { FormatCommand } from "./formatCommand"
 
 export class StopCommand implements Command {
   type: string | undefined
-  shortdescription: string = 'info.stop.description'
+  shortdescription = 'info.stop.description'
   fulldescription: string = this.shortdescription
-  guildExclusive: boolean = false
+  guildExclusive = false
   commandNames = ["stop","off","shutdown"]
   async run(message: Message, l :Lang): Promise<void> {
     if(message.author.id != '283763804993486849'){
@@ -24,7 +24,8 @@ export class StopCommand implements Command {
     for (const wh of FormatCommand.webhooks.values()) {
       const guild = message.client.guilds.resolve(wh.guildID)
       if(guild){
-        const bot = guild.member(message.client.user!)
+        if(!message.client.user) return
+        const bot = guild.member(message.client.user)
         if(bot){
           if(bot.hasPermission(Permissions.FLAGS.MANAGE_WEBHOOKS)){
             wh.delete('Bot is shutting down').then(()=>console.log(`Webhook ${wh.id} from the channel ${wh.channelID} from the guild ${wh.guildID} has been deleted!`)).catch((err)=>console.error(err.stack));

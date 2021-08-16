@@ -3,14 +3,14 @@ import { DMChannel, Message, Permissions } from "discord.js";
 import { Lang } from "./lang/Lang";
 
 export class CleanCommand implements ArgCommand {
-	permission: string = 'MANAGE_MESSAGES'
-	shortdescription: string = 'info.clean.description'
+	permission = 'MANAGE_MESSAGES'
+	shortdescription = 'info.clean.description'
 	fulldescription: string = this.shortdescription
 	commandNames: string[] = ['clean', 'purge', 'prune']
-	requiredArgs: number = 1
+	requiredArgs = 1
 	examples: string[] = ['30']
-	usage: string= 'info.clean.usage'
-	guildExclusive: boolean = true
+	usage= 'info.clean.usage'
+	guildExclusive = true
 	type = 'mod'
 	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
 		const n = parseInt(args[0])
@@ -26,8 +26,10 @@ export class CleanCommand implements ArgCommand {
 		)	
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		const mod = msg.guild!.member(msg.author)!
-		const bot = msg.guild!.member(msg.client.user!)!
+		if(!msg.guild || !msg.client.user) return false
+		const mod = msg.guild.member(msg.author)
+		const bot = msg.guild.member(msg.client.user)
+		if(!mod || !bot) return false
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) {
 			l.reply('errors.botperms.clean')
 			return false

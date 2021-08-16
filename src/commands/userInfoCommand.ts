@@ -6,17 +6,17 @@ import { UserActivity } from "../util/UserActivity";
 import { Lang } from "./lang/Lang";
 
 export class UserInfoCommand implements ArgCommand {
-	requiredArgs: number = 0
+	requiredArgs = 0
 	commandNames: string[] = ['user', 'userinfo', 'memberinfo','aboutmember']
-	guildExclusive: boolean = true
-	shortdescription: string = 'info.userinfo.description'
-	fulldescription: string = 'info.userinfo.fulldescription'
-	usage: string = 'info.userinfo.usage'
+	guildExclusive = true
+	shortdescription = 'info.userinfo.description'
+	fulldescription = 'info.userinfo.fulldescription'
+	usage = 'info.userinfo.usage'
 	examples: string[] = ['', '123456789987654321', '@user#1234', '@nickname#1234']
-	permission: string = ''
+	permission = ''
 	type = 'info'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		var embed: Promise<MessageEmbed>
+		let embed: Promise<MessageEmbed>
 		const details = args.includes('--details')
 		if((args.length > 0 && !details) || args.length > 1){
 			const mention = args.join(' ').trim()
@@ -27,16 +27,19 @@ export class UserInfoCommand implements ArgCommand {
 			}
 			embed = userEmbed(member,l,details)
 		}else{
-			embed = userEmbed(msg.guild!.member(msg.author)!,l,details)
+			if(!msg.guild) return
+			const m = msg.guild.member(msg.author)
+			if(!m) return
+			embed = userEmbed(m,l,details)
 		}
 		await embed.then(e=>msg.channel.send(e))
 	}
-	async checkPermissions(msg: Message): Promise<boolean> {
+	async checkPermissions(): Promise<boolean> {
 		return true
 	}
 }
 async function userEmbed(member:GuildMember, l: Lang, showDetails:boolean) {
-	let activity = new UserActivity(member.user).toString()
+	const activity = new UserActivity(member.user).toString()
 	const e = 'info.userinfo.embed.'
 	const creationdate = new Time(member.id, l).toString()
 	const joindate = new Time(member.joinedAt, l).toString()

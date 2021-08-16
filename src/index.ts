@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import Discord, { Message, MessageReaction, PartialMessage, PartialUser, User } from "discord.js";
+import Discord, { Message, PartialMessage } from "discord.js";
 import { DISCORD_TOKEN } from './config/secrets';
 import CommandHandler from './commandHandler';
 import SnipeHandler from './snipeHandler';
