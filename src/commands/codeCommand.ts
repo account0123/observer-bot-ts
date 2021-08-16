@@ -4,14 +4,14 @@ import { Lang } from "./lang/Lang";
 
 export class CodeCommand implements ArgCommand {
 	type: string | undefined;
-	requiredArgs: number = 1
+	requiredArgs = 1
 	commandNames: string[] = ['code','unformat']
-	guildExclusive: boolean = false
-	shortdescription: string = 'info.code.description'
+	guildExclusive = false
+	shortdescription = 'info.code.description'
 	fulldescription: string = this.shortdescription
-	usage: string = 'info.code.usage'
+	usage = 'info.code.usage'
 	examples: string[] = ['123456789987654321']
-	permission: string = ''
+	permission = ''
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const id = args[0]
 		const message = msg.channel.messages.resolve(id)

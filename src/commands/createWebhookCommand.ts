@@ -4,13 +4,15 @@ import { Lang } from "./lang/Lang";
 
 export class CreateWebhookCommand implements Command {
 	commandNames: string[] = ['createwebhook', 'createwh', 'cwh']
-	guildExclusive: boolean = true
-	shortdescription: string = 'info.createwebhook.description'
+	guildExclusive = true
+	shortdescription = 'info.createwebhook.description'
 	fulldescription: string = this.shortdescription
 	type = 'mod'
 	async run(msg: Message, l: Lang): Promise<void> {
-		const bot = msg.guild!.member(msg.client.user!)!
-		const mod = msg.guild!.member(msg.author)!
+		if(!msg.guild || !msg.client.user) return
+		const mod = msg.guild.member(msg.author)
+		const bot = msg.guild.member(msg.client.user)
+		if(!mod || !bot) return
 		if(!bot.hasPermission(Permissions.FLAGS.MANAGE_WEBHOOKS)){
 			l.reply('errors.botperms.create_webhook')
 			return
@@ -29,7 +31,7 @@ export class CreateWebhookCommand implements Command {
 		const collector = q.channel.createMessageCollector(f2, {time: 60000})
 		collector.once('collect', (m: Message)=>{
 			const name = m.content
-			channel.createWebhook(name).then(w=>msg.author.send(success).catch(()=>msg.channel.send(fail))).catch((error)=>{
+			channel.createWebhook(name).then(()=>msg.author.send(success).catch(()=>msg.channel.send(fail))).catch((error)=>{
 				if(error.code === 30007) l.send('info.createwebhook.30007')
 			})
 		});

@@ -5,25 +5,27 @@ import { Lang } from "./lang/Lang";
 
 export class FormatCommand implements ArgCommand {
 	type: string | undefined;
-	requiredArgs: number = 1
+	requiredArgs = 1
 	commandNames: string[] = ['format','f']
-	guildExclusive: boolean = false
-	shortdescription: string = 'info.format.description'
+	guildExclusive = false
+	shortdescription = 'info.format.description'
 	fulldescription: string = this.shortdescription
-	usage: string = 'info.format.usage'
+	usage = 'info.format.usage'
 	examples: string[] = ['Hi everyone\\nThis is another line','\\t<- there\'s a big space here.']
-	permission: string = ''
+	permission = ''
 	static webhooks: Map<Snowflake,Webhook>
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const c = args.join(' ')
-		var f = c.replace('\\n','\n').replace('\\t','\t').replace('\\r','\r').replace('\\b','\b').replace('\\v','\v').replace('\\0','\0').replace('\\f','\f')
-		const bot = msg.guild!.member(msg.client.user!)!
+		let f = c.replace('\\n','\n').replace('\\t','\t').replace('\\r','\r').replace('\\b','\b').replace('\\v','\v').replace('\\0','\0').replace('\\f','\f')
+		if(!msg.guild || !msg.client.user) return
+		const bot = msg.guild.member(msg.client.user)
+		if(!bot) return
 		const user = msg.author
 		if(!FormatCommand.webhooks) FormatCommand.webhooks = new Map()
 		if (msg.channel instanceof DMChannel) {
 			await msg.channel.send(f)
 		} else {
-			var webhook = FormatCommand.webhooks.get(msg.channel.id)
+			let webhook = FormatCommand.webhooks.get(msg.channel.id)
 			if(!webhook){
 				if(bot.hasPermission(Permissions.FLAGS.MANAGE_WEBHOOKS)){
 					webhook = await msg.channel.createWebhook('Clone', {

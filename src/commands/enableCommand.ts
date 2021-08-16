@@ -6,30 +6,31 @@ import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
 export class EnableCommand implements ArgCommand {
-	requiredArgs: number = 1
+	requiredArgs = 1
 	commandNames: string[] = ['enable']
-	guildExclusive: boolean = true
-	shortdescription: string = 'info.enable.description'
+	guildExclusive = true
+	shortdescription = 'info.enable.description'
 	fulldescription: string = this.shortdescription
-	usage: string = 'info.enable.usage'
+	usage = 'info.enable.usage'
 	examples: string[] = ['snipe', 'say']
-	permission: string = 'ADMINISTRATOR'
-	type: string = 'config'
+	permission = 'ADMINISTRATOR'
+	type = 'config'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		// Verificación
+		if(!msg.guild) return
 		const input = args[0].toLowerCase()
 		const c = CommandHandler.commands.find(command => command.commandNames.includes(input)) || CommandHandler.argCommands.find(command => command.commandNames.includes(input))
 		if(!c){
 			l.send('errors.invalid_command', input)
 			return
 		}
-		const g_id = msg.guild!.id, c_id = msg.channel.id
-        const [rows, f] = await Connections.db.execute<RowDataPacket[]>('SELECT command, global FROM disabled WHERE guild_id=?', [g_id])
+		const g_id = msg.guild.id, c_id = msg.channel.id
+        const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT command, global FROM disabled WHERE guild_id=?', [g_id])
 		console.log(rows)
 		for(const row of rows){
 			if(row['command'] == c.commandNames[0]){
 				//Ejecución
-                if(!!row['global']){
+                if(row['global']){
                      Connections.db.execute('DELETE FROM disabled WHERE guild_id=? AND command=?', [g_id, c.commandNames[0]])
                      console.log("Comando habilitado globalmente")
                      l.send('info.enable.success', c.commandNames[0])
@@ -45,7 +46,9 @@ export class EnableCommand implements ArgCommand {
 	}
 
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		const mod = msg.guild!.member(msg.author)!
+		if(!msg.guild || !msg.client.user) return false
+		const mod = msg.guild.member(msg.author)
+		if(!mod) return false
 		if (!mod.hasPermission(8)) {
 			l.reply('errors.modperms.admin')
 			return false

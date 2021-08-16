@@ -4,13 +4,13 @@ import { Lang } from "./lang/Lang"
 import { FormatCommand } from "./formatCommand"
 
 export class CopyCommand implements ArgCommand {
-  requiredArgs: number = 1
-  usage: string = 'info.copy.usage'
+  requiredArgs = 1
+  usage = 'info.copy.usage'
   examples: string[] = ['https://discord.com/channels/123456789/234567891/345678912', '345678912']
-  permission: string = 'MANAGE_MESSAGES'
-  shortdescription: string = 'info.copy.description'
+  permission = 'MANAGE_MESSAGES'
+  shortdescription = 'info.copy.description'
   fulldescription: string = this.shortdescription
-  guildExclusive: boolean = true
+  guildExclusive = true
   commandNames = ['copy']
   type = 'mod'
   async run(msg: Message, l:Lang, args: string[]): Promise<void> {
@@ -40,7 +40,9 @@ export class CopyCommand implements ArgCommand {
 
 	if(!FormatCommand.webhooks) FormatCommand.webhooks = new Map()
 	let webhook = FormatCommand.webhooks.get(msg.channel.id)
-	const bot = msg.guild!.member(msg.client.user!)!
+	if(!msg.guild || !msg.client.user) return
+	const bot = msg.guild.member(msg.client.user)
+	if(!bot) return
 	if(!webhook && msg.channel.type != 'dm'){
 		if(bot.hasPermission(Permissions.FLAGS.MANAGE_WEBHOOKS)){
 			webhook = await msg.channel.createWebhook('Clone', {
@@ -86,8 +88,10 @@ export class CopyCommand implements ArgCommand {
   }
 
   async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-	const mod = msg.guild!.member(msg.author)!
-	const bot = msg.guild!.member(msg.client.user!)!
+	if(!msg.guild || !msg.client.user) return false
+	const mod = msg.guild.member(msg.author)
+	const bot = msg.guild.member(msg.client.user)
+	if(!mod || !bot) return false
 	if (!bot.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) {
 		l.reply('errors.botperms.clean')
 		return false

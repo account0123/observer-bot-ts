@@ -4,8 +4,8 @@ import { Lang } from "./lang/Lang";
 
 export class InfoCommand implements Command {
 	commandNames: string[] = ['info','about','bot']
-	guildExclusive: boolean = false
-	shortdescription: string = 'info.info.description'
+	guildExclusive = false
+	shortdescription = 'info.info.description'
 	fulldescription: string = this.shortdescription
 	type = 'info'
 	// cada arreglo de bug es una letra (a, b, c, d...)
@@ -14,8 +14,11 @@ export class InfoCommand implements Command {
 	// cada nueva "versión" del bot será un número primario (v1, v2, v3...)
 	private readonly version:string = 'v1.3.2'
 	async run(msg: Message, l: Lang): Promise<void> {
-		var color = 0xffffff
-		if(msg.guild) color = msg.guild.member(msg.client.user!)!.displayColor
+		let color = 0xffffff
+		if(msg.guild && msg.client.user){
+			const m = msg.guild.member(msg.client.user)
+			if(m) color = m.displayColor
+		}
 		const e = 'info.info.embed.'
 		const [t, language, lib, v ,c, changes] = await Promise.all([
 			l.translate(e+'title'), l.translate(e+'language'), l.translate(e+'library'),

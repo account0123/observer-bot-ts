@@ -5,25 +5,29 @@ import { ChannelFinder } from "../util/ChannelFinder";
 
 export class SayCommand implements ArgCommand {
 	type: string | undefined;
-	permission: string = ''
-	shortdescription: string = 'info.say.description'
+	permission = ''
+	shortdescription = 'info.say.description'
 	fulldescription: string = this.shortdescription
-	async checkPermissions(msg: Message): Promise<boolean> {
+	async checkPermissions(): Promise<boolean> {
 		return true
 	}
 	commandNames: string[] = ['say', 'tell', 'speak']
-	requiredArgs: number = 1
+	requiredArgs = 1
 	examples: string[] = ['Hello world!!!','Hay pelotudos y luego estás tú']
-	usage: string = 'info.say.usage'
-	guildExclusive: boolean = false
+	usage = 'info.say.usage'
+	guildExclusive = false
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const text = args.join(' ')
 		const regex = /to ([\w]+)$/m
 		const m = text.match(regex)
-		if(m && msg.guild){
-			const bot = msg.guild.member(msg.client.user!)!
+		if(m && msg.guild && msg.client.user){
+			const bot = msg.guild.member(msg.client.user)
+			if(!bot) return
 			const channel = ChannelFinder.getChannel(msg, m[1])
-			if(channel && channel.type === 'text' && channel.permissionsFor(bot)!.has('SEND_MESSAGES')){
+			if(!channel) return
+			const p = channel.permissionsFor(bot)
+			if(!p) return
+			if(channel && channel.type === 'text' && p.has('SEND_MESSAGES')){
 				const textchannel = <TextChannel> channel
 				await textchannel.send(text.replace(regex,''), {disableMentions: 'everyone'})
 				return

@@ -3,23 +3,25 @@ import { Message, Permissions, MessageEmbed, RoleData} from "discord.js";
 import { Lang } from "./lang/Lang";
 
 export class CreateRoleCommand implements ArgCommand{
-	permission: string = 'MANAGE_ROLES'
-	shortdescription: string = 'info.createrole.description'
-	fulldescription: string = 'info.createrole.fulldescription';
+	permission = 'MANAGE_ROLES'
+	shortdescription = 'info.createrole.description'
+	fulldescription = 'info.createrole.fulldescription';
 	commandNames: string[] = ['createrole', 'cr']
-	requiredArgs: number = 1
+	requiredArgs = 1
 	examples: string[] = ['{name:strong red, color: #ff0000}', '{ name:Admin, color:ffff00, permissions:0x7fffffff,hoist, mentionable}', '{name: users, hoist}']
-	usage:string = 'info.createrole.usage'
+	usage = 'info.createrole.usage'
 	type = 'manage'
-	guildExclusive: boolean = true
+	guildExclusive = true
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		const bot = msg.guild!.member(msg.client.user!)!
+		const g = msg.guild
+		if(!g || !msg.client.user) return
+		const bot = g.member(msg.client.user)
+		if(!bot) return
 		// nuevo código
 		const arg = args.join(' ')
 		const data = createData(arg)
 		if (!data) {
-			
-			msg.guild!.roles.create({data: {name: arg,permissions:Permissions.DEFAULT,color:'RANDOM'}, reason: await l.translate('reason',msg.author.tag)}).then(async (role) => {
+			g.roles.create({data: {name: arg,permissions:Permissions.DEFAULT,color:'RANDOM'}, reason: await l.translate('reason',msg.author.tag)}).then(async (role) => {
 				const isHoist = async ()=> role.hoist ? await l.translate('yes') : await l.translate('no')
 				const isMentionable = async ()=>role.mentionable?await l.translate('yes'):await l.translate('no')
 				const e = 'info.createrole.embed.'
@@ -42,13 +44,13 @@ export class CreateRoleCommand implements ArgCommand{
 			});
 			return
 		}
-		if (data.position! >= bot.roles.highest.position) {
+		if (data.position && (data.position >= bot.roles.highest.position)) {
 			l.reply('info.createrole.high_position')
 			return
 		}
 		console.log('Creando rol ' + data.toString())
 		// Ejecución
-        msg.guild!.roles.create({data: data, reason: await l.translate('reason',msg.author.tag)}).then(async (role) => {
+        g.roles.create({data: data, reason: await l.translate('reason',msg.author.tag)}).then(async (role) => {
 			const isHoist = async ()=> role.hoist ? await l.translate('yes') : await l.translate('no')
 			const isMentionable = async ()=>role.mentionable?await l.translate('yes'):await l.translate('no')
 			const e = 'info.createrole.embed.'
@@ -60,8 +62,7 @@ export class CreateRoleCommand implements ArgCommand{
 				{ name: await l.translate(e+'hoist')      , value: await isHoist(), inline: true},
 				{ name: await l.translate(e+'mentionable'), value: await isMentionable(), inline: true},
 				{ name: await l.translate(e+'permissions'), value: role.permissions.toJSON(), inline: true}
-				)
-            	.setTimestamp();
+				).setTimestamp();
             msg.reply(`el rol ${role} fue creado sin problemas.`, embed)
         }).catch( (error) => {
 			if(error.code === 30005) l.send('info.createrole.30005')
@@ -70,8 +71,10 @@ export class CreateRoleCommand implements ArgCommand{
 		});
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		const mod = msg.guild!.member(msg.author)!
-		const bot = msg.guild!.member(msg.client.user!)!
+		if(!msg.guild || !msg.client.user) return false
+		const mod = msg.guild.member(msg.author)
+		const bot = msg.guild.member(msg.client.user)
+		if(!mod || !bot) return false
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
 			l.reply('errors.botperms.create_role')
 			return false
@@ -91,48 +94,48 @@ function createData(str:string):RoleData | undefined {
 	const map = body.split(',')
 	const properties = new Map()
 	map.forEach(s=>{
-	  const splits = s.trim().split(':')
-	  const key = splits[0].trim()
-	  if(key == 'hoist') splits[1] = 'true'
-	  if(key == 'mentionable') splits[1] = 'true'
-	  if (splits.length != 2) return
-	  properties.set(key,splits[1].trim())
+		const splits = s.trim().split(':')
+		const key = splits[0].trim()
+		if(key == 'hoist') splits[1] = 'true'
+		if(key == 'mentionable') splits[1] = 'true'
+		if (splits.length != 2) return
+		properties.set(key,splits[1].trim())
 	});
 	// Default Values
-	var data: RoleData = {
-	  name: 'new role',
-	  position: 0,
-	  permissions: 0,
-	  color: 0,
-	  hoist: false,
-	  mentionable: false
+	const data: RoleData = {
+		name: 'new role',
+		position: 0,
+		permissions: 0,
+		color: 0,
+		hoist: false,
+		mentionable: false
 	};
 	// Setting values
 	for (const [key,value] of properties) {
-	  switch (key.toLowerCase()) {
+		switch (key.toLowerCase()) {
 		case 'name':
-		  data.name = value
-		  break
-	  case 'color':
+		data.name = value
+		break
+		case 'color':
 		data.color = value
 		break
-	  case 'permissions': case 'perms':
+		case 'permissions': case 'perms':
 		data.permissions = parseInt(value,16)
 		break
-	  case 'position': case 'pos':
+		case 'position': case 'pos':
 		data.position = parseInt(value)
 		if (isNaN(data.position)) {
 			console.error('valor position ('+value+') no es un número')
 			data.position = 0
 		}
 		break
-	  case 'hoist':
+		case 'hoist':
 		if(value == 'true') data.hoist =true
 		break
-	  case 'mentionable':
+		case 'mentionable':
 		if(value == 'true') data.mentionable =true
 		break
-	  }
+		}
 	}
 	return data
   }

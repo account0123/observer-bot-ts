@@ -4,19 +4,22 @@ import { MemberFinder } from "../util/MemberFinder";
 import { Lang } from "./lang/Lang";
 
 export class DemoteCommand implements ArgCommand {
-	permission: string = 'MANAGE_ROLESS'
-	shortdescription: string = 'info.demote.description'
+	permission = 'MANAGE_ROLESS'
+	shortdescription = 'info.demote.description'
 	fulldescription: string = this.shortdescription
 	commandNames: string[] = ['demote']
-	requiredArgs: number = 1
+	requiredArgs = 1
 	examples: string[] = ['@usuario#1234 abuso de poder']
-	usage: string = 'info.demote.usage'
-	guildExclusive: boolean = true
+	usage = 'info.demote.usage'
+	guildExclusive = true
 	type = 'manage'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		const mention = args.shift()!
+		const mention = args.shift() || ''
 		const member = MemberFinder.getMember(msg,mention)
-		const mod = msg.guild!.member(msg.author)!
+		const g = msg.guild
+		if(!g) return
+		const mod = g.member(msg.author)
+		if(!mod) return
 		if(!member){
 			l.reply('errors.invalid_member',mention)
 			return
@@ -37,8 +40,10 @@ export class DemoteCommand implements ArgCommand {
 		})
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		const mod = msg.guild!.member(msg.author)!
-		const bot = msg.guild!.member(msg.client.user!)!
+		if(!msg.guild || !msg.client.user) return false
+		const mod = msg.guild.member(msg.author)
+		const bot = msg.guild.member(msg.client.user)
+		if(!mod || !bot) return false
 		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
 			l.reply('errors.botperms.remove_role')
 			return false

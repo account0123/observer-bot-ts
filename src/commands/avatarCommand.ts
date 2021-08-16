@@ -5,22 +5,22 @@ import { Lang } from "./lang/Lang"
 import { MemberFinder } from "../util/MemberFinder"
 
 export class AvatarCommand implements ArgCommand {
-  permission: string = ''
-  shortdescription: string = 'info.avatar.description'
+  permission = ''
+  shortdescription = 'info.avatar.description'
   fulldescription: string = this.shortdescription
-  async checkPermissions(msg: Message): Promise<boolean> {
-	  return true
+  async checkPermissions(): Promise<boolean> {
+		return true
   }
-  guildExclusive: boolean = false
+  guildExclusive = false
   examples: string[] = ['', '@usuario#1234', '123456789987654321']
-  requiredArgs: number = 0
-  usage: string = 'info.avatar.usage'
+  requiredArgs = 0
+  usage = 'info.avatar.usage'
   commandNames = ['avatar','icon', 'pfp', 'av']
   type = 'info'
   async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 	if (args.length > 0) {
 		const mention = args.join(' ')
-		const user = UserFinder.getUser(msg,mention)!
+		const user = UserFinder.getUser(msg,mention)
 		if(!user){
 			if(msg.guild){	
 				const member = MemberFinder.getMember(msg, mention)

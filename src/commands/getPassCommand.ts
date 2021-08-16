@@ -1,18 +1,17 @@
 import { Message, Snowflake } from "discord.js";
 import {utils, ModeOfOperation} from 'aes-js'
 import ArgCommand from "./commandArgInterface";
-import CommandHandler from "../commandHandler";
 import { UserFinder } from "../util/UserFinder";
 import { Lang } from "./lang/Lang";
 export class GetPassCommand implements ArgCommand {
-	permission: string = 'ADMINISTRATOR'
-	requiredArgs: number = 0
-	usage: string = 'info.getpass.usage'
+	permission = 'ADMINISTRATOR'
+	requiredArgs = 0
+	usage = 'info.getpass.usage'
 	examples: string[] = ['','123456789987654321', '@usuario#1234']
 	commandNames: string[] = ['getpass', 'getpassword','getsecret']
-	guildExclusive: boolean = true
-	shortdescription: string = 'info.getpass.description'
-	fulldescription: string = 'info.getpass.fulldescription'
+	guildExclusive = true
+	shortdescription = 'info.getpass.description'
+	fulldescription = 'info.getpass.fulldescription'
 	type = 'manage'
 	static readonly key = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ]
 	static readonly iv = [ 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114,115, 116 ]
@@ -38,10 +37,11 @@ export class GetPassCommand implements ArgCommand {
 		return true
 	}
 	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
+		if(!msg.guild) return
 		const aesCbc = new ModeOfOperation.cbc(GetPassCommand.key, GetPassCommand.iv)
 		if (args.length == 0) {
 			const id1 = msg.author.id.substring(0,8)
-            const id2 = msg.guild!.id.substring(0,8)
+            const id2 = msg.guild.id.substring(0,8)
 			const textBytes = utils.utf8.toBytes(id1 + id2);
 			const encryptedBytes = aesCbc.encrypt(textBytes);
 			const encryptedHex = utils.hex.fromBytes(encryptedBytes)
@@ -54,7 +54,7 @@ export class GetPassCommand implements ArgCommand {
 				return
 			}
 			const id1 = user.id.substring(0,8)
-            const id2 = msg.guild!.id.substring(0,8)
+            const id2 = msg.guild.id.substring(0,8)
 			const textBytes = utils.utf8.toBytes(id1 + id2)
 			const encryptedBytes = aesCbc.encrypt(textBytes);
 			const encryptedHex = utils.hex.fromBytes(encryptedBytes)
@@ -67,7 +67,9 @@ export class GetPassCommand implements ArgCommand {
 
 	}
 	async checkPermissions(msg: Message, l: Lang, prefix: string): Promise<boolean> {
-		const mod = msg.guild!.member(msg.author)!
+		if(!msg.guild) return false
+		const mod = msg.guild.member(msg.author)
+		if(!mod) return false
 		if (!mod.hasPermission(8)) {
 			l.reply('info.getpass.no_admin', prefix, mod.toString())
 			return false

@@ -4,14 +4,14 @@ import { Lang } from "./lang/Lang";
 import {RAE}  from "rae-api"
 import { PermissionsChecker } from "../util/PermissionsChecker";
 export class RAECommand implements ArgCommand {
-	requiredArgs: number = 1
+	requiredArgs = 1
 	commandNames: string[] = ['rae', 'definir', 'buscar']
-	guildExclusive: boolean = false
-	shortdescription: string = 'info.rae.description'
+	guildExclusive = false
+	shortdescription = 'info.rae.description'
 	fulldescription: string = this.shortdescription
-	usage: string = 'info.rae.usage'
+	usage = 'info.rae.usage'
 	examples: string[] = ['hola', 'meme']
-	permission: string = ''
+	permission = ''
 	type = 'info'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const rae = new RAE()
@@ -37,7 +37,7 @@ export class RAECommand implements ArgCommand {
 		}else t = await l.translate('info.rae.title', res.getHeader())
 
 		await m.edit(`**${t}**\n**1.** *${definitions[0].getType()}* ${definitions[0].getDefinition()}`)
-        let pages = definitions.length
+        const pages = definitions.length
 		let page = 1
 		if(results.length > 1) await m.react('⬇️')
 		const d_react = await m.react('▶️')

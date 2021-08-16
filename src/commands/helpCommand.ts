@@ -11,14 +11,14 @@ type BotCommand = {
 }
 export class HelpCommand implements ArgCommand {
 	type: string | undefined;
-	permission: string = ''
-	shortdescription: string = 'info.help.description'
-	fulldescription: string = 'info.help.fulldescription'
+	permission = ''
+	shortdescription = 'info.help.description'
+	fulldescription = 'info.help.fulldescription'
 	commandNames: string[] = ['help', 'h']
-	requiredArgs: number = 0
+	requiredArgs = 0
 	examples: string[] = ['', 'createrole']
-	usage: string = 'info.help.usage'
-	guildExclusive: boolean = false
+	usage = 'info.help.usage'
+	guildExclusive = false
 	lang: Lang | undefined
 	prefix: string | undefined
 	msg: Message | undefined
@@ -69,10 +69,16 @@ export class HelpCommand implements ArgCommand {
 		const title = await l.translate('info.help.general.title')
 		const footer = await l.translate('info.help.general.footer', '1', '3', this.prefix)
 		const embed = new MessageEmbed().setTitle(title).setFooter(footer).setTimestamp();
-		const bot = this.msg.client.user!
-		if(this.msg.guild) embed.setColor(this.msg.guild.member(bot)!.displayColor)
+		const bot = this.msg.client.user
+		if(!bot) return
+		if(this.msg.guild){
+			const m = this.msg.guild.member(bot)
+			if(m) embed.setColor(m.displayColor)
+		}
 		else embed.setColor(0xffffff)
-		embed.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!)
+		const a = bot.avatarURL({dynamic:true})
+		if(!a) return 
+		embed.setAuthor(bot.tag,)
 		// copy
 		const embed2 = new MessageEmbed(embed)
 		const embed3 = new MessageEmbed(embed)
@@ -117,7 +123,8 @@ export class HelpCommand implements ArgCommand {
 			try{
 			await msg.react('⬅️');await msg.react('➡️')
 			const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
-				if((reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️') && user.id == this.msg!.author.id) return true
+				if(!this.msg) return false
+				if((reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️') && user.id == this.msg.author.id) return true
 				else return false
 			};
 			const loadPage = async (p: number)=>{
@@ -145,10 +152,14 @@ reaction.remove();if(page==1) return;page--;
 				}
 			});
 			rc.once('end', ()=>{
-				if(msg.guild!.member(bot)!.hasPermission("MANAGE_MESSAGES")) msg.reactions.removeAll()
+				if(!msg.guild || !msg.client.user) return false
+				const m = msg.guild.member(msg.client.user)
+				if(!m) return
+				if(m.hasPermission("MANAGE_MESSAGES")) msg.reactions.removeAll()
 			});
 			}catch(error){
-				const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS', 'MANAGE_MESSAGES']), this.msg!, this.lang!)
+				if(!this.msg || !this.lang) return
+				const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS', 'MANAGE_MESSAGES']), this.msg, this.lang)
 				p.then((c)=>{if(c) console.error(error)}).catch(err=>console.error(err))
 			}
 			console.log('Embed de ayuda enviado')
@@ -163,7 +174,7 @@ reaction.remove();if(page==1) return;page--;
 		const about = 'info.help.about.'
 		let embed
 		if (command) {
-			embed = new MessageEmbed().setTitle(await l.translate(about + 'title',command.commandNames.shift()!))
+			embed = new MessageEmbed().setTitle(await l.translate(about + 'title',command.commandNames.shift() || ''))
 			.setDescription(await l.translate(command.fulldescription))
 			.addField(await l.translate(about + 'aliases'),command.commandNames.join(', '),true)
 			.addField(await l.translate(about + 'usage'),await l.translate('info.help.default.no_usage'),true)
@@ -181,7 +192,7 @@ reaction.remove();if(page==1) return;page--;
 						return await l.translate(droute + 'permission_or_admin',await l.translate('permissions.' + argCommand.permission))
 				}
 			}
-			const name = argCommand.commandNames.shift()!
+			const name = argCommand.commandNames.shift() || ''
 			embed = new MessageEmbed().setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,Permissions.DEFAULT.toString(16)))
 			if(argCommand.commandNames.length > 0) embed.addField(await l.translate(about + 'aliases'),argCommand.commandNames.join(', '),true)
 			embed.addField(await l.translate(about + 'usage'),`${this.prefix}${name} \`${await l.translate(argCommand.usage)}\``,true)
@@ -195,12 +206,18 @@ reaction.remove();if(page==1) return;page--;
             l.send('info.help.not_found', commandName)
             return
         }
-		const bot = this.msg.client.user!
-		if(this.msg.guild) embed.setColor(this.msg.guild!.member(bot)!.displayColor)
+		const bot = this.msg.client.user
+		if(!bot || !this.msg.guild) return
+		const m = this.msg.guild.member(bot)
+		if(!m) return
+		if(this.msg.guild) embed.setColor(m.displayColor)
 		else embed.setColor(0xffffff)
-		this.msg.channel.send(embed.setAuthor(bot.tag,bot.avatarURL({dynamic:true})!))
+		const a = bot.avatarURL({dynamic:true})
+		if(!a) return
+		this.msg.channel.send(embed.setAuthor(bot.tag, a))
 		.then(()=>console.log('Embed de ayuda enviado')).catch(e=>{
-			const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES']), this.msg!, this.lang!)
+			if(!this.msg || !this.lang) return
+			const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES']), this.msg, this.lang)
 			p.then((c)=>{if(c) console.error(e)}).catch(err=>console.error(err))
 		});
 	}

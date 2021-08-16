@@ -11,7 +11,7 @@ export default class SnipeHandler {
     const content = msg.content
     if(!content) return
     const files = msg.attachments.array()
-    var image:string | null = null
+    let image:string | null = null
     if(files.length > 0){
       const file = files[0]
       if(file.name){

@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, SetCommand, RAECommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand } from "./commands";
+import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, SetCommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
@@ -51,7 +51,6 @@ export default class CommandHandler {
       ResetMemberCommand,
       RenameEveryoneCommand,
       SetCommand,
-      RAECommand,
       EditChannelCommand,
       WebhooksCommand,
       CopyCommand,
@@ -68,13 +67,14 @@ export default class CommandHandler {
   async handleMessage(message: Message): Promise<void> {
     if(message.author.bot) return
 
-    var lang: Lang
+    let lang: Lang
     if (message.guild === null) lang = new Lang(message,message.author.locale || undefined)
     else{
       lang = new Lang(message)
-      const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix FROM guilds WHERE id=?', [message.guild.id])
+      const g = message.guild
+      const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix FROM guilds WHERE id=?', [g.id])
       if(rows[0].prefix) this.prefix = rows[0].prefix
-      else Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [message.guild.id, message.guild.name, '!!', 'es']).then(()=>console.log('Servidor registrado: ' + message.guild!.id)).catch(e=>console.error(e));
+      else Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [message.guild.id, message.guild.name, '!!', 'es']).then(()=>console.log('Servidor registrado: ' + g.id)).catch(e=>console.error(e));
     }
     if(!this.isCommand(message)) return
 
@@ -84,7 +84,7 @@ export default class CommandHandler {
     
     if(matchedCommand) {
       if(message.guild){
-        const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=? OR global=?', [message.guild.id, message.channel.id, 1])
+        const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=? OR global=?', [message.guild.id, message.channel.id, 1])
         for(const row of rows){
           if(row['command'] == matchedCommand.commandNames[0]){
             lang.send('disabled')
@@ -103,7 +103,7 @@ export default class CommandHandler {
       });
     }else if (matchedArgCommand) {
       if(message.guild){
-        const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=? OR global=?', [message.guild.id, message.channel.id, 1])
+        const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=? OR global=?', [message.guild.id, message.channel.id, 1])
         console.log(rows)
         for(const row of rows){
           if(row['command'] == matchedArgCommand.commandNames[0]){
@@ -117,7 +117,7 @@ export default class CommandHandler {
         return
       }
       if (commandParser.args.length < matchedArgCommand.requiredArgs) {
-        message.react('❌').catch(()=>{})
+        message.react('❌').catch()
         const t = await lang.translate('errors.not_enough_args')
         const n = matchedArgCommand.commandNames[0]
         const u = `${this.prefix}${n} \`${await lang.translate(matchedArgCommand.usage)}\``
@@ -128,7 +128,7 @@ export default class CommandHandler {
       }
       await matchedArgCommand.checkPermissions(message,lang, this.prefix).then(b=>{
        if(b) matchedArgCommand.run(message,lang,commandParser.args, this.prefix).catch(error => {
-         message.react('❌').catch(()=>{})
+         message.react('❌').catch()
          lang.reply('errors.unknown')
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
       })});

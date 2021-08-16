@@ -5,17 +5,17 @@ import { Lang } from "./lang/Lang";
 import { LangCommand } from "./lang/langCommand";
 
 export class SetCommand implements ArgCommand {
-	requiredArgs: number = 2
+	requiredArgs = 2
 	commandNames: string[] = ['set', 'change', 'modify']
-	guildExclusive: boolean = true
-	shortdescription: string = 'info.set.description'
+	guildExclusive = true
+	shortdescription = 'info.set.description'
 	fulldescription: string = this.shortdescription
-	usage: string = 'info.set.usage'
+	usage = 'info.set.usage'
 	examples: string[] = ['set prefix <']
-	permission: string = 'ADMINISTRATOR'
+	permission = 'ADMINISTRATOR'
 	type = 'config'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		const target = args.shift()!
+		const target = args.shift() || ''
         const value = args[0]
 		switch (target.toLowerCase()) {
 			case 'prefix':
@@ -23,7 +23,8 @@ export class SetCommand implements ArgCommand {
 					l.reply('errors.long_prefix')
 					return
 				}
-				this.setPrefix(value, msg.guild!.id, l)
+				if(msg.guild)
+					this.setPrefix(value, msg.guild.id, l)
 				break;
 			case 'lang':
 				new LangCommand().run(msg, l, args)
@@ -40,7 +41,9 @@ export class SetCommand implements ArgCommand {
 		});
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		const mod = msg.guild!.member(msg.author)!
+		if(!msg.guild) return false
+		const mod = msg.guild.member(msg.author)
+		if(!mod) return false
 		if (!mod.hasPermission(8)) {
 			l.reply('errors.modperms.admin')
 			return false
