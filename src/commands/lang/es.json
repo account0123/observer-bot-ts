@@ -208,6 +208,7 @@
             "description": "Muestra el útimo mensaje editado.",
             "fulldescription": "Muestra el último mensaje editado de este canal.",
             "no_msg": "*No hay mensajes que mostrar*",
+            "body": "**Mensaje antiguo**:\n\t{msg.content}\n**Mensaje editado**:\n\t{u.content}",
             "success": "Mensaje editado.",
             "error": "Hubo un error al enviar el editsnipe."
         },
@@ -275,7 +276,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Nuevos comandos:\n·disable\n·enable\n·rae\n\nSi un comando falla por falta de permisos muestra los permisos necesarios"
+                "changes": "Nuevo ajuste:\nset logchannel <canal>\nNuevos comandos:\n·disable\n·enable\n·rae\n\nSi un comando falla por falta de permisos muestra los permisos necesarios"
             }
         },
         "kick": {
@@ -386,9 +387,10 @@
             }
         },
         "set":{
-            "description": "Cambia mis ajustes (prefix,lang).",
+            "description": "Cambia mis ajustes (prefix,lang, logchannel).\nset prefix <prefijo>: Cambia mi prefijo (máximo 4 caracteres)\nset lang <idioma>: Cambia el idioma por el cual envío mensajes (es, en)\nset logchannel <canal>: Agrega o cambia el canal donde van los mensajes borrados y editados",
             "usage": "<ajuste a cambiar> <nuevo valor>",
-            "prefix_success": "Mi prefijo fue cambiado a `{prefix}`"
+            "prefix_success": "Mi prefijo fue cambiado a `{prefix}`",
+            "log_success": "El canal de registros será {channel}"
         }, 
         "snipe":{
             "description": "Muestra el último mensaje borrado.",
@@ -519,6 +521,7 @@
         "no_dms": "este comando solo puede ejecutarse en servidores.",
         "no_hit": "Vaya, 0 miembros... mejor limpio",
         "not_enough_args": "no pude hacer nada por falta de argumentos.",
+        "not_text": "El canal {channel} no es de texto, selecciona un canal donde pueda escribir",
         "botperms": {
             "add_role": "no tengo permiso para asignar roles. ||Permiso faltante: Gestionar roles||",
             "ban": "no tengo permiso para banear. ||Permiso faltante: Banear miembros||",

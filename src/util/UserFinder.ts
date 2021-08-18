@@ -33,7 +33,7 @@ export class UserFinder {
                 }
                 return undefined
             }
-            const id:string = matches![0]
+            const id:string = matches[0]
             return c.users.cache.get(id) || undefined
         }
         // La ID corresponde al segundo elemento del array devuelto

@@ -6,8 +6,8 @@ export class ChannelFinder {
    * @param {String} mention 
    */
   static getChannel(message: Message, mention: string): GuildChannel | undefined {
-    const g: Guild = message.guild!
-
+    const g = message.guild
+    if(!g) return undefined
       // Verifica que la variable sea una mención
       let matches = mention.match(/<#(\d{17,19})>/);
     // Si no hay coincidencia en el formato, 'matches' será nulo
@@ -19,8 +19,9 @@ export class ChannelFinder {
               return channel
             }
           }
+          return undefined
         }
-      const id: string = matches![0]
+      const id: string = matches[0]
       return g.channels.cache.get(id)
     }
     // La ID corresponde al segundo elemento del array devuelto

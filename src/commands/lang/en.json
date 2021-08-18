@@ -208,6 +208,7 @@
             "description": "Shows the last edited message.",
             "fulldescription": "Shows the last message from this channel.",
             "no_msg": "*There're no messages to show*",
+            "body": "**Old message**:\n\t{msg.content}\n**New message**:\n\t{u.content}",
             "success": "Edited message.",
             "error": "There was an error sending editsnipe."
         },
@@ -277,7 +278,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "New commands:\n·disable\n·enable\n·editchannel\n\nIf a command fails by missing permissions, it shows required permissions"
+                "changes": "New configuration:\nset logchannel `<channel>`\nNew commands:\n·disable\n·enable\n·editchannel\n\nIf a command fails by missing permissions, it shows required permissions"
             }
         },
 	    "kick": {
@@ -385,9 +386,10 @@
             }
         },
         "set":{
-            "description": "Changes my settings (prefix,lang).",
+            "description": "Changes my settings (prefix,lang,logchannel).\nset prefix <prefix>: Sets my prefix (max 4 characters)\nset lang <language>: Sets the language what use to send messages (es, en)\nset logchannel <channel>: Sets the channel where i will send deleted & edited messages",
             "usage": "<setting to change> <new value>",
-            "prefix_success": "My prefix was changed to `{prefix}`"
+            "prefix_success": "My prefix was changed to `{prefix}`",
+            "log_success": "The logs channel will be {channel}"
         }, 
         "snipe":{
             "description": "Shows the last deleted message.",
@@ -496,6 +498,7 @@
         "no_dms": "I can't use this kind of commands in DMs!",
         "not_enough_args": "i couldn't do anything due to lack of arguments. The right usage for that command is \n{prefix}{commandName} `{usage}`",
 		"no_hit": "Ok, 0 members.. i better clean",
+        "not_text": "{channel} channel is not a text channel, select a channel where i can send messages",
         "botperms": {
             "add_role": "i don't have permission to add roles. ||Missing Permission: Manage roles||",
             "ban": "i don't have permission to ban. ||Missing Permission: Ban Members||",

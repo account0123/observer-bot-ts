@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed, Snowflake } from "discord.js";
 import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, SetCommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
@@ -12,6 +12,7 @@ export default class CommandHandler {
   static commands: Command[];
   static argCommands: ArgCommand[]
   prefix: string;
+  private uses = new Map<Snowflake, number>()
 
   constructor() {
     // Clases aquí
@@ -92,6 +93,15 @@ export default class CommandHandler {
           }
         }
       }
+      const a = message.author.id
+      if(this.uses.has(a)){
+        const delta = Date.now() - (this.uses.get(a) || 0)
+        if(delta < 3){
+          message.react('⏳').catch()
+          return
+        }else this.uses.delete(a)
+      }else this.uses.set(a, Date.now())
+
       if (message.channel.type == "dm" && matchedCommand.guildExclusive) {
         lang.reply('errors.no_dms')
         return

@@ -3,7 +3,7 @@ import { User, Activity } from "discord.js";
 export class UserActivity {
 	private readonly activity: Activity | null
 	constructor(user:User){
-		var activities = user.presence.activities;
+		const activities = user.presence.activities;
         if(activities.length == 0){
             this.activity = null;
         }else{
