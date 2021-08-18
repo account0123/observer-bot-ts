@@ -21,6 +21,7 @@ app.use('/', (request: Request, response: Response) => {
 });
 
 const sniper = new SnipeHandler();
+const handler = new CommandHandler();
 
 //////////////////////////////////////////////////////////////////
 //                    DISCORD CLIENT LISTENERS                  //
@@ -32,16 +33,16 @@ client.on("ready", async () => {
   new Connections(client)
   await new Promise(resolve => setTimeout(resolve, 10000));
   for (const g of client.guilds.cache.values()) {
-    const q = Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [g.id, g.name, '!!', 'es']);
+    const q = Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [g.id, g.name, '!!', 'es', null]);
     q.then(()=>console.log('Servidor cargado: ' + g.id));
     q.catch(e=>console.error(e));
   }
 });
-client.on("message", (message: Message)=>new CommandHandler().handleMessage(message));
+client.on("message", (message: Message)=>handler.handleMessage(message));
 client.on('messageDelete',(deleted: Message| PartialMessage)=>sniper.saveDeletedMessage(deleted))
-client.on('messageUpdate',(old: Message | PartialMessage)=>sniper.saveEditedMessage(old))
+client.on('messageUpdate',(old: Message | PartialMessage, updated: Message | PartialMessage)=>sniper.saveEditedMessage(old, updated))
 client.on('guildCreate', guild => {
-  const q = Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [guild.id, guild.name, '!!', 'es']);
+  const q = Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [guild.id, guild.name, '!!', 'es', null]);
   q.then(()=>console.log('Servidor nuevo registrado: ' + guild.name));
   q.catch(e=>console.error(e));
 });

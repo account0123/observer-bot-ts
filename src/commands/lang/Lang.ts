@@ -1,11 +1,11 @@
 import fs from 'fs'
 import { Connections } from "../../config/connections";
-import { Message } from "discord.js";
+import { Guild, Message, PartialMessage } from "discord.js";
 import { RowDataPacket } from 'mysql2';
 export class Lang {
 	language:string | undefined
-	private msg:Message
-	constructor(msg: Message,locale?:string){
+	private msg:Message| PartialMessage
+	constructor(msg: Message| PartialMessage,locale?:string){
 		this.msg = msg
 		if(!msg.guild) {
 			switch(locale){
@@ -18,26 +18,28 @@ export class Lang {
 			}
 		}
 	}
-	async request(guild_id: string):Promise<string> {
+	async request(guild: Guild | null):Promise<string> {
 		try {
-			const [rows, fields] = await Connections.db.execute<RowDataPacket[]>('SELECT language FROM guilds WHERE id=?', [guild_id])
+			let id = '123456789'
+			if(guild) id = guild.id
+			const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT language FROM guilds WHERE id=?', [id])
 			const row = rows[0]
 			return row.language
 		} catch (error) {
-			console.error('COULDN\'T FIND GUILD ' + guild_id + ' PLEASE UPDATE')
+			console.error('COULDN\'T FIND GUILD PLEASE UPDATE')
 			console.error('Continuando con idioma inglés')
 			return 'en'
 		}
 	}
 	async send(code:string,...values:string[]):Promise<Message>{
 		if (!this.language) {
-			this.language = await this.request(this.msg.guild!.id)
+			this.language = await this.request(this.msg.guild)
 		}
 		const content = fs.readFileSync(`./build/commands/lang/${this.language}.json`,{encoding: 'utf-8'})
-		var obj = JSON.parse(content)
+		let obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {
-            let arg:string = arr.shift()!
+            const arg:string = arr.shift() || ''
 			obj = obj[arg];
 			if(!obj){
 				const e = new Error(`No se ha encontrado ${code} en el json`);
@@ -45,7 +47,7 @@ export class Lang {
 				throw e;
 			}
         }
-		var script:string = obj
+		let script:string = obj
 		const data = script.match(/\{[\w.]+\}/gm)
 		if(!data){
 			return this.msg.channel.send(script)
@@ -63,13 +65,13 @@ export class Lang {
 	}
 	async reply(code:string,...values:string[]):Promise<Message>{
 		if (!this.language) {
-			this.language = await this.request(this.msg.guild!.id)
+			this.language = await this.request(this.msg.guild)
 		}
 		const content = fs.readFileSync(`./build/commands/lang/${this.language}.json`,{encoding: 'utf-8'})
-		var obj = JSON.parse(content)
+		let obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {
-            let arg:string = arr.shift()!
+            const arg:string = arr.shift() || ''
 			obj = obj[arg];
 			if(!obj){
 				const e = new Error(`No se ha encontrado ${code} en el json`);
@@ -77,7 +79,7 @@ export class Lang {
 				throw e;
 			}
         }
-		var script:string = obj
+		let script:string = obj
 		const data = script.match(/\{[\w.]+\}/gm)
 		if(!data){
 			return this.msg.reply(script)
@@ -95,13 +97,13 @@ export class Lang {
 	}
 	async translate(code:string,...values:string[]):Promise<string>{
 		if (!this.language) {
-			this.language = await this.request(this.msg.guild!.id)
+			this.language = await this.request(this.msg.guild)
 		}
 		const content = fs.readFileSync(`./build/commands/lang/${this.language}.json`,{encoding: 'utf-8'})
-		var obj = JSON.parse(content)
+		let obj = JSON.parse(content)
 		const arr = code.split(".");
         while(arr.length > 0) {
-            let arg:string = arr.shift()!
+            const arg:string = arr.shift() || ''
 			obj = obj[arg];
 			if(!obj){
 				const e = new Error(`No se ha encontrado ${code} en el json`);
@@ -109,7 +111,7 @@ export class Lang {
 				throw e;
 			}
         }
-		var script:string = obj
+		let script:string = obj
 		const data = script.match(/\{[\w.]+\}/gm)
 		if(!data){
 			return script
