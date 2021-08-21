@@ -12,7 +12,7 @@ export class InfoCommand implements Command {
 	// cada nuevo día de creación de comandos es un número terciario (v1.1.0, v1.1.1, v1.1.2)
 	// cada nuevo mecanismo, por ejemplo seguridad o database es un número secundario (v1.1, v1.2, v1.3...)
 	// cada nueva "versión" del bot será un número primario (v1, v2, v3...)
-	private readonly version:string = 'v1.3.3'
+	private readonly version:string = 'v1.3.3a'
 	async run(msg: Message, l: Lang): Promise<void> {
 		let color = 0xffffff
 		if(msg.guild && msg.client.user){

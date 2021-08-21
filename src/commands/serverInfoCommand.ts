@@ -86,10 +86,11 @@ export class ServerInfoCommand implements Command {
 		return str;
 	}
 	private async countMembers():Promise<string>{
-		let members = 0
+		let humans = 0
 		let bots = 0
 		const total = this.g.memberCount
-		this.g.members.cache.each(m=>{if(m.user.bot) bots++;else members++;});
-		return `${total} (${members} ${await this.lang.translate('members')}/${bots} bots)`
+		const members = await this.g.members.fetch({force: true})
+		members.each(m=>{if(m.user.bot) bots++;else humans++;});
+		return `${total} (${humans} ${await this.lang.translate('members')}/${bots} bots)`
 	}
 }
