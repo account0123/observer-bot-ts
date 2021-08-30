@@ -6,7 +6,7 @@
 	"configurations": [
 		{
 			"command": "npm test",
-			"name": "Run npm start",
+			"name": "Test bot",
 			"request": "launch",
 			"type": "node-terminal"
 		},
