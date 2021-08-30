@@ -364,8 +364,11 @@
                 "members": "Miembros",
                 "channels": "Canales",
                 "emojis": "Emojis",
+                "features": "Características adicionales",
                 "safety": "Nivel de seguridad",
-                "mfa": "¿Se requiere A2F para mods?",
+                "mfa": "A2F para mods requerido",
+                "partnered": "Es socio",
+                "verified": "Está verificado",
                 "boost": "Nivel de boost",
                 "created": "Fecha de creación",
                 "description": "Descripción"
@@ -562,7 +565,6 @@
     "disabled": "❌ Comando deshabilitado",
     "nothing_to_cancel": "*No hay nada que cancelar.*",
     "nice_try": "Buen intento, pero no puedes cancelar este futuro {command}.",
-    "members": "humano(s)",
     "running": "Estoy ocupado con otro comando. Intenta después.",
     "try_again": "Intenta otra vez"
 }

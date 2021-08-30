@@ -8,7 +8,7 @@ import { Connections } from './config/connections';
 const PORT = parseInt(process.argv[2]) || 5000;
 
 const app = express();
-const client = new Discord.Client({ws:{intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_BANS', 'GUILD_INTEGRATIONS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_WEBHOOKS']}});
+const client = new Discord.Client({ws:{large_threshold: 1000, intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_BANS', 'GUILD_INTEGRATIONS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_WEBHOOKS']}});
 
 
 //////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ const handler = new CommandHandler();
 
 client.on("ready", async () => {
   console.log("Observer has started")
-  new Connections(client)
+  new Connections()
   await new Promise(resolve => setTimeout(resolve, 10000));
   for (const g of client.guilds.cache.values()) {
     const q = Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [g.id, g.name, '!!', 'es', null]);
