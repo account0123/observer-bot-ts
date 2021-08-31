@@ -96,7 +96,7 @@ export default class CommandHandler {
       const a = message.author.id
       if(this.uses.has(a)){
         const delta = Date.now() - (this.uses.get(a) || 0)
-        if(delta < 3){
+        if(delta < 3000){
           message.react('⏳').catch()
           return
         }else this.uses.delete(a)
@@ -122,6 +122,16 @@ export default class CommandHandler {
           }
         }
       }
+
+      const a = message.author.id
+      if(this.uses.has(a)){
+        const delta = Date.now() - (this.uses.get(a) || 0)
+        if(delta < 3000){
+          message.react('⏳').catch()
+          return
+        }else this.uses.delete(a)
+      }else this.uses.set(a, Date.now())
+      
       if (message.channel.type == "dm" && matchedArgCommand.guildExclusive) {
         lang.reply('errors.no_dms')
         return
