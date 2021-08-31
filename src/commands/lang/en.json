@@ -363,8 +363,9 @@
                 "members": "Members",
                 "channels": "Channels",
                 "emojis": "Emojis",
+                "features": "Additional features",
                 "safety": "Verification Level",
-                "mfa": "Is 2FA for Mods required?",
+                "mfa": "2FA for mods required",
                 "boost": "Boost Level",
                 "created": "Creation Date",
                 "description": "Description"
@@ -555,7 +556,6 @@
     "disabled": "❌ Command disabled.",
     "nothing_to_cancel": "*There's nothing to cancel.*",
     "nice_try": "Nice try, but you can't cancel this future {command}.",
-    "members": "human(s)",
     "running": "I am already busy by another commmand. Try later",
     "try_again": "Try again"
 }
