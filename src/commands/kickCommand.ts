@@ -3,6 +3,8 @@ import { Message, MessageEmbed, Permissions } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { Lang } from "./lang/Lang";
 import { PermissionsChecker } from "../util/PermissionsChecker";
+import { Connections } from "../config/connections";
+import { RowDataPacket } from "mysql2";
 
 export class KickCommand implements ArgCommand {
 	permission = 'KICK_MEMBERS'
@@ -30,6 +32,15 @@ export class KickCommand implements ArgCommand {
 			return
 		}
 		await member.kick(reason).then(async kicked => {
+			const [r] = await Connections.db.query<RowDataPacket[]>('SELECT warnings, kicks, bans FROM users WHERE id=?', [kicked.id])
+			const w: number[] = r.map((r)=>r.warnings), k: number[] = r.map((r)=>r.kicks), b: number[] = r.map((r)=>r.bans)
+			let warnings = 0, kicks = 0, bans = 0
+			if(w.length > 0){
+				warnings = w.sort((a,b)=>a - b)[0]
+				kicks = k.sort((a,b)=>a - b)[0]
+				bans = b.sort((a,b)=>a - b)[0]
+			}
+			Connections.db.execute('INSERT INTO users values(?, ?, ?, ?, ?, ?)', [kicked.id, kicked.guild.id, warnings, kicks + 1, bans, reason])
 			if(!msg.guild || !msg.client.user) return
 			const a = msg.client.user.avatarURL({dynamic: true})
 			if(!a) return

@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, Snowflake } from "discord.js";
-import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, SetCommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand } from "./commands";
+import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, SetCommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand, WarnCommand, WarningsCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
@@ -56,7 +56,9 @@ export default class CommandHandler {
       WebhooksCommand,
       CopyCommand,
       DisableCommand,
-      EnableCommand
+      EnableCommand,
+      WarnCommand,
+      WarningsCommand
     ];
 
     CommandHandler.commands = commandClasses.map(c => new c());
@@ -96,7 +98,7 @@ export default class CommandHandler {
       const a = message.author.id
       if(this.uses.has(a)){
         const delta = Date.now() - (this.uses.get(a) || 0)
-        if(delta < 3){
+        if(delta < 3000){
           message.react('⏳').catch()
           return
         }else this.uses.delete(a)
@@ -122,6 +124,16 @@ export default class CommandHandler {
           }
         }
       }
+
+      const a = message.author.id
+      if(this.uses.has(a)){
+        const delta = Date.now() - (this.uses.get(a) || 0)
+        if(delta < 3000){
+          message.react('⏳').catch()
+          return
+        }else this.uses.delete(a)
+      }else this.uses.set(a, Date.now())
+      
       if (message.channel.type == "dm" && matchedArgCommand.guildExclusive) {
         lang.reply('errors.no_dms')
         return

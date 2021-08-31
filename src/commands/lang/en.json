@@ -390,7 +390,9 @@
             "description": "Changes my settings (prefix,lang,logchannel).\nset prefix <prefix>: Sets my prefix (max 4 characters)\nset lang <language>: Sets the language what use to send messages (es, en)\nset logchannel <channel>: Sets the channel where i will send deleted & edited messages",
             "usage": "<setting to change> <new value>",
             "prefix_success": "My prefix was changed to `{prefix}`",
-            "log_success": "The logs channel will be {channel}"
+            "log_success": "The logs channel will be {channel}",
+            "mod_exists": "**{role}** is already a mod.",
+            "mod_success": "**{role}** role added as mod. They can use ${prefix}warn"
         }, 
         "snipe":{
             "description": "Shows the last deleted message.",
@@ -438,6 +440,19 @@
                 "footer": "* If you wanna see those values as array add --details to this command"
             }
         },
+        "warn": {
+            "description": "Warns an user",
+            "usage": "<user> <reason>",
+            "long_reason": "The reason cannot be larger than 255 caracters, it's a justification; not the user's biography",
+            "success": "**{user}** was warned by **{mod}** because **{reason}**. This user has {count} warnings."
+        },
+        "warnings": {
+            "description": "Shows someone's sanctions",
+            "empty": "*There's not warnings.*",
+            "usage": "<user>",
+            "title": "{user}'s warnings",
+            "footer": "Requested by {mod}"
+        },
         "webhooks": {
             "description": "Lists all webhooks of this channel or another one. Requires passcode.",
             "usage": "<passcode from getpass command> [channel]"
@@ -484,6 +499,7 @@
 		"clean_up_failed": "I'm sorry... i don't think I can clean up this mess either. You should use MEE6 or a bot of those.",
         "dm_closed": "i couldn't send you a private message, maybe you closed it or deactivated the private messages from this server.",
         "enough_timers": "I have to focus on many punishments. I can't support it, I'm a bot but it doesn't mean I deserve these treatments.",
+        "forbidden": "you can't use this command.",
         "invalid_command": "`{command}` is not a known command",
 		"invalid_channel": "i couldn't find {mention} channel",
         "invalid_duration": "please, send a valid duration time on format `n`d`n`h`n`m`n`s being `nd` n days, `nh` n hours, `nm` n minutes and `ns` n seconds. I require at least one time unit to valid the duration",

@@ -1,6 +1,8 @@
-import { GuildChannel, Message, Snowflake, TextChannel } from "discord.js";
+import { GuildChannel, Message, Role, Snowflake, TextChannel } from "discord.js";
+import { RowDataPacket } from "mysql2";
 import { Connections } from "../config/connections";
 import { ChannelFinder } from "../util/ChannelFinder";
+import { RoleFinder } from "../util/RoleFinder";
 import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 import { LangCommand } from "./lang/langCommand";
@@ -18,6 +20,7 @@ export class SetCommand implements ArgCommand {
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const target = args.shift() || ''
         const value = args[0]
+		const values = args
 		const c = ChannelFinder.getChannel(msg, value)
 
 		switch (target.toLowerCase()) {
@@ -36,8 +39,50 @@ export class SetCommand implements ArgCommand {
 				if(msg.guild)
 					this.setLogChannel(c, value, msg, msg.guild.id, l)
 				break
+			case 'modrole':
+				if(msg.guild)
+					this.addModRole(values, msg, msg.guild.id, l)
+				break
 			default:
 				break;
+		}
+	}
+	private async addModRole(values: string[], msg: Message, id: string, l: Lang) {
+		// Asociar value a rol objetivo
+		const roles: Role[] = [];
+		for (const value of values) {
+			const r = RoleFinder.getRole(msg, value)
+			if(r) roles.push(r)
+		}
+		if(roles.length == 0){
+			l.reply('invalid_roles', values.join(', @'))
+			return
+		}
+		// Verificar si mod está puesto
+		const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT id, type FROM roles WHERE guild=?', [id])
+		for (const role of roles) {
+			const row = rows.find((row)=>row.id == role.id)
+			if(row){
+				if(row.type == 'admin'){
+					// eliminar rol e insertar
+					Connections.db.query('DELETE FROM roles WHERE id=?', role.id)
+					console.log('Rol %s antes admin bajó a mod', role.name)
+				}else if(row.type == 'mod'){
+					// ignorar
+					l.send('info.set.mod_exists')
+					continue
+				}	
+			}
+			// No está el rol en la database
+			Connections.db.query('INSERT INTO roles VALUES (?, ?, ?)', [role.id, id, 'mod'])
+				.then((something)=>{
+					l.send('info.set.mod_success', role.name)
+					console.log('Rol mod %s agregado a la database', role.name)
+					console.log(something)
+				}).catch((e)=>{
+					console.error('Error agregando el rol como mod %s a database')
+					console.error(e)
+				})
 		}
 	}
 	private setLogChannel(c: GuildChannel | undefined, mention: string, msg: Message, guild_id: string, l: Lang) {

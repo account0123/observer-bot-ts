@@ -393,7 +393,9 @@
             "description": "Cambia mis ajustes (prefix,lang, logchannel).\nset prefix <prefijo>: Cambia mi prefijo (máximo 4 caracteres)\nset lang <idioma>: Cambia el idioma por el cual envío mensajes (es, en)\nset logchannel <canal>: Agrega o cambia el canal donde van los mensajes borrados y editados",
             "usage": "<ajuste a cambiar> <nuevo valor>",
             "prefix_success": "Mi prefijo fue cambiado a `{prefix}`",
-            "log_success": "El canal de registros será {channel}"
+            "log_success": "El canal de registros será {channel}",
+            "mod_exists": "**{role}** ya es mod.",
+            "mod_success": "Rol **{role}** agregado como mod. Puede usar ${prefix}warn"
         }, 
         "snipe":{
             "description": "Muestra el último mensaje borrado.",
@@ -462,6 +464,19 @@
                 "footer": "* Para ver el conjunto de valores agrega --details al comando"
             }
         },
+        "warn": {
+            "description": "Advierte a un usuario",
+            "usage": "<usuario> <razón>",
+            "long_reason": "La razón no puede superar los 255 caracteres, es una justificación; no una biografía del usuario",
+            "success": "**{user}** fue advertido por **{mod}** por **{reason}**. Este usuario tiene {count} advertencias."
+        },
+        "warnings": {
+            "description": "Muestra las sanciones de alguien",
+            "usage": "<usuario>",
+            "empty": "*No hay advertencias. Está limpio.*",
+            "title": "Advertencias de {user}",
+            "footer": "Solicitado por {mod}"
+        },
         "webhooks": {
             "description": "Enlista los webhooks de este canal o de otro. Requiere clave.",
             "usage": "<clave de seguridad de comando getpass> [canal]",
@@ -508,6 +523,7 @@
     "errors": {
         "clean_up_failed": "Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Chocolat o algún bot de esos.",
         "dm_closed": "no pude enviarte un mensaje privado, quizás lo tienes cerrado o tienes desactivado los mensajes privados desde este servidor.",
+        "forbidden": "no puedes usar ese comando",
         "enough_timers": "Tengo demasiados focos donde concentrarme. No puedo con tanto, que sea un bot no significa que merezca estos tratos.",
         "invalid_command": "`{command}` no es un comando que reconozca",
         "invalid_channel": "no pude identificar el canal {mention}",
@@ -516,7 +532,8 @@
         "invalid_message": "la ID ({id}) no pudo resolverse como un mensaje de este canal, quizás fue borrado (?)",
         "invalid_member": "no pude hacer nada porque el miembro {mention} no es válido o ya no está aquí como miembro",
         "invalid_password": "al menos un par de caracteres de las contraseña no representa un número, quizás esa contraseña no fue enviada por mi.",
-        "invalid_role": "no encontré el rol {mention}, puede que no sea válido",
+        "invalid_role": "no encontré el rol @{mention}, puede que no sea válido",
+        "invalid_roles": "no encontré ninguno de los roles {mentions}, puede que no sea válido",
         "long_prefix": "mi prefijo no puede tener más de 4 caracteres.",
         "lower_bot": "no puedo hacerle nada a un miembro que esté a mi nivel o más arriba que yo",
         "lower_roles": "no puedo modificar un rol si está más arriba o es igual que mi rol más alto.",
