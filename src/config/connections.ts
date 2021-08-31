@@ -1,11 +1,10 @@
 import MySQL, { Connection } from "mysql2/promise";
-import { Client } from "discord.js";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env" })
 
 export class Connections {
 	static db: Connection
-  constructor(client:Client){
+  constructor(){
     this.connect()
   }
   private async connect(){
