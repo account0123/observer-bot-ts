@@ -4,6 +4,8 @@ import { MemberFinder } from "../util/MemberFinder";
 import { Lang } from "./lang/Lang";
 import console from "console";
 import { PermissionsChecker } from "../util/PermissionsChecker";
+import { RowDataPacket } from "mysql2";
+import { Connections } from "../config/connections";
 
 export class BanCommand implements ArgCommand {
 	permission = 'BAN_MEMBERS'
@@ -25,7 +27,7 @@ export class BanCommand implements ArgCommand {
 		const member = MemberFinder.getMember(msg, mention);
 		if(!member){
 			msg.react('❌')
-			l.reply('errors.invalid_member',mention)
+			l.reply('errors.invalid_member', mention)
 			return
 		}
 		if(!member.bannable){
@@ -34,6 +36,15 @@ export class BanCommand implements ArgCommand {
 			return
 		}
 		await member.ban({days:1, reason: reason}).then(async banned => {
+			const [r] = await Connections.db.query<RowDataPacket[]>('SELECT warnings, kicks, bans FROM users WHERE id=?', [banned.id])
+			const w: number[] = r.map((r)=>r.warnings), k: number[] = r.map((r)=>r.kicks), b: number[] = r.map((r)=>r.bans)
+			let warnings = 0, kicks = 0, bans = 0
+			if(w.length > 0){
+				warnings = w.sort((a,b)=>a - b)[0]
+				kicks = k.sort((a,b)=>a - b)[0]
+				bans = b.sort((a,b)=>a - b)[0]
+			}
+			Connections.db.execute('INSERT INTO users values(?, ?, ?, ?, ?, ?)', [banned.id, banned.guild.id, warnings, kicks, bans + 1, reason])
 			l.send('info.ban.success',banned.user.tag,g.name)
 			if(!msg.client.user) return
 			const e = 'info.ban.embed.'
