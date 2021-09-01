@@ -278,7 +278,7 @@
                 "library": "Library",
                 "version": "Version",
                 "changelog": "Changelog",
-                "changes": "New configuration:\nset logchannel `<channel>`\nNew commands:\n·disable\n·enable\n·editchannel\n\nIf a command fails by missing permissions, it shows required permissions"
+                "changes": "New configuration:\nset modrole <role>...\nset logchannel `<channel>`\nNew commands:\n·warn <user> <reason>\n·warnings <user>"
             }
         },
 	    "kick": {

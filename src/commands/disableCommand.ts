@@ -45,7 +45,7 @@ export class DisableCommand implements ArgCommand {
 			}
 		}
 		//Ejecución
-		Connections.db.execute('INSERT INTO disabled VALUES (?, ?, ?, ?)', [g_id, g_id, c.commandNames[0], global ? 1 : 0])
+		Connections.db.execute('INSERT INTO disabled VALUES (?, ?, ?, ?)', [g_id, c_id, c.commandNames[0], global ? 1 : 0])
 		// Éxito
 		if(global) l.send('info.disable.global-success', c.commandNames[0])
 		else l.send('info.disable.success', c.commandNames[0])
