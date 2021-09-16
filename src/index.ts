@@ -41,6 +41,7 @@ client.on("ready", async () => {
     const roles = qr.map(row=>row.id)
     for (const role of g.roles.cache.values()) {
       if(roles.includes(role.id)) continue;
+      if(role.managed) continue;
       if(role.permissions.has('ADMINISTRATOR')) addAdminRole(role)
     }
   }
@@ -56,6 +57,7 @@ client.on('guildCreate', async guild => {
   const roles = qr.map(row=>row.id)
   for (const role of guild.roles.cache.values()) {
     if(roles.includes(role.id)) continue;
+    if(role.managed) continue;
     if(role.permissions.has('ADMINISTRATOR')) addAdminRole(role)
   }
 });
@@ -72,6 +74,7 @@ client.on("guildDelete", guild=>{
 })
 client.on("roleCreate", (role: Role)=>{
   if(!role.permissions.has('ADMINISTRATOR')) return
+  if(role.managed) return
   addAdminRole(role)
 })
 client.on("roleDelete", (role: Role)=>{
