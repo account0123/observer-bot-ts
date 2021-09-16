@@ -276,7 +276,7 @@
                 "library": "Librería",
                 "version": "Versión",
                 "changelog": "Cambios recientes",
-                "changes": "Nuevo ajuste:\nset logchannel <canal>\nNuevos comandos:\n·disable\n·enable\n·rae\n\nSi un comando falla por falta de permisos muestra los permisos necesarios"
+                "changes": "Nuevos ajustes:\nset modrole <rol>...\nset logchannel <canal>\nNuevos comandos:\n·warn <usuario> <razón>\n·warnings <usuario>"
             }
         },
         "kick": {
