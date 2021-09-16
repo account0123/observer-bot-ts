@@ -279,6 +279,10 @@
                 "changes": "Nuevos ajustes:\nset modrole <rol>...\nset logchannel <canal>\nNuevos comandos:\n·warn <usuario> <razón>\n·warnings <usuario>"
             }
         },
+        "invite":{
+            "description": "Envía un link para añadirme a un servidor",
+            "text": "Click para invitarme!"
+        },
         "kick": {
             "description": "Expulsa a un miembro del servidor por (ning)una razón.",
             "usage": "<usuario> [razón]",

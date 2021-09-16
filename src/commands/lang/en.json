@@ -281,6 +281,10 @@
                 "changes": "New configuration:\nset modrole <role>...\nset logchannel `<channel>`\nNew commands:\n·warn <user> <reason>\n·warnings <user>"
             }
         },
+        "invite":{
+            "description": "Sends a link for add me to a server",
+            "text": "Click to invite me!"
+        },
 	    "kick": {
             "description": "Kicks a member from the server with(out) any reason.",
             "usage": "<user> [reason]",
