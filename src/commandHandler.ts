@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, Snowflake } from "discord.js";
-import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, SetCommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand, WarnCommand, WarningsCommand } from "./commands";
+import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, SetCommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand, WarnCommand, WarningsCommand, InviteCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
@@ -24,7 +24,8 @@ export default class CommandHandler {
       InfoCommand,
       CancelCommand,
       DeleteDisCommand,
-      CreateWebhookCommand
+      CreateWebhookCommand,
+      InviteCommand
     ];
     const argCommandClasses = [
       AvatarCommand,
