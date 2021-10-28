@@ -40,16 +40,11 @@ client.on("ready", async () => {
     const [qr] = await Connections.db.query<RowDataPacket[]>('SELECT id FROM roles WHERE guild=?', [g.id])
     const roles = qr.map(row=>row.id)
     for (const role of g.roles.cache.values()) {
-<<<<<<< Updated upstream
-      if(roles.includes(role.id)) continue;
-      if(role.managed) continue;
-=======
       if(roles.includes(role.id)){
         if(role.managed)
           Connections.db.execute('DELETE FROM roles WHERE id=?', [role.id]).then(()=>console.log('Rol %s eliminado', role.id))
         continue
       }
->>>>>>> Stashed changes
       if(role.permissions.has('ADMINISTRATOR')) addAdminRole(role)
     }
   }
