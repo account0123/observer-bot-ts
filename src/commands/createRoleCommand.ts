@@ -21,7 +21,7 @@ export class CreateRoleCommand implements ArgCommand{
 		const arg = args.join(' ')
 		const data = createData(arg)
 		if (!data) {
-			g.roles.create({data: {name: arg,permissions:Permissions.DEFAULT,color:'RANDOM'}, reason: await l.translate('reason',msg.author.tag)}).then(async (role) => {
+			g.roles.create({data: {name: arg,permissions:0,color:'RANDOM'}, reason: await l.translate('reason',msg.author.tag)}).then(async (role) => {
 				const isHoist = async ()=> role.hoist ? await l.translate('yes') : await l.translate('no')
 				const isMentionable = async ()=>role.mentionable?await l.translate('yes'):await l.translate('no')
 				const e = 'info.createrole.embed.'
@@ -120,7 +120,8 @@ function createData(str:string):RoleData | undefined {
 		data.color = value
 		break
 		case 'permissions': case 'perms':
-		data.permissions = parseInt(value,16)
+		if(value=='user') data.permissions = Permissions.DEFAULT
+		else data.permissions = parseInt(value,16)
 		break
 		case 'position': case 'pos':
 		data.position = parseInt(value)
