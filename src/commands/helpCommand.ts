@@ -121,12 +121,14 @@ export class HelpCommand implements ArgCommand {
 			const pages = 3
 			let page = 1
 			try{
-			await msg.react('⬅️');await msg.react('➡️')
-			const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
-				if(!this.msg) return false
-				if((reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️') && user.id == this.msg.author.id) return true
-				else return false
-			};
+				await msg.react('⬅️');
+				await msg.react('➡️')
+				const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
+					if(!this.msg) return false
+					if(user==bot) return false
+					if((reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️') && user.id == this.msg.author.id) return true
+					else return false
+				};
 			const loadPage = async (p: number)=>{
 				let e: MessageEmbed = new MessageEmbed()
 				switch(p){
@@ -142,13 +144,23 @@ export class HelpCommand implements ArgCommand {
 			rc.on('collect', async (reaction, user)=>{
 				if(!f(reaction, user)) return
 				if(reaction.emoji.name == '➡️'){
-					reaction.remove(); if(page==pages) return;page++;
+					reaction.remove()
+					if(page==pages) return
+					if(page == 1) msg.react('⬅️')
+					page++
 					loadPage(page)
+					if(page != pages) msg.react('➡️')
 				}
 
 				if(reaction.emoji.name === '⬅️'){
-reaction.remove();if(page==1) return;page--;
+					reaction.remove()
+					if(page==1) return
+					page--
 					loadPage(page)
+					if(page != 1){
+						msg.react('⬅️')
+						msg.react('➡️')
+					}
 				}
 			});
 			rc.once('end', ()=>{
