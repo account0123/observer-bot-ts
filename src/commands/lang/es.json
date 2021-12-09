@@ -179,7 +179,7 @@
                 "error": "no pude ponerle el color {value} al rol. ¿Seguro que {value} es un color?"
             },
             "position_change":{
-                "success": "**{role.name}** ahora está en la posición `${r.position}`",
+                "success": "**{role.name}** ahora está en la posición #{r.position}",
                 "error": "no pude cambiar la posición del rol a {value}.",
                 "invalid_lower_role": "el rol inferior no es válido.",
                 "invalid_higher_role": "el rol superior no es válido."

@@ -102,6 +102,7 @@ else client.login(DISCORD_TOKEN).catch(e=>console.error(e));
 app.listen(PORT, () => console.log(`Server started on port ${PORT}!`))
 
 function addAdminRole(role: Role){
+  if(role.managed) return
   const q =Connections.db.query("INSERT INTO roles VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id", [role.id, role.guild.id, 'adm', 0b01111111])
   q.then(()=>console.log(`Rol ${role.name} (${role.id}) de ${role.guild.name} agregado como rol de administrador`))
   q.catch(e=>console.error(e))
