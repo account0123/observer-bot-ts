@@ -39,7 +39,7 @@ export class RoleInfoCommand implements ArgCommand {
 		const isMentionable = async ()=>role.mentionable? yes : no
 
 		const dividePermissions = async () =>{
-			if(role.permissions.bitfield === Permissions.ALL || role.permissions.bitfield === 8) return [[all],['\u200B'],['\u200B']]
+			if(role.permissions.bitfield == Permissions.ALL || role.permissions.bitfield == 8n) return [[all],['\u200B'],['\u200B']]
 			const a = await Promise.all(role.permissions.toArray().map(s=>l.translate('permissions.'+s)))
 			if(a.length === 0) return [[none],['\u200B'],['\u200B']]
 			if(a.length < 12) return [a,['\u200B'],['\u200B']]
@@ -48,18 +48,18 @@ export class RoleInfoCommand implements ArgCommand {
 		};
 		const permissionsvalue = await dividePermissions()
 		const embed = new MessageEmbed().setTitle(title).setColor(role.color || 0)
-                .addFields(
+                .addFields([
 					{ name: 'ID'       , value: role.id              , inline: true},
                     { name: 'Color'    , value: role.hexColor        , inline: true},
-					{ name: position   , value: role.position        , inline: true},
+					{ name: position   , value: String(role.position)        , inline: true},
 					{ name: hoist      , value: await isHoist()      , inline: true},
 					{ name: mentionable, value: await isMentionable(), inline: true},
 					{ name: created    , value: new Time(role.id,l).toString()},
-					{ name: `${permissions} (${role.permissions.toJSON().toString(16)})`, value:permissionsvalue[0],inline: true},
-					{ name: '\u200B'   , value: permissionsvalue[1]  ,inline: true},
-					{ name: '\u200B'   , value: permissionsvalue[2]  ,inline: true}
-                    ).setTimestamp();
-		await message.edit('',embed)
+					{ name: `${permissions} (${role.permissions.toJSON()})`, value:permissionsvalue[0].join('\n'),inline: true},
+					{ name: '\u200B'   , value: permissionsvalue[1].join('\n')  ,inline: true},
+					{ name: '\u200B'   , value: permissionsvalue[2].join('\n')  ,inline: true}
+                    ]).setTimestamp();
+		await message.edit({content: '', embeds: [embed]})
 	}
 	async checkPermissions(): Promise<boolean> {
 		return true

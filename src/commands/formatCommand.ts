@@ -1,4 +1,5 @@
-import { DMChannel, Message, Permissions, Snowflake, Webhook } from "discord.js";
+import { DMChannel, GuildTextBasedChannel, Message, Permissions, Snowflake, Webhook } from "discord.js";
+import { MemberFinder } from "../util/MemberFinder";
 import { UserFinder } from "../util/UserFinder";
 import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
@@ -17,18 +18,19 @@ export class FormatCommand implements ArgCommand {
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const c = args.join(' ')
 		let f = c.replace('\\n','\n').replace('\\t','\t').replace('\\r','\r').replace('\\b','\b').replace('\\v','\v').replace('\\0','\0').replace('\\f','\f')
-		if(!msg.guild || !msg.client.user) return
-		const bot = msg.guild.member(msg.client.user)
+		if(!msg.client.user) return
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!bot) return
 		const user = msg.author
 		if(!FormatCommand.webhooks) FormatCommand.webhooks = new Map()
 		if (msg.channel instanceof DMChannel) {
 			await msg.channel.send(f)
 		} else {
+			const c = <GuildTextBasedChannel>msg.channel
 			let webhook = FormatCommand.webhooks.get(msg.channel.id)
-			if(!webhook){
-				if(bot.hasPermission(Permissions.FLAGS.MANAGE_WEBHOOKS)){
-					webhook = await msg.channel.createWebhook('Clone', {
+			if(!webhook && (c.type == 'GUILD_TEXT' || c.type == 'GUILD_NEWS')){
+				if(bot.permissionsIn(c).has(Permissions.FLAGS.MANAGE_WEBHOOKS)){
+					webhook = await c.createWebhook('Clone', {
 						avatar: 'https://i.imgur.com/n1MdeHO.png',
 					});
 					FormatCommand.webhooks.set(msg.channel.id,webhook)
@@ -46,16 +48,21 @@ export class FormatCommand implements ArgCommand {
 							i++
 						}
 					}
-					await msg.channel.send(f,{allowedMentions: {parse: ['users']}})
+					await msg.channel.send({content: f, allowedMentions: {parse: ['users']}})
 
 					return
 				}
 			}
-			await webhook.send(f,{
+			if(!webhook){
+				msg.react('❌').catch()
+				return
+			}
+			await webhook.send({
+				content: f,
 				username: user.username,
 				avatarURL: user.displayAvatarURL({dynamic:true}),
 				allowedMentions: {parse: ['users']}
-			}).then(()=>msg.delete());
+			}).then(msg.delete);
 		}	
 	}
 	async checkPermissions(): Promise<boolean> {

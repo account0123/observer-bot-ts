@@ -34,14 +34,14 @@ export class RemoveRoleCommand implements ArgCommand {
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const mod = msg.guild.member(msg.author)
-		const bot = msg.guild.member(msg.client.user)
+		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!bot.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
 			l.reply('errors.botperms.remove_role')
 			return false
 		}
-		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!mod.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
 			l.reply('errors.modperms.remove_role')
 			return false
 		}

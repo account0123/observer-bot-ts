@@ -1,7 +1,8 @@
-import { GuildChannel, Message, Role, Snowflake, TextChannel } from "discord.js";
+import { GuildBasedChannel, GuildChannel, Message, Role, Snowflake, TextChannel } from "discord.js";
 import { RowDataPacket } from "mysql2";
 import { Connections } from "../config/connections";
 import { ChannelFinder } from "../util/ChannelFinder";
+import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
@@ -85,7 +86,7 @@ export class SetCommand implements ArgCommand {
 				})
 		}
 	}
-	private setLogChannel(c: GuildChannel | undefined, mention: string, msg: Message, guild_id: string, l: Lang) {
+	private setLogChannel(c: GuildBasedChannel | undefined, mention: string, msg: Message, guild_id: string, l: Lang) {
 		const gc = <GuildChannel> msg.channel
 		let reactable = false
 		if(msg.client.user){
@@ -119,9 +120,9 @@ export class SetCommand implements ArgCommand {
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		if(!msg.guild) return false
-		const mod = msg.guild.member(msg.author)
+		const mod = MemberFinder.getMember(msg, msg.author.id)
 		if(!mod) return false
-		if (!mod.hasPermission(8)) {
+		if (!mod.permissions.has(8n)) {
 			l.reply('errors.modperms.admin')
 			return false
 		}

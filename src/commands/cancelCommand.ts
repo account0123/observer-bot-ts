@@ -1,4 +1,4 @@
-import { Message, MessageReaction, Permissions, Snowflake, User } from "discord.js";
+import { Message, Permissions, Snowflake } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import Command from "./commandInterface";
 import { Lang } from "./lang/Lang";
@@ -34,7 +34,8 @@ export class CancelCommand implements Command {
 			const line = `\n${i}. ${timer.user}  ${typeCommand(timer.command)}    ${typeReason(timer.reason)}`
 			text += line
 		}
-		const message = await msg.channel.send(text,{code:true})
+		text = '```\n' + text + '\n```'
+		const message = await msg.channel.send(text)
 		for (let j = 1; j <= i; j++) {
 			switch (j) {
 				case 1: await message.react('1️⃣'); break;
@@ -49,15 +50,7 @@ export class CancelCommand implements Command {
 				case 10: await message.react('🔟')
 			}
 		}
-		const f = (reaction: MessageReaction, user: User) =>{
-			if(!msg.client.user) return false
-			if(user.id === msg.client.user.id) return false
-			switch (reaction.emoji.name) {
-			case '1️⃣': case '2️⃣': case '3️⃣': case '4️⃣': case '5️⃣': case '6️⃣': case '7️⃣': case '8️⃣':
-			case '9️⃣': case '🔟': return true	
-			default: return false
-		}};
-		const collector = message.createReactionCollector(f,{time:150000,max:10,maxUsers:3})
+		const collector = message.createReactionCollector({time:150000,max:10,maxUsers:3})
 		collector.on('collect',(reaction, user)=>{
 			let index = 0
 			switch(reaction.emoji.name){
@@ -90,10 +83,10 @@ export class CancelCommand implements Command {
 		if(member){
 			switch (command) {
 				case 'Kick':
-					if(member.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) return true
+					if(member.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return true
 					break
 				case 'Ban':
-					if(member.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) return true
+					if(member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return true
 			}
 		}else return false
 		return false

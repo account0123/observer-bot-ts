@@ -3,6 +3,7 @@ import { Message, Permissions, Role} from "discord.js";
 import { GetPassCommand } from ".";
 import console from "console";
 import { Lang } from "./lang/Lang";
+import { MemberFinder } from "../util/MemberFinder";
 
 export class ResetAllRolesCommand implements ArgCommand {
 	requiredArgs = 1
@@ -22,23 +23,24 @@ export class ResetAllRolesCommand implements ArgCommand {
 			perms = parseInt(args[1],16)
 			if(isNaN(perms)){
 				l.reply('errors.NaN',args[1])
-				await l.send('cancelling').then(m=>m.delete({timeout: 1000}))
+				await l.send('cancelling').then(m=>setTimeout(m.delete, 1000))
 				l.send('canceled')
 				return
 			}
 		}
 		if(!msg.guild || !msg.client.user) return
-		const bot = msg.guild.member(msg.client.user)
+		const bot = msg.guild.members.resolve(msg.client.user)
 		if(!bot) return
 		const botperms = bot.permissions.bitfield
-		if (!bot.hasPermission(8) && perms > botperms) {
-			l.reply('info.resetallroles.permission_limit',new Permissions(perms - botperms).toArray().join(', '))
-			await l.send('cancelling').then(m=>m.delete({timeout: 1000}))
+		const b_perms = BigInt(perms)
+		if (!bot.permissions.has(8n) && perms > botperms) {
+			l.reply('info.resetallroles.permission_limit',new Permissions(b_perms - botperms).toArray().join(', '))
+			await l.send('cancelling').then(m=>setTimeout(m.delete, 1000))
 			l.send('canceled')
 			return
 		}
 		const botposition = bot.roles.highest.position
-		await l.send('info.resetallroles.start','' + (botposition -1),new Permissions(perms).toArray().join(', '))
+		await l.send('info.resetallroles.start','' + (botposition -1),new Permissions(b_perms).toArray().join(', '))
 		const asyncForEach = async (a:Role[], callback: { (r: Role): Promise<void>; (arg0: Role, arg1: number, arg2: Role[]): Promise<void>; }) => {
 			for (let i = 0; i < a.length; i++) {
 				await new Promise<void>((res)=>setTimeout(()=>res(), 500))
@@ -47,8 +49,8 @@ export class ResetAllRolesCommand implements ArgCommand {
 		}
 		const restart = async () => {
 			if(!msg.guild) return
-			await asyncForEach(msg.guild.roles.cache.array(), async (r:Role) => {
-			if (botposition > r.position) await r.setPermissions(perms,await l.translate('reason',msg.author.tag))
+			await asyncForEach([...msg.guild.roles.cache.values()], async (r:Role) => {
+			if (botposition > r.position) await r.setPermissions(b_perms,await l.translate('reason',msg.author.tag))
 				.catch(e=>{
 					l.send('info.resetallroles.error', r.toString())
 					console.error(e.stack)
@@ -60,14 +62,14 @@ export class ResetAllRolesCommand implements ArgCommand {
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const mod = msg.guild.member(msg.author)
-		const bot = msg.guild.member(msg.client.user)
+		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)){
+		if (!mod.permissions.has(Permissions.FLAGS.MANAGE_ROLES)){
 			l.reply('errors.botperms.edit_role')
 			return false
 		}
-		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!bot.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
 			l.reply('errors.modperms.edit_role')
 			return false
 		}

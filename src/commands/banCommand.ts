@@ -20,18 +20,18 @@ export class BanCommand implements ArgCommand {
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		if(!msg.guild) return
 		const g = msg.guild
-		const mod = msg.guild.member(msg.author)
+		const mod = MemberFinder.getMember(msg, msg.author.id)
 		if(!mod) return
 		const mention = args.splice(0,1).toString()
 		const reason = args.join(' ')  || await l.translate('info.ban.embed.default_reason')
 		const member = MemberFinder.getMember(msg, mention);
 		if(!member){
-			msg.react('❌')
+			msg.react('❌').catch()
 			l.reply('errors.invalid_member', mention)
 			return
 		}
 		if(!member.bannable){
-			msg.react('❌')
+			msg.react('❌').catch()
 			l.reply('errors.lower_bot')
 			return
 		}
@@ -49,10 +49,10 @@ export class BanCommand implements ArgCommand {
 			if(!msg.client.user) return
 			const e = 'info.ban.embed.'
 			const embed = new MessageEmbed()
-				.setAuthor(await l.translate(e+'title',banned.guild.name), msg.client.user.avatarURL() || undefined)
+				.setAuthor({name: await l.translate(e+'title',banned.guild.name), url: msg.client.user.avatarURL() || undefined})
 				.setTitle(await l.translate(e+'reason')).setDescription(reason)
-				.setFooter(await l.translate(e+'footer') + `: ${mod.user.tag}`).setTimestamp();
-			banned.send(embed).catch(e=>console.error(`No se pudo enviar el mensaje a ${banned.displayName} por ${e}`));
+				.setFooter({text: await l.translate(e+'footer') + `: ${mod.user.tag}`}).setTimestamp();
+			banned.send({embeds: [embed]}).catch(e=>console.error(`No se pudo enviar el mensaje a ${banned.displayName} por ${e}`));
 		}).catch(error => {
 			l.send('info.ban.error',member.user.tag,error)
 			console.error(`Se intentó banear a ${member.displayName} (${member.id}) de ${g.name} (${g.id}) pero falló por ${error.stack}`)
@@ -60,14 +60,14 @@ export class BanCommand implements ArgCommand {
 	}
 	async checkPermissions(msg: Message,l: Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const mod = msg.guild.member(msg.author)
-		const bot = msg.guild.member(msg.client.user)
+		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!bot.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) {
+		if (!bot.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) {
 			l.reply('errors.botperms.ban')
 			return false
 		}
-		if (!mod.hasPermission(Permissions.FLAGS.BAN_MEMBERS)) {
+		if (!mod.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) {
 			l.reply('errors.modperms.ban')
 			return false
 		}

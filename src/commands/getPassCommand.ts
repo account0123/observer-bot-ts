@@ -3,6 +3,8 @@ import {utils, ModeOfOperation} from 'aes-js'
 import ArgCommand from "./commandArgInterface";
 import { UserFinder } from "../util/UserFinder";
 import { Lang } from "./lang/Lang";
+import { MemberFinder } from "../util/MemberFinder";
+
 export class GetPassCommand implements ArgCommand {
 	permission = 'ADMINISTRATOR'
 	requiredArgs = 0
@@ -68,9 +70,9 @@ export class GetPassCommand implements ArgCommand {
 	}
 	async checkPermissions(msg: Message, l: Lang, prefix: string): Promise<boolean> {
 		if(!msg.guild) return false
-		const mod = msg.guild.member(msg.author)
+		const mod = MemberFinder.getMember(msg, msg.author.id)
 		if(!mod) return false
-		if (!mod.hasPermission(8)) {
+		if (!mod.permissions.has(8n)) {
 			l.reply('info.getpass.no_admin', prefix, mod.toString())
 			return false
 		}

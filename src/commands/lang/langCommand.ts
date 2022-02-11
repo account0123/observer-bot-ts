@@ -3,20 +3,22 @@ import { Message } from "discord.js";
 import { Connections } from "../../config/connections";
 import { Lang } from "./Lang";
 import { RowDataPacket } from "mysql2";
+import { MemberFinder } from "../../util/MemberFinder";
 
 export class LangCommand implements ArgCommand {
-	requiredArgs: number = 0
+	requiredArgs = 0
 	commandNames: string[] = ['lang']
-	guildExclusive: boolean = true
-	shortdescription: string = 'info.lang.description'
-	fulldescription: string = 'info.lang.fulldescription'
-	usage: string = 'info.lang.usage'
+	guildExclusive = true
+	shortdescription = 'info.lang.description'
+	fulldescription = 'info.lang.fulldescription'
+	usage= 'info.lang.usage'
 	examples: string[] = ['', 'es']
-	permission: string = 'ADMINISTRATOR'
+	permission = 'ADMINISTRATOR'
 	type = 'config'
 	async run(msg: Message, l: Lang,args: string[]): Promise<void> {
 		const sql = Connections.db
-		const g = msg.guild!
+		const g = msg.guild
+		if(!g) return
 		if (args.length == 0) {
 			const [rows] = await sql.execute<RowDataPacket[]>('SELECT language FROM guilds WHERE id=?',[g.id])
 				if(rows.length === 0) {
@@ -48,8 +50,8 @@ export class LangCommand implements ArgCommand {
 		}
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		const mod = msg.guild!.member(msg.author)!
-		if (!mod.hasPermission(8)){
+		const mod = MemberFinder.getMember(msg, msg.author.id)
+		if (!mod?.permissions.has(8n)){
 			l.reply('errors.modperms.admin')
 			return false
 		}

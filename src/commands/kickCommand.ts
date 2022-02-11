@@ -18,7 +18,7 @@ export class KickCommand implements ArgCommand {
 	type = 'mod'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		if(!msg.guild || !msg.client.user) return
-		const mod = msg.guild.member(msg.author)
+		const mod = MemberFinder.getMember(msg, msg.author.id)
 		if(!mod) return
 		const mention = args.splice(0,1).toString()
 		const reason = args.join(' ') || await l.translate('info.kick.embed.default_reason')
@@ -46,23 +46,23 @@ export class KickCommand implements ArgCommand {
 			if(!a) return
 			const e = 'info.kick.embed.'
 			const embed = new MessageEmbed()
-				.setAuthor(await l.translate(e+'title',msg.guild.name), a)
+				.setAuthor({name: await l.translate(e+'title',msg.guild.name), url: a})
 				.setTitle(await l.translate(e+'reason'))
 				.setDescription(reason)
-				.setFooter(await l.translate(e+'footer',mod.user.tag));
-			kicked.send(embed).catch(e=>console.error(`No se pudo enviar el mensaje a ${kicked.displayName} por ${e}`));
+				.setFooter({text: await l.translate(e+'footer',mod.user.tag)})
+			kicked.send({embeds: [embed]}).catch(e=>console.error(`No se pudo enviar el mensaje a ${kicked.displayName} por ${e}`));
 		});
 	}
 	async checkPermissions(msg: Message, l:Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const mod = msg.guild.member(msg.author)
-		const bot = msg.guild.member(msg.client.user)
+		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!bot.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) {
+		if (!bot.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) {
 			l.reply('errors.botperms.kick')
 			return false
 		}
-		if (!mod.hasPermission(Permissions.FLAGS.KICK_MEMBERS)) {
+		if (!mod.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) {
 			l.reply('errors.modperms.kick')
 			return false
 		}

@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, Permissions } from "discord.js";
 import { RowDataPacket } from "mysql2";
 import CommandHandler from "../commandHandler";
 import { Connections } from "../config/connections";
@@ -53,9 +53,9 @@ export class DisableCommand implements ArgCommand {
 
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const mod = msg.guild.member(msg.author)
+		const mod = msg.guild.members.resolve(msg.author)
 		if(!mod) return false
-		if (!mod.hasPermission(8)) {
+		if (!mod.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
 			l.reply('errors.modperms.admin')
 			return false
 		}

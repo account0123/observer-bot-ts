@@ -29,8 +29,8 @@ export class WarningsCommand implements ArgCommand {
         let w = 0, k = 0, b = 0, action = '', desc = ''
         if(rows.length == 0){
             embed.setDescription(await l.translate('info.warnings.empty'))
-            embed.setFooter(await l.translate('info.warnings.footer', msg.author.tag))
-            msg.channel.send(embed)
+            embed.setFooter({text: await l.translate('info.warnings.footer', msg.author.tag)})
+            msg.channel.send({embeds: [embed]})
             return
         }
         const loading = await msg.channel.send(`\`Cargando advertencias de ${m.user.username}...\``)
@@ -51,7 +51,7 @@ export class WarningsCommand implements ArgCommand {
             desc += `\n\n**${action}**\n\`\`\`${row.reason}\`\`\``
         }
         embed.setDescription(desc)
-        loading.edit({content: '', embed})
+        loading.edit({content: '', embeds: [embed]})
     }
     async checkPermissions(): Promise<boolean> {
         return true

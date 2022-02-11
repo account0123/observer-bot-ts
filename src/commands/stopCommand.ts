@@ -22,13 +22,15 @@ export class StopCommand implements Command {
       return
     }
     for (const wh of FormatCommand.webhooks.values()) {
-      const guild = message.client.guilds.resolve(wh.guildID)
+      const guild = message.client.guilds.resolve(wh.guildId)
       if(guild){
         if(!message.client.user) return
-        const bot = guild.member(message.client.user)
+        const bot = guild.members.resolve(message.client.user)
         if(bot){
-          if(bot.hasPermission(Permissions.FLAGS.MANAGE_WEBHOOKS)){
-            wh.delete('Bot is shutting down').then(()=>console.log(`Webhook ${wh.id} from the channel ${wh.channelID} from the guild ${wh.guildID} has been deleted!`)).catch((err)=>console.error(err.stack));
+          if(bot.permissions.has(Permissions.FLAGS.MANAGE_WEBHOOKS)){
+            wh.delete('Bot is shutting down')
+              .then(()=>console.log(`Webhook ${wh.id} from the channel ${wh.channelId} from the guild ${wh.guildId} has been deleted!`))
+              .catch((err)=>console.error(err.stack));
           }
         }
       }

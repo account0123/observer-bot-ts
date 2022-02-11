@@ -1,7 +1,8 @@
 import ArgCommand from "./commandArgInterface"
-import { Message, Permissions, TextChannel } from "discord.js"
+import { GuildTextBasedChannel, Message, Permissions, ReactionUserManager, TextChannel } from "discord.js"
 import { Lang } from "./lang/Lang"
 import { FormatCommand } from "./formatCommand"
+import { MemberFinder } from "../util/MemberFinder"
 
 export class CopyCommand implements ArgCommand {
   requiredArgs = 1
@@ -14,6 +15,19 @@ export class CopyCommand implements ArgCommand {
   commandNames = ['copy']
   type = 'mod'
   async run(msg: Message, l:Lang, args: string[]): Promise<void> {
+	if(!msg.guild || !msg.client.user) return
+	const mod = MemberFinder.getMember(msg, msg.author.id)
+	const bot = MemberFinder.getMember(msg, msg.client.user.id)
+	if(!mod || !bot) return
+	const c = <GuildTextBasedChannel>msg.channel
+	if (!bot.permissionsIn(c).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+		l.reply('errors.botperms.clean')
+		ReactionUserManager
+	}
+	if (!mod.permissionsIn(c).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+		l.reply('errors.modperms.clean')
+		return
+	}
     const linkOrID = args[0]
 	const isLink = isNaN(parseInt(linkOrID, 10))
 	let channelID
@@ -40,19 +54,18 @@ export class CopyCommand implements ArgCommand {
 
 	if(!FormatCommand.webhooks) FormatCommand.webhooks = new Map()
 	let webhook = FormatCommand.webhooks.get(msg.channel.id)
-	if(!msg.guild || !msg.client.user) return
-	const bot = msg.guild.member(msg.client.user)
-	if(!bot) return
-	if(!webhook && msg.channel.type != 'dm'){
-		if(bot.hasPermission(Permissions.FLAGS.MANAGE_WEBHOOKS)){
+	const force = true
+	const cache = false
+	if(!webhook && (msg.channel.type == 'GUILD_TEXT' || msg.channel.type == 'GUILD_NEWS')){
+		if(bot.permissionsIn(msg.channel).has(Permissions.FLAGS.MANAGE_WEBHOOKS)){
 			webhook = await msg.channel.createWebhook('Clone', {
 				avatar: 'https://i.imgur.com/n1MdeHO.png',
 			});
 
-			const channel = await msg.client.channels.fetch(channelID, false, true)
+			const channel = await msg.client.channels.fetch(channelID, {force, cache})
 			if(!channel) return Promise.reject('invalid link')
 			if(!(channel instanceof TextChannel)) return Promise.reject('invalid link')
-			const message = await channel.messages.fetch(messageID, false, true)
+			const message = await channel.messages.fetch(messageID, {force, cache})
 			if(!message){
 				l.send('errors.invalid_message', messageID)
 				return
@@ -63,16 +76,17 @@ export class CopyCommand implements ArgCommand {
 
 			FormatCommand.webhooks.set(msg.channel.id,webhook)
 			const user = message.author
-			await webhook.send(`${message.content} ${files.join(' ')}`,{
+			await webhook.send({
+				content: `${message.content} ${files.join(' ')}`,
 				username: user.username,
 				avatarURL: user.displayAvatarURL({dynamic:true}),
-				disableMentions: 'all'
+				allowedMentions: {parse: ['users', 'roles']}
 			}).then(()=>msg.delete());
 		}else{
-			const channel = await msg.client.channels.fetch(channelID, false, true)
+			const channel = await msg.client.channels.fetch(channelID, {force, cache})
 			if(!channel) return Promise.reject('invalid link')
 			if(!(channel instanceof TextChannel)) return Promise.reject('invalid link')
-			const message = await channel.messages.fetch(messageID, false, true)
+			const message = await channel.messages.fetch(messageID, {force, cache})
 			if(!message){
 				l.send('errors.invalid_message', messageID)
 				return
@@ -87,19 +101,7 @@ export class CopyCommand implements ArgCommand {
 	}
   }
 
-  async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-	if(!msg.guild || !msg.client.user) return false
-	const mod = msg.guild.member(msg.author)
-	const bot = msg.guild.member(msg.client.user)
-	if(!mod || !bot) return false
-	if (!bot.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) {
-		l.reply('errors.botperms.clean')
-		return false
-	}
-	if (!mod.hasPermission(Permissions.FLAGS.MANAGE_MESSAGES)) {
-		l.reply('errors.modperms.clean')
-		return false
-	}
+  async checkPermissions(): Promise<boolean> {
 	return true
   }
 }

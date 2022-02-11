@@ -102,12 +102,12 @@
             "high_position": "the role you're gonna create is at my position or higher than all my roles, so...\nCommand cancelled.",
             "30005": "Error 30005: Maximum number of guild roles reached (250)",
             "embed":{
-                "title": "Details:",
-                "name": "Name",
-                "position": "Position",
-                "permissions": "Permissions",
-                "hoist": "Hoist",
-                "mentionable": "Mentionable"
+                "title": "Role data:",
+                "name": "`Name`",
+                "position": "`Position`",
+                "permissions": "`Permissions`",
+                "hoist": "`Hoist`",
+                "mentionable": "`Mentionable`"
             }
         },
         "createwebhook": {
@@ -362,7 +362,6 @@
             "fulldescription": "Sends informations about this server.",
             "embed":{
                 "vanity": "Vanity Invite",
-                "region": "Region",
                 "owner": "Owner",
                 "members": "Members",
                 "channels": "Channels",
@@ -379,6 +378,7 @@
                 "text": "{count} text channels",
                 "voice": "{count} voice channels",
                 "news": "{count} news channels",
+                "stage": "{count} stage channels",
                 "store": "{count} store channels"
             },
             "verification":{
@@ -504,6 +504,7 @@
         "dm_closed": "i couldn't send you a private message, maybe you closed it or deactivated the private messages from this server.",
         "enough_timers": "I have to focus on many punishments. I can't support it, I'm a bot but it doesn't mean I deserve these treatments.",
         "forbidden": "you can't use this command.",
+        "is_thread": "Sorry, you can't use this command inside a thread",
         "invalid_command": "`{command}` is not a known command",
 		"invalid_channel": "i couldn't find {mention} channel",
         "invalid_duration": "please, send a valid duration time on format `n`d`n`h`n`m`n`s being `nd` n days, `nh` n hours, `nm` n minutes and `ns` n seconds. I require at least one time unit to valid the duration",
@@ -511,13 +512,13 @@
         "invalid_message": "the given ID (`{id}`) couldn't be resolved as a message from this channel, was it deleted?",
         "invalid_member": "i couldn't do anything because the member {mention} either isn't valid or isn't in the server anymore",
         "invalid_password": "at least one pair of characters from the secret key doesn't represent a number, maybe your secret key was not sent by me.",
-        "invalid_role": "i couldn't do anything because the role {mention} is invalid",
-        "long_prefix": "my prefix cannot be longer than 4 characters.",
-		"lower_bot": "i can do nothing to a member who is at my position or higher",
-        "lower_roles": "'i can't manage a role if that's higher or equal than my highest role",
-		"NaN": "whatever you typed is not a valid number. Or are you gonna tell me {value} is a number?",
+        "invalid_role": "I couldn't do anything because the role {mention} is invalid",
+        "long_prefix": "My prefix cannot be longer than 4 characters.",
+		"lower_bot": "I can do nothing to a member who is at my position or higher",
+        "lower_roles": "I can't manage a role if that's higher or equal than my highest role",
+		"NaN": "Whatever you typed is not a valid number. Or are you gonna tell me {value} is a number?",
         "no_dms": "I can't use this kind of commands in DMs!",
-        "not_enough_args": "i couldn't do anything due to lack of arguments. The right usage for that command is \n{prefix}{commandName} `{usage}`",
+        "not_enough_args": "I couldn't do anything due to lack of arguments",
 		"no_hit": "Ok, 0 members.. i better clean",
         "not_text": "{channel} channel is not a text channel, select a channel where i can send messages",
         "botperms": {
