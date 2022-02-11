@@ -179,7 +179,7 @@
                 "error": "i couldn't set {value} color to the role. Are you sure {value} is a color?"
             },
             "position_change":{
-                "success": "**{role.name}** now is at position #`${r.position}`",
+                "success": "**{role.name}** now is at position #{r.position}",
                 "error": "i couldn't change the role position to {value} .",
                 "invalid_lower_role": "lower reference role is invalid.",
                 "invalid_higher_role": "higher reference role is invalid."

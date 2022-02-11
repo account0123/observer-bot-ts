@@ -9,7 +9,7 @@ export class WarningsCommand implements ArgCommand {
     requiredArgs = 1
     commandNames: string[] = ['warnings', 'warnlist']
     guildExclusive = true
-    shortdescription = 'info.warnings.shortdescription'
+    shortdescription = 'info.warnings.description'
     fulldescription: string = this.shortdescription
     usage = 'info.warnings.usage'
     examples: string[] = ['123456789987654321', '@user#1234']

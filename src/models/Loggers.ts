@@ -14,19 +14,13 @@ export class Logger {
 		const bot = msg.guild.members.resolve(msg.client.user)
         let color = 0
 		if(bot) color = bot.displayColor
-<<<<<<< Updated upstream
-        const a = msg.author || new User(msg.client,{username: 'Unknown',discriminator:'0000',id:'123456789987654321',locale:'es',bot:false,avatar:'https://cdn.discordapp.com/attachments/697873617945493565/748390370496479352/black.png',flags: new UserFlags(0),system:false});
-        const footer = await l.translate('info.snipe.success')
-        const e = new MessageEmbed().setAuthor(a.username, a.avatarURL() || undefined).setColor(color).setDescription(msg.content).setFooter(footer).setTimestamp(msg.createdTimestamp)
-=======
+
         const a = msg.author
         if(!a) return
         if(msg.channel.type == "DM") return
         const d = `**Enviado en [#${msg.channel.name}](https://discord.com/channels/${msg.guild.id}/${msg.channel.id}):**\n${msg.content}`
         const footer = await l.translate('info.snipe.success')
         const e = new MessageEmbed().setAuthor({name: a.username, url: a.avatarURL() || undefined}).setColor(color).setDescription(d).setFooter({text: footer}).setTimestamp(msg.createdTimestamp)
->>>>>>> Stashed changes
-        
         const channel = msg.guild.channels.resolve(channel_id)
         if(!channel || !(channel instanceof TextChannel)) return
         channel.send({embeds: [e]})

@@ -23,26 +23,21 @@ export class CreateRoleCommand implements ArgCommand{
 		const arg = args.join(' ')
 		const data = createData(arg, await l.translate('reason',msg.author.tag))
 		if (!data) {
-<<<<<<< Updated upstream
-			g.roles.create({data: {name: arg,permissions:Permissions.DEFAULT,color:'RANDOM'}, reason: await l.translate('reason',msg.author.tag)}).then(async (role) => {
-				const isHoist = async ()=> role.hoist ? await l.translate('yes') : await l.translate('no')
-				const isMentionable = async ()=>role.mentionable?await l.translate('yes'):await l.translate('no')
-=======
-			g.roles.create({name: arg, permissions: 0n, color: 'RANDOM', reason: await l.translate('reason',msg.author.tag)}).then(async (role) => {
-				const isHoist = ()=> role.hoist ? yes : no
-				const isMentionable = ()=>role.mentionable? yes : no
->>>>>>> Stashed changes
-				const e = 'info.createrole.embed.'
-				const embed = new MessageEmbed().setTitle(await l.translate(e+'title')).setColor(role.color || 0)
-					.addField('\u200B',
-						`${await l.translate(e+'name')}: ${role.name}\n\`Color\`: ${role.hexColor}\n
-						${await l.translate(e+'position')}: ${role.position}\n
-						${await l.translate(e+'hoist')}: ${isHoist()}\n
-						${await l.translate(e+'mentionable')}: ${isMentionable()}\n
-						${await l.translate(e+'permissions')}: ${role.permissions.toJSON()}`)
-					.setTimestamp();
-				const content = await l.translate('info.createrole.success',role.toString())
-				msg.channel.send({content, embeds: [embed]})
+			g.roles.create({name: arg, permissions: 0n, color: 'RANDOM', reason: await l.translate('reason',msg.author.tag)})
+        .then(async (role) => {
+				  const isHoist = ()=> role.hoist ? yes : no
+				  const isMentionable = ()=>role.mentionable? yes : no
+				  const e = 'info.createrole.embed.'
+				  const embed = new MessageEmbed().setTitle(await l.translate(e+'title')).setColor(role.color || 0)
+					  .addField('\u200B',
+						  `${await l.translate(e+'name')}: ${role.name}\n\`Color\`: ${role.hexColor}\n
+						  ${await l.translate(e+'position')}: ${role.position}\n
+						  ${await l.translate(e+'hoist')}: ${isHoist()}\n
+						  ${await l.translate(e+'mentionable')}: ${isMentionable()}\n
+						  ${await l.translate(e+'permissions')}: ${role.permissions.toJSON()}`)
+					  .setTimestamp();
+				   const content = await l.translate('info.createrole.success',role.toString())
+				   msg.channel.send({content, embeds: [embed]})
 			}).catch( (error) => {
 				if(error.code === 30005) l.send('info.createrole.30005')
 				else l.reply('errors.unknown')
@@ -127,12 +122,8 @@ function createData(str:string, reason: string):RoleData | undefined {
 		data.color = value
 		break
 		case 'permissions': case 'perms':
-<<<<<<< Updated upstream
-		data.permissions = parseInt(value,16)
-=======
 		if(value=='user') data.permissions = Permissions.DEFAULT
 		else data.permissions = BigInt(parseInt(value,16))
->>>>>>> Stashed changes
 		break
 		case 'position': case 'pos':
 		data.position = parseInt(value)
