@@ -522,7 +522,17 @@
         "MANAGE_NICKNAMES": "Gestionar apodos",
         "MANAGE_ROLES": "Gestionar roles",
         "MANAGE_WEBHOOKS": "Gestionar webhooks",
-        "MANAGE_EMOJIS": "Gestionar emojis"
+        "MANAGE_EMOJIS_AND_STICKERS": "Gestionar emojis y pegatinas",
+        "USE_APPLICATION_COMMANDS": "Usar comandos de aplicaciones",
+        "REQUEST_TO_SPEAK": "Solicitar hablar",
+        "MANAGE_EVENTS": "Gestionar eventos",
+        "MANAGE_THREADS": "Gestionar hilos",
+        "CREATE_PUBLIC_THREADS": "Crear hilos públicos",
+        "CREATE_PRIVATE_THREADS": "Crear hilos privados",
+        "USE_EXTERNAL_STICKERS": "Usar pegatinas externas",
+        "SEND_MESSAGES_IN_THREADS": "Enviar mensajes en los hilos",
+        "START_EMBEDDED_ACTIVITIES": "Empezar actividades",
+        "MODERATE_MEMBERS": "Aislar temporalmente a miembros"
     },
     "errors": {
         "clean_up_failed": "Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Nekotina o algún bot de esos.",

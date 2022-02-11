@@ -36,7 +36,7 @@ export class SayCommand implements SlashCommand {
 			}
 		}
 		await msg.channel.send(text)
-		setTimeout(msg.delete, 200)
+		setTimeout(()=>msg.delete(), 200)
 	}
 
 	static get(): RESTPostAPIApplicationCommandsJSONBody{

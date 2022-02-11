@@ -21,7 +21,7 @@ export class RoleInfoCommand implements ArgCommand {
 			l.reply('errors.invalid_role',mention)
 			return
 		}
-		const message = await msg.channel.send('`Cargando información de ' + role.name + '...`')
+		const message = await msg.reply({content: '`Cargando información de ' + role.name + '...`'})
 		const e = 'info.roleinfo.embed.'
 		const [yes, no, title, position, hoist, mentionable, created, permissions,all,none] = await Promise.all([
 			l.translate('yes'),
@@ -42,9 +42,9 @@ export class RoleInfoCommand implements ArgCommand {
 			if(role.permissions.bitfield == Permissions.ALL || role.permissions.bitfield == 8n) return [[all],['\u200B'],['\u200B']]
 			const a = await Promise.all(role.permissions.toArray().map(s=>l.translate('permissions.'+s)))
 			if(a.length === 0) return [[none],['\u200B'],['\u200B']]
-			if(a.length < 12) return [a,['\u200B'],['\u200B']]
-			if(a.length < 23) return [a.slice(0,11),a.slice(11),['\u200B']]
-			return [a.slice(0,11),a.slice(11,22),a.slice(22)]
+			if(a.length < 13) return [a,['\u200B'],['\u200B']]
+			if(a.length < 25) return [a.slice(0,12),a.slice(12),['\u200B']]
+			return [a.slice(0,12),a.slice(12,24),a.slice(24)]
 		};
 		const permissionsvalue = await dividePermissions()
 		const embed = new MessageEmbed().setTitle(title).setColor(role.color || 0)

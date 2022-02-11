@@ -497,7 +497,17 @@
         "MANAGE_NICKNAMES": "Manage Nicknames",
         "MANAGE_ROLES": "Manage Roles",
         "MANAGE_WEBHOOKS": "Manage Webhooks",
-        "MANAGE_EMOJIS": "Manage Emojis"
+        "MANAGE_EMOJIS_AND_STICKERS": "Manage Emojis and Stickers",
+        "USE_APPLICATION_COMMANDS": "Use Application Commands",
+        "REQUEST_TO_SPEAK": "Request to Speak",
+        "MANAGE_EVENTS": "Manage Events",
+        "MANAGE_THREADS": "Manage Threads",
+        "CREATE_PUBLIC_THREADS": "Create Public Threads",
+        "CREATE_PRIVATE_THREADS": "Create Private Threads",
+        "USE_EXTERNAL_STICKERS": "Use Externals Stickers",
+        "SEND_MESSAGES_IN_THREADS": "Send Messages in Threads",
+        "START_EMBEDDED_ACTIVITIES": "Start Activities",
+        "MODERATE_MEMBERS": "Timeout Members"
     },
     "errors": {
 		"clean_up_failed": "I'm sorry... i don't think I can clean up this mess either. You should use MEE6 or a bot of those.",
