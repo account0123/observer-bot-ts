@@ -1,7 +1,8 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, Role, RoleData, Permissions, PermissionString } from "discord.js";
+import { Message, Role, RoleData, Permissions, PermissionString, ColorResolvable } from "discord.js";
 import { RoleFinder } from "../util/RoleFinder";
 import { Lang } from "./lang/Lang";
+import { MemberFinder } from "../util/MemberFinder";
 
 export class EditRoleCommand implements ArgCommand {
 	permission = 'MANAGE_ROLES'
@@ -16,7 +17,7 @@ export class EditRoleCommand implements ArgCommand {
 	async run(msg: Message, l:Lang, args: string[]): Promise<void> {
 		const g = msg.guild
 		if(!g || !msg.client.user) return
-		const bot = g.member(msg.client.user)
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!bot) return
 		const botposition = bot.roles.highest.position
 		// Se asume a la mención de rol como la primera palabra de los argumentos
@@ -114,7 +115,7 @@ export class EditRoleCommand implements ArgCommand {
 						});
 						return
 					case 'color':
-						await role.setColor(value,reason).then(r=>l.reply('info.editrole.color_change.success',r.name,r.color.toString(16))).catch(err=>{
+						await role.setColor(<ColorResolvable>value,reason).then(r=>l.reply('info.editrole.color_change.success',r.name,r.color.toString(16))).catch(err=>{
 							l.reply('info.editrole.color_change.error',value)
 							console.error(`Se intentó poner el color ${value} al rol @${role.name}, pero falló por ${err}`)
 						});
@@ -125,9 +126,14 @@ export class EditRoleCommand implements ArgCommand {
 							l.reply('info.editrole.permissions_change.NaN')
 							return
 						}
-						await role.setPermissions(perms,reason).then(r=>l.reply('info.editrole.permissions_change.success',r.name,r.permissions.toArray().join(', '))).catch(err=>{
-							l.reply('info.editrole.permissions_change.error',value)
-							console.error(`Se intentó poner el set de permisos ${value} al rol @${role.name}, pero falló por ${err}`)})}
+						await role.setPermissions(new Permissions(BigInt(perms)),reason)
+							.then(r=>l.reply('info.editrole.permissions_change.success',r.name,r.permissions.toArray().join(', ')))
+							.catch(err=>{
+								l.reply('info.editrole.permissions_change.error',value)
+								console.error(`Se intentó poner el set de permisos ${value} al rol @${role.name}, pero falló por ${err}`)
+								}
+							)
+						}
 						return
 					case 'position': case 'pos':{
 						const position = parseInt(value)
@@ -188,15 +194,15 @@ export class EditRoleCommand implements ArgCommand {
 		await role.edit(data,reason).then(r=>l.send('info.editrole.success',r.name))
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		if(!msg.guild || !msg.client.user) return false
-		const mod = msg.guild.member(msg.author)
-		const bot = msg.guild.member(msg.client.user)
+		if(!msg.client.user) return false
+		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!bot.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
 			l.reply('errors.botperms.edit_role')
 			return false
 		}
-		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!mod.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
 			l.reply('errors.modperms.edit_role')
 			return false
 		}
@@ -204,9 +210,8 @@ export class EditRoleCommand implements ArgCommand {
 	}
 }
 function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | undefined {
-	const g = msg.guild
-	if(!g || !msg.client.user) return
-	const bot = g.member(msg.client.user)
+	if(!msg.client.user) return
+	const bot = MemberFinder.getMember(msg, msg.client.user.id)
 	if(!bot) return
 	const botposition = bot.roles.highest.position
 	if(!str.startsWith('{') && !str.endsWith('}')) return undefined
@@ -241,6 +246,7 @@ function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | unde
 	};
 	// Setting values
 	for (const [key,value] of properties) {
+		let perms: number
 		switch (key.toLowerCase()) {
 			case 'name':
 				data.name = value
@@ -249,8 +255,9 @@ function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | unde
 				data.color = value
 				break
 			case 'permissions': case 'perms':
-				data.permissions = parseInt(value,16)
-				if(isNaN(data.permissions)) data.permissions = oldRole.permissions
+				perms = parseInt(value,16)
+				if(isNaN(perms)) data.permissions = oldRole.permissions
+				else data.permissions = BigInt(perms)
 			break
 			case 'above': {
 				const lowerRole = RoleFinder.getRole(msg,value)

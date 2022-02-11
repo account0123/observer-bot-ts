@@ -1,16 +1,18 @@
-import { Message, MessageEmbed, Snowflake } from "discord.js";
-import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, UnbanCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, ResetMemberCommand, RenameEveryoneCommand, SetCommand, EditChannelCommand, WebhooksCommand, CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand, WarnCommand, WarningsCommand, InviteCommand, RAECommand } from "./commands";
+import { Interaction, Message, MessageEmbed, Snowflake } from "discord.js";
+import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, SetCommand, EditChannelCommand, CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand, WarnCommand, WarningsCommand, DefineCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
 import { Lang } from "./commands/lang/Lang";
 import { Connections } from "./config/connections";
 import { RowDataPacket } from "mysql2";
+import SlashCommand from "./commands/slashCommandInterface";
 
 export default class CommandHandler {
 
   static commands: Command[];
   static argCommands: ArgCommand[]
+  static slashes: SlashCommand[]
   prefix: string;
   private uses = new Map<Snowflake, number>()
 
@@ -24,8 +26,7 @@ export default class CommandHandler {
       InfoCommand,
       CancelCommand,
       DeleteDisCommand,
-      CreateWebhookCommand,
-      InviteCommand
+      CreateWebhookCommand
     ];
     const argCommandClasses = [
       AvatarCommand,
@@ -47,24 +48,24 @@ export default class CommandHandler {
       FocusBanCommand,
       FormatCommand,
       CodeCommand,
-      UnbanCommand,
       FocusKickCommand,
       CreateChannelCommand,
-      ResetMemberCommand,
-      RenameEveryoneCommand,
       SetCommand,
       EditChannelCommand,
-      WebhooksCommand,
       CopyCommand,
       DisableCommand,
       EnableCommand,
       WarnCommand,
       WarningsCommand,
-      RAECommand
+      DefineCommand
     ];
-
+    const slashCommands = [
+      AddRoleCommand,
+      SayCommand
+    ];
     CommandHandler.commands = commandClasses.map(c => new c());
     CommandHandler.argCommands = argCommandClasses.map(c=>new c())
+    CommandHandler.slashes = slashCommands.map(c => new c())
     this.prefix = '!!';
   }
 
@@ -73,7 +74,7 @@ export default class CommandHandler {
     if(message.author.bot) return
 
     let lang: Lang
-    if (message.guild === null) lang = new Lang(message,message.author.locale || undefined)
+    if (message.guild === null) lang = new Lang(message)
     else{
       lang = new Lang(message)
       const g = message.guild
@@ -106,7 +107,7 @@ export default class CommandHandler {
         }else this.uses.delete(a)
       }else this.uses.set(a, Date.now())
 
-      if (message.channel.type == "dm" && matchedCommand.guildExclusive) {
+      if (message.channel.type == "DM" && matchedCommand.guildExclusive) {
         lang.reply('errors.no_dms')
         return
       }
@@ -136,7 +137,7 @@ export default class CommandHandler {
         }else this.uses.delete(a)
       }else this.uses.set(a, Date.now())
       
-      if (message.channel.type == "dm" && matchedArgCommand.guildExclusive) {
+      if (message.channel.type == "DM" && matchedArgCommand.guildExclusive) {
         lang.reply('errors.no_dms')
         return
       }
@@ -146,8 +147,8 @@ export default class CommandHandler {
         const n = matchedArgCommand.commandNames[0]
         const u = `${this.prefix}${n} \`${await lang.translate(matchedArgCommand.usage)}\``
         const e = new MessageEmbed().addField(await lang.translate('info.help.about.usage'), u)
-        e.addField(await lang.translate('info.help.about.examples'), matchedArgCommand.examples.map(e=>`${this.prefix}${n} ${e}`))
-        message.channel.send(t, {embed: e})
+        e.addField(await lang.translate('info.help.about.examples'), matchedArgCommand.examples.map(e=>`${this.prefix}${n} ${e}`).join('\n'))
+        message.reply({content: t,embeds: [e]})
         return
       }
       await matchedArgCommand.checkPermissions(message,lang, this.prefix).then(b=>{
@@ -160,6 +161,19 @@ export default class CommandHandler {
     console.log(`Comando '${this.echoMessage(message)}' ejecutado por ${message.author.tag}`);
   }
 
+  async handleInteraction(interaction: Interaction): Promise<void>{
+    if (!interaction.isCommand()) return;
+    const command = CommandHandler.slashes.find(c => c.commandNames[0] == interaction.commandName)
+    if (!command) return
+    try {
+      const v = await command.verify(interaction)
+      if(v) command.interact(interaction)
+    } catch (error) {
+      console.error(error);
+      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    }
+  }
+  
   /** Sends back the message content after removing the prefix. */
   echoMessage(message: Message): string {
     return message.content.replace(this.prefix, "").trim();

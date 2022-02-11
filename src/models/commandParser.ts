@@ -9,7 +9,7 @@ export class CommandParser {
   readonly commandPrefix: string;
 
   constructor(message: Message, prefix: string) {
-    var text = ''
+    let text = ''
     const content = message.content
     if (content.startsWith(prefix)) text = message.content.slice(prefix.length)
     if (content.startsWith('<@685645806069612621> ')) text = message.content.slice(22)

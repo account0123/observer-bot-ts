@@ -1,4 +1,4 @@
-import { Message, Guild, GuildMember} from "discord.js";
+import { Message, GuildMember} from "discord.js";
 export class MemberFinder {
    /**
      * 

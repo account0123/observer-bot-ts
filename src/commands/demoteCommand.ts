@@ -16,9 +16,7 @@ export class DemoteCommand implements ArgCommand {
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const mention = args.shift() || ''
 		const member = MemberFinder.getMember(msg,mention)
-		const g = msg.guild
-		if(!g) return
-		const mod = g.member(msg.author)
+		const mod = MemberFinder.getMember(msg, msg.author.id)
 		if(!mod) return
 		if(!member){
 			l.reply('errors.invalid_member',mention)
@@ -41,15 +39,10 @@ export class DemoteCommand implements ArgCommand {
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const mod = msg.guild.member(msg.author)
-		const bot = msg.guild.member(msg.client.user)
-		if(!mod || !bot) return false
-		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+		if(!bot) return false
+		if (!bot.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
 			l.reply('errors.botperms.remove_role')
-			return false
-		}
-		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
-			l.reply('errors.modperms.remove_role')
 			return false
 		}
 		return true

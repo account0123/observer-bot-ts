@@ -1,11 +1,11 @@
-import { Message, Guild, GuildChannel, CategoryChannel, Snowflake, TextChannel } from "discord.js";
+import { Message, Guild, GuildChannel, CategoryChannel, Snowflake, TextChannel, GuildBasedChannel } from "discord.js";
 export class ChannelFinder {
   /**
    * 
    * @param {Message} message 
    * @param {String} mention 
    */
-  static getChannel(message: Message, mention: string): GuildChannel | undefined {
+  static getChannel(message: Message, mention: string): GuildBasedChannel | undefined {
     const g = message.guild
     if(!g) return undefined
       // Verifica que la variable sea una mención
@@ -30,7 +30,8 @@ export class ChannelFinder {
   }
 
   static getTextChannel(message: Message, mention: string): TextChannel | undefined {
-    const g: Guild = message.guild!
+    const g: Guild | null = message.guild
+    if(!g) return
 
       // Verifica que la variable sea una mención
       let matches = mention.match(/<#(\d{17,19})>/);
@@ -44,7 +45,8 @@ export class ChannelFinder {
             }
           }
         }
-      const id: string = matches![0]
+      if(!matches) return undefined
+      const id: string = matches[0]
       const channel = g.channels.cache.get(id)
       return channel instanceof TextChannel ? channel : undefined
     }

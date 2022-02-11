@@ -4,6 +4,7 @@ import console from "console";
 import { Connections } from "../config/connections";
 import { Lang } from "./lang/Lang";
 import { RowDataPacket } from "mysql2";
+import { MemberFinder } from "../util/MemberFinder";
 
 export class SnipeCommand implements Command {
 	type: string | undefined;
@@ -13,7 +14,7 @@ export class SnipeCommand implements Command {
 	fulldescription = 'info.snipe.fulldescription'
 	async run(msg: Message, l: Lang): Promise<void> {
 		if(!msg.guild || !msg.client.user) return
-		const bot = msg.guild.member(msg.client.user)
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!bot) return
 		const color = bot.displayColor
 		const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT * FROM deleted WHERE channel=? and guild=?',[msg.channel.id, msg.guild.id])
@@ -23,9 +24,11 @@ export class SnipeCommand implements Command {
 			}
 			const footer = await l.translate('info.snipe.success')
 			const lastrow = rows[rows.length - 1]
-			const embed = new MessageEmbed().setAuthor(lastrow.username,lastrow.avatar_url).setColor(color).setDescription(lastrow.content).setFooter(footer).setTimestamp(lastrow.time)
+			const embed = new MessageEmbed().setAuthor({name: lastrow.username, url: lastrow.avatar_url})
+				.setColor(color).setDescription(lastrow.content)
+				.setFooter({text: footer}).setTimestamp(lastrow.time)
 			if(lastrow.image) embed.setImage(lastrow.image)
-			msg.channel.send(embed).catch(e=>{
+			msg.channel.send({embeds: [embed]}).catch(e=>{
 				l.reply('info.snipe.error')
 				console.error(e.stack)
 			})

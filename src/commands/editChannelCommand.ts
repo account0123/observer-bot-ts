@@ -23,10 +23,10 @@ export class EditChannelCommand implements ArgCommand {
 	private denied_roles: string[] = []
 	private allowed_users: string[] = []
 	private denied_users: string[] = []
-	private allowed_role_perms = 0
-	private denied_role_perms = 0
-	private allowed_user_perms = 0
-	private denied_user_perms = 0
+	private allowed_role_perms = 0n
+	private denied_role_perms = 0n
+	private allowed_user_perms = 0n
+	private denied_user_perms = 0n
 	permissioncompleted = false
 	c: MessageCollector | undefined;
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
@@ -68,9 +68,8 @@ export class EditChannelCommand implements ArgCommand {
 	}
 	private askProperty() {
 		const msg = this.m
-		const f= (m: Message)=> m.author.id === msg.author.id ? true : false
 		let completed = false
-		const collector = msg.channel.createMessageCollector(f,{time: 15000})
+		const collector = msg.channel.createMessageCollector({time: 15000})
 		collector.on('collect', m => {
 			switch (m.content.toLowerCase().trim()) {
 				case 'nombre': case 'name':
@@ -96,7 +95,7 @@ export class EditChannelCommand implements ArgCommand {
 	}
 
 	private askValue(property: 'name' | 'topic' | 'nsfw' | 'pos' | 'perms'){
-		const f = (m: Message)=> m.author.id === this.m.author.id ? true : false
+
 		const time = 120000
 		let completed = false
 		let collector: MessageCollector
@@ -104,7 +103,7 @@ export class EditChannelCommand implements ArgCommand {
 		const next = ()=>{
 			this.lang.send('info.editchannel.more_options_question')
 			completed = false
-			const c3 = this.m.channel.createMessageCollector(f, {time: time/2})
+			const c3 = this.m.channel.createMessageCollector({time: time/2})
 			c3.on('collect', (m: Message)=>{
 				const reply = m.content.toLowerCase().trim()
 				if(reply === 'yes'){
@@ -127,7 +126,7 @@ export class EditChannelCommand implements ArgCommand {
 		switch (property) {
 			case 'name':
 				this.lang.send('info.editchannel.name_question')
-				collector = this.m.channel.createMessageCollector(f,{time: time})
+				collector = this.m.channel.createMessageCollector({time: time})
 				collector.on('collect', (m: Message)=>{
 					if(m.content.length < 2){
 						this.lang.send('info.editchannel.short_name')
@@ -149,7 +148,7 @@ export class EditChannelCommand implements ArgCommand {
 				break;
 			case 'topic':
 				this.lang.send('info.editchannel.topic_question')
-				collector = this.m.channel.createMessageCollector(f,{time: time})
+				collector = this.m.channel.createMessageCollector({time: time})
 				collector.on('collect', (m: Message)=>{
 					if(m.content.length > 1024){
 						this.lang.send('info.editchannel.long_topic')
@@ -168,7 +167,7 @@ export class EditChannelCommand implements ArgCommand {
 				break
 			case 'pos':
 				this.lang.send('info.editchannel.position_question')
-				collector = this.m.channel.createMessageCollector(f,{time: time})
+				collector = this.m.channel.createMessageCollector({time: time})
 				collector.on('collect', (m: Message)=>{
 					const reply = m.content.toLowerCase().trim()
 					const n = parseInt(reply, 10)
@@ -190,7 +189,7 @@ export class EditChannelCommand implements ArgCommand {
 			case 'perms':
 				this.options.permissionOverwrites = []
 				this.lang.send('info.editchannel.permissions_question')
-				this.c = this.m.channel.createMessageCollector(f,{time: time})
+				this.c = this.m.channel.createMessageCollector({time: time})
 				this.c.on('collect', (m: Message)=>{
 					const reply = m.content.toLowerCase().trim()
 					console.log('Reply to permissions question: '+ reply)
@@ -234,10 +233,9 @@ export class EditChannelCommand implements ArgCommand {
 			this.lang.send('info.editchannel.deny_user_question')
 			store = this.denied_users
 		} 
-		const f = (m: Message)=> m.author.id === this.m.author.id ? true : false
 		const time = 120000
 		let completed = false
-		const perms_collector = this.m.channel.createMessageCollector(f, {time: time})
+		const perms_collector = this.m.channel.createMessageCollector({time: time})
 		perms_collector.on('collect', (r: Message)=>{
 			const mentions = r.content.toLowerCase().trim().split('\n')
 			if(mentions.length > 1){
@@ -277,7 +275,6 @@ export class EditChannelCommand implements ArgCommand {
 	}
 
 	askPermissions(allowOrDeny: 'allow' | 'deny',  type: 'member' | 'role'): void{
-		const f = (m: Message)=> m.author.id === this.m.author.id ? true : false
 		const time = 120000
 		let length = 0
 		if(allowOrDeny === 'allow' && type === 'role') length = this.allowed_roles.length
@@ -285,12 +282,12 @@ export class EditChannelCommand implements ArgCommand {
 		if(allowOrDeny === 'deny' && type === 'role') length = this.denied_roles.length
 		if(allowOrDeny === 'deny' && type === 'member') length = this.denied_users.length
 		this.lang.send('info.editchannel.permissions_list_question', ''+length, type === 'role' ? 'rol(es)' : 'miembro(s)')
-		const collector = this.m.channel.createMessageCollector(f, {time: time})
+		const collector = this.m.channel.createMessageCollector({time: time})
 		collector.on('collect', (m: Message)=>{
 			const r = m.content.toLowerCase().trim()
 			const n = parseInt(r, 10) || parseInt(r, 16)
 			if(!isNaN(n)){
-				const p = new Permissions(n).bitfield
+				const p = BigInt(n)
 				if(allowOrDeny === 'allow' && type === 'role') this.allowed_role_perms = p
 				if(allowOrDeny === 'deny' && type === 'role') this.denied_role_perms = p
 				if(allowOrDeny === 'allow' && type === 'member') this.allowed_user_perms = p
@@ -301,13 +298,13 @@ export class EditChannelCommand implements ArgCommand {
 				return
 			}
 			const sp = r.split('\n')
-			const p = new Permissions(0)
+			const p = new Permissions(0n)
 			for (const s of sp) {
 				for (const f in Permissions.FLAGS) {
 					if(s.toUpperCase().trim() === f) p.add(<PermissionString> f)
 				}
 			}
-			if(p.bitfield === 0) m.react('❌')
+			if(p.bitfield === 0n) m.react('❌')
 			else m.react('✅').then(()=>{
 				collector.emit('end')
 				if(allowOrDeny === 'allow' && type === 'role') this.allowed_role_perms = p.bitfield
@@ -321,41 +318,41 @@ export class EditChannelCommand implements ArgCommand {
 	}
 
 	async editChannel(): Promise<void> {
-		const uncolide = (object1: PermissionOverwrites, permissions: {allow: number, deny: number})=>{
+		const uncolide = (object1: PermissionOverwrites, permissions: {allow: bigint, deny: bigint})=>{
 			const allows = object1.allow.bitfield | permissions.allow
 			const denies = object1.deny.bitfield | permissions.deny
 			return {id: object1.id, type: object1.type, allow: allows, deny: denies}
 		};
 		const synthetizePermissions = ()=>{
 			const permissions_overwrites: OverwriteData[] = []
-			const og = this.channel.permissionOverwrites.array()
+			const og = this.channel.permissionOverwrites.cache
 			for(const id of this.allowed_roles){
 				const match = og.find((o)=>id === o.id)
 				if(match)
-					permissions_overwrites.push(uncolide(match, {allow: this.allowed_role_perms, deny: 0}))
+					permissions_overwrites.push(uncolide(match, {allow: this.allowed_role_perms, deny: 0n}))
 				else
-					permissions_overwrites.push({id: id, allow: this.allowed_role_perms, deny: 0, type: 'role'})
+					permissions_overwrites.push({id: id, allow: this.allowed_role_perms, deny: 0n, type: 'role'})
 			}
 			for(const id of this.denied_roles){
 				const match = og.find((o)=>id === o.id)
 				if(match)
-					permissions_overwrites.push(uncolide(match, {allow: 0, deny: this.denied_role_perms}))
+					permissions_overwrites.push(uncolide(match, {allow: 0n, deny: this.denied_role_perms}))
 				else
-					permissions_overwrites.push({id: id, allow: 0, deny: this.denied_role_perms, type: 'role'})
+					permissions_overwrites.push({id: id, allow: 0n, deny: this.denied_role_perms, type: 'role'})
 			}
 			for(const id of this.allowed_users){
 				const match = og.find((o)=>id === o.id)
 				if(match)
-					permissions_overwrites.push(uncolide(match, {allow: this.allowed_user_perms, deny: 0}))
+					permissions_overwrites.push(uncolide(match, {allow: this.allowed_user_perms, deny: 0n}))
 				else
-					permissions_overwrites.push({id: id, allow: this.allowed_user_perms, deny: 0, type: 'member'})
+					permissions_overwrites.push({id: id, allow: this.allowed_user_perms, deny: 0n, type: 'member'})
 			}
 			for(const id of this.denied_users){
 				const match = og.find((o)=>id === o.id)
 				if(match)
-					permissions_overwrites.push(uncolide(match, {allow: 0, deny: this.denied_user_perms}))
+					permissions_overwrites.push(uncolide(match, {allow: 0n, deny: this.denied_user_perms}))
 				else
-					permissions_overwrites.push({id: id, allow: 0, deny: this.denied_user_perms, type: 'member'})
+					permissions_overwrites.push({id: id, allow: 0n, deny: this.denied_user_perms, type: 'member'})
 			}
 			return permissions_overwrites
 		};
@@ -374,8 +371,8 @@ export class EditChannelCommand implements ArgCommand {
 			const getCategory = ()=>{
 				if(channel.parent) return channel.parent.name
 				else return no_cat
-			};
-			const overwrites = channel.permissionOverwrites.array()
+			};e
+			const overwrites = channel.permissionOverwrites.cache
 			const denyValues = ()=>{
 				const denies: string[] = []
 				overwrites.forEach(o => {
@@ -388,7 +385,7 @@ export class EditChannelCommand implements ArgCommand {
 					denies.push(deny)
 				});
 				if(denies.length === 0) return none
-				else return denies
+				else return denies.join('\n')
 			};
 			const allowValues = ()=>{
 				const allows: string[] = []
@@ -402,31 +399,31 @@ export class EditChannelCommand implements ArgCommand {
 					allows.push(allow)
 				});
 				if(allows.length === 0) return none
-				else return allows
+				else return allows.join('\n')
 			};
 			const embed = new MessageEmbed().setTitle(await this.lang.translate(e+'title')).setColor(0)
-			.addFields(
+			.addFields([
 				{ name: await this.lang.translate(e+'name'), value: channel.name, inline: true},
 				{ name: await this.lang.translate(e+'position'), value: '' + channel.position, inline: true},
 				{ name: await this.lang.translate(e+'category'), value: getCategory(), inline: true},
 				{ name: await this.lang.translate(e+'allowed'), value: allowValues(), inline: true},
 				{ name: await this.lang.translate(e+'denied'), value: denyValues(), inline: true}
-			).setTimestamp();
+			]).setTimestamp();
 			this.lang.send('info.editchannel.success', channel.toString())
-			this.m.channel.send(embed)
+			this.m.channel.send({embeds: [embed]})
 			return
 		});
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		if(!msg.guild || !msg.client.user) return false
-		const mod = msg.guild.member(msg.author)
-		const bot = msg.guild.member(msg.client.user)
+		if(!msg.client.user) return false
+		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_CHANNELS)) {
+		if (!bot.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
 			l.reply('errors.botperms.create_channel')
 			return false
 		}
-		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_CHANNELS)) {
+		if (!mod.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
 			l.reply('errors.modperms.create_channel')
 			return false
 		}

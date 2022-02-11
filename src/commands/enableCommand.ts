@@ -2,6 +2,7 @@ import { Message } from "discord.js";
 import { RowDataPacket } from "mysql2";
 import CommandHandler from "../commandHandler";
 import { Connections } from "../config/connections";
+import { MemberFinder } from "../util/MemberFinder";
 import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 
@@ -47,9 +48,9 @@ export class EnableCommand implements ArgCommand {
 
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const mod = msg.guild.member(msg.author)
+		const mod = MemberFinder.getMember(msg, msg.author.id)
 		if(!mod) return false
-		if (!mod.hasPermission(8)) {
+		if (!mod.permissions.has(8n)) {
 			l.reply('errors.modperms.admin')
 			return false
 		}

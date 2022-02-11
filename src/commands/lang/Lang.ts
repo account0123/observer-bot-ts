@@ -1,22 +1,12 @@
 import fs from 'fs'
 import { Connections } from "../../config/connections";
-import { Guild, Message, PartialMessage } from "discord.js";
+import { Guild, Message} from "discord.js";
 import { RowDataPacket } from 'mysql2';
 export class Lang {
 	language:string | undefined
-	private msg:Message| PartialMessage
-	constructor(msg: Message| PartialMessage,locale?:string){
+	private msg:Message
+	constructor(msg: Message){
 		this.msg = msg
-		if(!msg.guild) {
-			switch(locale){
-				case '': case 'es':
-					this.language = 'es'
-					break
-				case 'en': default:
-					this.language = 'en'
-					break
-			}
-		}
 	}
 	async request(guild: Guild | null):Promise<string> {
 		try {
@@ -61,7 +51,7 @@ export class Lang {
 			const value = values[i]
 			script = script.replace(marker,value)
 		}
-		return this.msg.channel.send(script, {disableMentions: 'everyone'})
+		return this.msg.channel.send(script)
 	}
 	async reply(code:string,...values:string[]):Promise<Message>{
 		if (!this.language) {
@@ -93,7 +83,7 @@ export class Lang {
 			const value = values[i]
 			script = script.replace(marker,value)
 		}
-		return this.msg.reply(script, {disableMentions: 'everyone'})
+		return this.msg.reply(script)
 	}
 	async translate(code:string,...values:string[]):Promise<string>{
 		if (!this.language) {

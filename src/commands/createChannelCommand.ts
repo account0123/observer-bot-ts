@@ -1,4 +1,4 @@
-import { Message, Permissions, MessageEmbed, GuildCreateChannelOptions, PermissionString, OverwriteData, Guild, CategoryChannel, GuildMember, Role } from "discord.js";
+import { Message, Permissions, MessageEmbed, PermissionString, OverwriteData, Guild, CategoryChannel, GuildMember, Role, GuildChannelCreateOptions, GuildChannelTypes } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 import ArgCommand from "./commandArgInterface";
@@ -14,39 +14,40 @@ export class CreateChannelCommand implements ArgCommand{
 	usage = 'info.createchannel.usage'
 	guildExclusive = true
 	type = 'manage'
-	channel_type!: GuildCreateChannelOptions["type"]
-	lang!: Lang;
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		this.lang = l
+		// Parámetro: tipo
 		const first_arg = (args.shift() || '').toLowerCase()
+		let channel_type: GuildChannelTypes
 		switch (first_arg) {
 			case 'text': case 'voice': case 'news': case 'store': case 'category':
-				this.channel_type = first_arg
+				channel_type = <GuildChannelTypes>String('GUILD_' + first_arg.toUpperCase())
 				break;
 			default:
 				l.send('errors.invalid_type',first_arg)
 				return
 		}
+		// Parámetro: nombre
 		const name = args.shift()
 		if(!name){
-			msg.react('❌')
+			msg.react('❌').catch()
 			return
 		}
+		// Parámetros adicionales
 		const arg = args.join(' ')
 		const no_cat = await l.translate('info.createchannel.embed.no_cat')
 		const none = await l.translate('none')
-		let data: GuildCreateChannelOptions | undefined
+		let data
 		const g = msg.guild
 		if(!g) return
-		if(arg) data = this.createData(msg, arg)
+		if(arg) data = this.createData(msg, arg, channel_type, l)
 		if (!data) {
-			g.channels.create(name, {type: this.channel_type}).then(async (channel) => {
+			g.channels.create(name, {type: channel_type}).then(async (channel) => {
 				const e = 'info.createchannel.embed.'
 				const getCategory = ()=>{
 					if(channel.parent) return channel.parent.name
 					else return no_cat
 				};
-				const overwrites = channel.permissionOverwrites.array()
+				const overwrites = channel.permissionOverwrites.cache
 				const denyValues = ()=>{
 					const denies: string[] = []
 					overwrites.forEach(o => {
@@ -59,7 +60,7 @@ export class CreateChannelCommand implements ArgCommand{
 						denies.push(deny)
 					});
 					if(denies.length === 0) return none
-					else return denies
+					else return denies.join('\n')
 				};
 				const allowValues = ()=>{
 					const allows: string[] = []
@@ -73,18 +74,18 @@ export class CreateChannelCommand implements ArgCommand{
 						allows.push(allow)
 					});
 					if(allows.length === 0) return none
-					else return allows
+					else return allows.join('\n')
 				};			
 				const embed = new MessageEmbed().setTitle(await l.translate(e+'title')).setColor(0)
-				.addFields(
+				.addFields([
 					{ name: await l.translate(e+'name'), value: channel.name, inline: true},
-					{ name: await l.translate(e+'position'), value: channel.position, inline: true},
+					{ name: await l.translate(e+'position'), value: `${channel.position}`, inline: true},
 					{ name: await l.translate(e+'category'), value: getCategory(), inline: true},
 					{ name: await l.translate(e+'allowed'), value: allowValues(), inline: true},
 					{ name: await l.translate(e+'denied'), value: denyValues(), inline: true}
-				).setTimestamp();
+				]).setTimestamp();
 				l.send('info.createchannel.success',channel.toString())
-				msg.channel.send(embed)
+				msg.channel.send({embeds:[embed]})
 				return
 			}).catch( (error) => {
 				if(error.code === 30013) l.send('info.createchannel.30013')
@@ -94,14 +95,14 @@ export class CreateChannelCommand implements ArgCommand{
 			return
 		}
 		// Ejecución
-		data.type = this.channel_type
+		data.type = channel_type
 		g.channels.create(name,data).then(async (channel) => {
 		const e = 'info.createchannel.embed.'
 		const getCategory = ()=>{
 				if(channel.parent) return channel.parent.name
 				else return no_cat
 			};
-			const overwrites = channel.permissionOverwrites.array()
+			const overwrites = channel.permissionOverwrites.cache
 			const denyValues = ()=>{
 				const denies: string[] = []
 				overwrites.forEach(o => {
@@ -114,7 +115,7 @@ export class CreateChannelCommand implements ArgCommand{
 					denies.push(deny)
 				});
 				if(denies.length === 0) return none
-				else return denies
+				else return denies.join('\n')
 			};
 			const allowValues = ()=>{
 				const allows: string[] = []
@@ -128,18 +129,18 @@ export class CreateChannelCommand implements ArgCommand{
 					allows.push(allow)
 				});
 				if(allows.length === 0) return none
-				else return allows
+				else return allows.join('\n')
 			};
 			const embed = new MessageEmbed().setTitle(await l.translate(e+'title')).setColor(0)
-			.addFields(
+			.addFields([
 				{ name: await l.translate(e+'name'), value: channel.name, inline: true},
 				{ name: await l.translate(e+'position'), value: '' + channel.position, inline: true},
 				{ name: await l.translate(e+'category'), value: getCategory(), inline: true},
 				{ name: await l.translate(e+'allowed'), value: allowValues(), inline: true},
 				{ name: await l.translate(e+'denied'), value: denyValues(), inline: true}
-			).setTimestamp();
+			]).setTimestamp();
 			l.send('info.createchannel.success', channel.toString())
-			msg.channel.send(embed)
+			msg.channel.send({embeds:[embed]})
 			return
 		}).catch( (error) => {
 			if(error.code === 30013) l.send('info.createchannel.30013')
@@ -147,7 +148,7 @@ export class CreateChannelCommand implements ArgCommand{
 			console.error(error)
 		});
 	}
-	createData(msg: Message,str:string): GuildCreateChannelOptions | undefined {
+	createData(msg: Message,str:string, channel_type: GuildChannelTypes, lang: Lang): GuildChannelCreateOptions | undefined {
 		if(str === '') return undefined
 		// {topic:something}
 		const properties_match = str.match(/topic:[\w\s]+|position:\s*\d+|nsfw/gm)
@@ -176,7 +177,7 @@ export class CreateChannelCommand implements ArgCommand{
 					const key = overwrite_split[0]
 					const role = RoleFinder.getRole(msg, key)
 					if(!role){
-						this.lang.reply('errors.invalid_role', key)
+						lang.reply('errors.invalid_role', key)
 						return
 					}
 					const v = overwrite_split[1]
@@ -207,7 +208,7 @@ export class CreateChannelCommand implements ArgCommand{
 					const key = overwrite_split[0]
 					const role = RoleFinder.getRole(msg, key)
 					if(!role){
-						this.lang.reply('errors.invalid_role', key)
+						lang.reply('errors.invalid_role', key)
 						return
 					}
 					const v = overwrite_split[1]
@@ -238,7 +239,7 @@ export class CreateChannelCommand implements ArgCommand{
 					const key = overwrite_split[0]
 					const member = MemberFinder.getMember(msg, key)
 					if(!member){
-						this.lang.reply('errors.invalid_role', key)
+						lang.reply('errors.invalid_role', key)
 						return
 					}
 					const v = overwrite_split[1]
@@ -269,7 +270,7 @@ export class CreateChannelCommand implements ArgCommand{
 					const key = overwrite_split[0]
 					const member = MemberFinder.getMember(msg, key)
 					if(!member){
-						this.lang.reply('errors.invalid_role', key)
+						lang.reply('errors.invalid_role', key)
 						return
 					}
 					const v = overwrite_split[1]
@@ -288,7 +289,7 @@ export class CreateChannelCommand implements ArgCommand{
 			});
 		}
 		// Default Values
-		const data: GuildCreateChannelOptions = {
+		const data: GuildChannelCreateOptions = {
 			topic: '',
 			position: 0,
 			nsfw: false,
@@ -306,7 +307,7 @@ export class CreateChannelCommand implements ArgCommand{
 				console.error('valor position (' + value + ') no es un número')
 				data.position = 0
 			}
-			if(this.channel_type !== 'category') data.parent = setParent(data.position, g)
+			if(channel_type != 'GUILD_CATEGORY') data.parent = setParent(data.position, g)
 			break
 				case 'topic': data.topic = value
 				break
@@ -339,15 +340,15 @@ export class CreateChannelCommand implements ArgCommand{
 	}
 
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		if(!msg.guild || !msg.client.user) return false
-		const mod = msg.guild.member(msg.author)
-		const bot = msg.guild.member(msg.client.user)
+		if(!msg.client.user) return false
+		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_CHANNELS)) {
+		if (!bot.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
 			l.reply('errors.botperms.create_channel')
 			return false
 		}
-		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_CHANNELS)) {
+		if (!mod.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
 			l.reply('errors.modperms.create_channel')
 			return false
 		}
@@ -358,7 +359,7 @@ export class CreateChannelCommand implements ArgCommand{
 function setParent(position: number, guild: Guild){
 	if(position === 0) return undefined
 	for (const channel of guild.channels.cache.values()) {
-		if(channel.type === 'category'){
+		if(channel.type == 'GUILD_CATEGORY'){
 			const category = <CategoryChannel> channel
 			console.log(category.name)
 			// Verificar que position sea menor a la cantidad de canales de la categoría
@@ -367,7 +368,7 @@ function setParent(position: number, guild: Guild){
 			else channels
 		}
 	}
-	const lastCategory = guild.channels.cache.filter(channel=>{if(channel.type === 'category') return true;else return false;}).last()
+	const lastCategory = guild.channels.cache.filter(channel=>channel.type == 'GUILD_CATEGORY').last()
 	if(lastCategory) return lastCategory.id
 	else return undefined
 }

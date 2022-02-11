@@ -1,4 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
+import { MemberFinder } from "../util/MemberFinder";
 import Command from "./commandInterface";
 import { Lang } from "./lang/Lang";
 
@@ -16,7 +17,7 @@ export class InfoCommand implements Command {
 	async run(msg: Message, l: Lang): Promise<void> {
 		let color = 0xffffff
 		if(msg.guild && msg.client.user){
-			const m = msg.guild.member(msg.client.user)
+			const m = MemberFinder.getMember(msg, msg.client.user.id)
 			if(m) color = m.displayColor
 		}
 		const e = 'info.info.embed.'
@@ -30,6 +31,6 @@ export class InfoCommand implements Command {
 			{ name: v		, value: this.version			  , inline: true},
 			{ name: c		, value: changes}
 		).setColor(color);
-		await msg.channel.send(embed)
+		await msg.channel.send({embeds:[embed]})
 	}
 }

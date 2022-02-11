@@ -1,11 +1,11 @@
-import { Message, MessageReaction, ReactionCollector, CollectorFilter, User, Permissions} from "discord.js";
+import { Message, MessageReaction, ReactionCollector, User, Permissions} from "discord.js";
 import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 import {RAE}  from "rae-api"
 import { PermissionsChecker } from "../util/PermissionsChecker";
-export class RAECommand implements ArgCommand {
+export class DefineCommand implements ArgCommand {
 	requiredArgs = 1
-	commandNames: string[] = ['rae', 'definir', 'buscar']
+	commandNames: string[] = ['define', 'definir', 'buscar']
 	guildExclusive = false
 	shortdescription = 'info.rae.description'
 	fulldescription: string = this.shortdescription
@@ -21,14 +21,16 @@ export class RAECommand implements ArgCommand {
 			m.edit(await l.translate('info.rae.no_results',args[0]))
 			return
 		}
-		let r = 0
+		
 		const results = search.getRes()
-		let res = results[r]
-		let id = res.getId()
+		const r = 0
 
-		let word = await rae.fetchWord(id)
-		let definitions = word.getDefinitions()
+		const res = results[r]
+		const id = res.getId()
 
+		const word = await rae.fetchWord(id)
+		const definitions = word.getDefinitions()
+	
 		let t: string
 		if(l.language == 'en'){
 			const p = res.getHeader()
@@ -37,19 +39,20 @@ export class RAECommand implements ArgCommand {
 		}else t = await l.translate('info.rae.title', res.getHeader())
 
 		await m.edit(`**${t}**\n**1.** *${definitions[0].getType()}* ${definitions[0].getDefinition()}`)
-        const pages = definitions.length
-		let page = 1
-		if(results.length > 1) await m.react('⬇️')
-		const d_react = await m.react('▶️')
-		const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
+        //const pages = definitions.length
+		//let page = 1
+		//if(results.length > 1) await m.react('⬇️')
+		//const d_react = await m.react('▶️')
+		const f = (reaction: MessageReaction, user: User) => {
 			const e = reaction.emoji.name
 			if((e == '▶️' || e == '◀️' || e == '⬇️') && user.id == msg.author.id) return true
 			else return false
 		};
-            const rc = new ReactionCollector(m, f, {idle: 30000})
+            const rc = new ReactionCollector(m, {idle: 30000})
             rc.on('collect', async (reaction, user)=>{
 				if(!f(reaction, user)) return
 
+				/**
 				if(reaction.emoji.name == '⬇️'){
 					reaction.remove()
 					if(results.length < 2) return
@@ -58,6 +61,7 @@ export class RAECommand implements ArgCommand {
 					page = 1
 					fetchWord()
 				}
+				
 
 				if(reaction.emoji.name == '▶️'){
                     if(page == pages) return
@@ -78,7 +82,8 @@ export class RAECommand implements ArgCommand {
 						m.react('▶️')
 					}else reaction.remove()
 				}
-
+				*/
+				/**
 				async function fetchWord(){
 					res = results[r]
 					id = res.getId()
@@ -97,14 +102,14 @@ export class RAECommand implements ArgCommand {
 					const d = definitions[p - 1]
                     m.edit(`**${t}**\n**${p}.** *${d.getType()}* ${d.getDefinition()}`)
 				}
-
+				*/
 			});
 			rc.once('end', ()=>{
 				m.reactions.removeAll()
 			});
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		if(msg.channel.type == 'dm') return true
+		if(msg.channel.type == 'DM') return true
 		return PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS', 'MANAGE_MESSAGES']), msg, l)
 	}
 	

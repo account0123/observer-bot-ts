@@ -102,12 +102,12 @@
             "high_position": "el rol que vas a crear está igual o más alto que todos mis roles juntos, así que hasta aquí hemos llegado",
             "30005": "Error 30005: Cantidad máxima de roles alcanzada (250)",
             "embed":{
-                "title": "Detalles:",
-                "name": "Nombre",
-                "position": "Posición",
-                "permissions": "Permisos",
-                "hoist": "Destacado",
-                "mentionable": "Mentionable"
+                "title": "Datos del rol:",
+                "name": "`Nombre`",
+                "position": "`Posición`",
+                "permissions": "`Permisos`",
+                "hoist": "`Destacado`",
+                "mentionable": "`Mencionable`"
             }
         },
         "createwebhook": {
@@ -363,7 +363,6 @@
             "fulldescription": "Envía información del servidor.",
             "embed":{
                 "vanity": "Invitación oficial",
-                "region": "Región",
                 "owner": "Dueño/a",
                 "members": "Miembros",
                 "channels": "Canales",
@@ -382,6 +381,7 @@
                 "text": "/{count} de texto",
                 "voice": "/{count} de voz",
                 "news": "/{count} de anuncios",
+                "stage": "/{count} de escenario",
                 "store": "/{count} de venta"
             },
             "verification":{
@@ -525,26 +525,27 @@
         "MANAGE_EMOJIS": "Gestionar emojis"
     },
     "errors": {
-        "clean_up_failed": "Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Chocolat o algún bot de esos.",
-        "dm_closed": "no pude enviarte un mensaje privado, quizás lo tienes cerrado o tienes desactivado los mensajes privados desde este servidor.",
-        "forbidden": "no puedes usar ese comando",
+        "clean_up_failed": "Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Nekotina o algún bot de esos.",
+        "dm_closed": "No pude enviarte un mensaje privado, quizás lo tienes cerrado o tienes desactivado los mensajes privados desde este servidor.",
+        "forbidden": "No puedes usar ese comando",
         "enough_timers": "Tengo demasiados focos donde concentrarme. No puedo con tanto, que sea un bot no significa que merezca estos tratos.",
+        "is_thread": "Disculpa, no puedes usar ese comando dentro de un hilo.",
         "invalid_command": "`{command}` no es un comando que reconozca",
-        "invalid_channel": "no pude identificar el canal {mention}",
-		"invalid_duration": "por favor, ingrese una duración válida en el formato `n`d`n`h`n`m`n`s siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida.",
-        "invalid_user": "no pude hacer nada porque el usuario {mention} no es válido",
-        "invalid_message": "la ID ({id}) no pudo resolverse como un mensaje de este canal, quizás fue borrado (?)",
-        "invalid_member": "no pude hacer nada porque el miembro {mention} no es válido o ya no está aquí como miembro",
-        "invalid_password": "al menos un par de caracteres de las contraseña no representa un número, quizás esa contraseña no fue enviada por mi.",
-        "invalid_role": "no encontré el rol @{mention}, puede que no sea válido",
-        "invalid_roles": "no encontré ninguno de los roles {mentions}, puede que no sea válido",
-        "long_prefix": "mi prefijo no puede tener más de 4 caracteres.",
-        "lower_bot": "no puedo hacerle nada a un miembro que esté a mi nivel o más arriba que yo",
-        "lower_roles": "no puedo modificar un rol si está más arriba o es igual que mi rol más alto.",
-        "NaN": "lo que sea que ingresaste no es un número válido. ¿O me vas a decir que {value} es un número?",
+        "invalid_channel": "No pude identificar el canal {mention}",
+		"invalid_duration": "Por favor, ingrese una duración válida en el formato `n`d`n`h`n`m`n`s siendo `nd` los días, `nh` las horas, `nm` los minutos y `ns` los segundos, usando al menos una unidad de tiempo para que la duración sea válida.",
+        "invalid_user": "No pude hacer nada porque el usuario {mention} no es válido",
+        "invalid_message": "La ID ({id}) no pudo resolverse como un mensaje de este canal, quizás fue borrado (?)",
+        "invalid_member": "No pude hacer nada porque el miembro {mention} no es válido o ya no está aquí como miembro",
+        "invalid_password": "Al menos un par de caracteres de las contraseña no representa un número, quizás esa contraseña no fue enviada por mi.",
+        "invalid_role": "No encontré el rol @{mention}, puede que no sea válido",
+        "invalid_roles": "No encontré ninguno de los roles {mentions}, puede que no sea válido",
+        "long_prefix": "Mi prefijo no puede tener más de 4 caracteres.",
+        "lower_bot": "No puedo hacerle nada a un miembro que esté a mi nivel o más arriba que yo",
+        "lower_roles": "No puedo modificar un rol si está más arriba o es igual que mi rol más alto.",
+        "NaN": "Lo que sea que ingresaste no es un número válido. ¿O me vas a decir que {value} es un número?",
         "no_dms": "este comando solo puede ejecutarse en servidores.",
         "no_hit": "Vaya, 0 miembros... mejor limpio",
-        "not_enough_args": "no pude hacer nada por falta de argumentos.",
+        "not_enough_args": "No pude hacer nada por falta de argumentos.",
         "not_text": "El canal {channel} no es de texto, selecciona un canal donde pueda escribir",
         "botperms": {
             "add_role": "no tengo permiso para asignar roles. ||Permiso faltante: Gestionar roles||",

@@ -1,26 +1,28 @@
-import ArgCommand from "./commandArgInterface";
-import { GuildMember, Message, Permissions, Snowflake } from "discord.js";
+import { CacheType, CommandInteraction, GuildMember, Message, Permissions, Role, Snowflake, User } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 import { CleanCommand } from "./cleanCommand";
 import { Lang } from "./lang/Lang";
 import { PermissionsChecker } from "../util/PermissionsChecker";
+import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import SlashCommand from "./slashCommandInterface";
 
-export class AddRoleCommand implements ArgCommand {
+export class AddRoleCommand implements SlashCommand {
 	permission = 'MANAGE_ROLES'
 	shortdescription = 'info.addrole.description'
 	fulldescription: string = this.shortdescription
 	type = 'manage'
 	async checkPermissions(msg: Message,l:Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const mod = msg.guild.member(msg.author)
-		const bot = msg.guild.member(msg.client.user)
+		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!bot.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!bot.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
 			l.reply('errors.botperms.add_role')
 			return false
 		}
-		if (!mod.hasPermission(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!mod.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
 			l.reply('errors.modperms.add_role')
 			return false
 		}
@@ -66,12 +68,12 @@ export class AddRoleCommand implements ArgCommand {
 			const memberlist = await g.members.fetch()
 			const asyncForEach = async (a:GuildMember[], callback: { (r: GuildMember): Promise<void>; (arg0: GuildMember, arg1: number, arg2: GuildMember[]): Promise<void>; }) => {
 				for (let i = 0; i < a.length; i++) {
-                    await new Promise<void>((res)=>setTimeout(()=>res(), 500))
+                    await new Promise<void>((res)=>setTimeout(res, 600))
                     await callback(a[i], i, a)
 				}
 			}
 			const add = async () => {
-				await asyncForEach(memberlist.array(), async (member:GuildMember) => {
+				await asyncForEach([...memberlist.values()], async (member:GuildMember) => {
 					await member.roles.add(role)
 						.then(()=>count++)
 						.catch(e=>{
@@ -101,7 +103,7 @@ export class AddRoleCommand implements ArgCommand {
         
         // Verificación de rol
 		if(!msg.client.user) return
-        const bot = g.member(msg.client.user)
+        const bot = MemberFinder.getMember(msg, msg.client.user.id)
 		if(!bot) return
         if(role.position >= bot.roles.highest.position){
             l.reply('errors.lower_bot')
@@ -113,4 +115,38 @@ export class AddRoleCommand implements ArgCommand {
 		})
 	}
 	
+	static get(): RESTPostAPIApplicationCommandsJSONBody{
+		const s = new SlashCommandBuilder()
+		.setName('addrole')
+		.setDescription('Adds a role to a member')
+		.addUserOption(option => option.setName('member').setDescription('member who will recieve a role').setRequired(true))
+		.addRoleOption(option => option.setName('role').setDescription('role to be added').setRequired(true))
+		return s.toJSON()
+	}
+
+	async verify(interaction: CommandInteraction<CacheType>): Promise<boolean> {
+		if(!interaction.memberPermissions || !interaction.guild) return false
+		if(!interaction.memberPermissions.has(Permissions.FLAGS.MANAGE_ROLES)){
+			interaction.reply({content: 'Mod no permission'})
+			return false
+		}
+		const bot = interaction.guild.members.resolve(interaction.applicationId)
+		if(!bot) return false
+		if(!bot.permissions.has(Permissions.FLAGS.MANAGE_ROLES)){
+			interaction.reply({content: 'Bot no permission'})
+			return false
+		}
+		return true
+	}
+	async interact(interaction: CommandInteraction): Promise<void>{
+		if(!interaction.member) return
+		if(!interaction.guild) return interaction.reply({content: 'This command is only for guilds', ephemeral: true})
+		const user = interaction.options.getUser('member', true)
+		const role = <Role>interaction.options.getRole('role', true)
+		const target = interaction.guild.members.resolve(user)
+		const mod = <User>interaction.member.user
+		if(!target) return interaction.reply({content: 'The member could not be found', ephemeral: true})
+		const m = await target.roles.add(role, `Command executed by ${mod.tag}`)
+		return interaction.reply(`**${role.name}** role was added to **${m.displayName}**!`)
+	}
 }

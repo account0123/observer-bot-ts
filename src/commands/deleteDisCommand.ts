@@ -1,4 +1,4 @@
-import { DMChannel, Message } from "discord.js";
+import { GuildTextBasedChannel, Message } from "discord.js";
 import Command from "./commandInterface";
 
 export class DeleteDisCommand implements Command {
@@ -9,8 +9,8 @@ export class DeleteDisCommand implements Command {
 	fulldescription: string = this.shortdescription
 	permission = ''
 	async run(msg: Message): Promise<void> {
-		if(msg.channel instanceof DMChannel) return
-		await msg.channel.bulkDelete(2)
+		const c = <GuildTextBasedChannel>msg.channel
+		c.bulkDelete(2)
 	}
 	
 }

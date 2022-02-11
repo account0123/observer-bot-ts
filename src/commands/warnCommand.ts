@@ -26,7 +26,7 @@ export class WarnCommand implements ArgCommand {
             return
         }
 
-        const mod = g.member(msg.author)
+        const mod = g.members.resolve(msg.author)
         if(!mod) return
         const [r1] = await Connections.db.query<RowDataPacket[]>('SELECT warnings, kicks, bans FROM users WHERE id=?', [m.id])
         const w: number[] = r1.map((r)=>r.warnings)
@@ -51,7 +51,7 @@ export class WarnCommand implements ArgCommand {
     async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
         if(!msg.guild) return false
         const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT id, commands FROM roles WHERE guild=?', [msg.guild.id])
-        const mod = msg.guild.member(msg.author)
+        const mod = msg.guild.members.resolve(msg.author)
         if(!mod) return false
         for (const r of mod.roles.cache.keys()){
             for (const row of rows) {
