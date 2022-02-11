@@ -1,9 +1,10 @@
 import ArgCommand from "./commandArgInterface";
-import { CollectorFilter, Message, MessageEmbed, MessageReaction, Permissions, ReactionCollector, User } from "discord.js";
+import { Message, MessageEmbed, Permissions, ReactionCollector } from "discord.js";
 import CommandHandler from "../commandHandler";
 import { Lang } from "./lang/Lang";
 import Command from "./commandInterface";
 import { PermissionsChecker } from "../util/PermissionsChecker";
+import { MemberFinder } from "../util/MemberFinder";
 
 type BotCommand = {
 	name: string
@@ -30,7 +31,7 @@ export class HelpCommand implements ArgCommand {
 		else this.createCommandList()
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		if(msg.channel.type == 'dm') return true
+		if(msg.channel.type == 'DM') return true
 		return PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS']), msg, l)
 	}
 	private async createCommandList() {
@@ -72,7 +73,7 @@ export class HelpCommand implements ArgCommand {
 		const bot = this.msg.client.user
 		if(!bot) return
 		if(this.msg.guild){
-			const m = this.msg.guild.member(bot)
+			const m = this.msg.guild.members.resolve(bot)
 			if(m) embed.setColor(m.displayColor)
 		}
 		else embed.setColor(0xffffff)
@@ -83,8 +84,9 @@ export class HelpCommand implements ArgCommand {
 		const embed2 = new MessageEmbed(embed)
 		const embed3 = new MessageEmbed(embed)
 		// Field to embed 1
-		embed.addField(mod, await createList(moderators))
+		embed.addField(mod, (await createList(moderators)).join('\n'))
 
+		/**
 		// Fiels to embed 2
 		embed2.addFields(
 			{name: manage, value: await createList(managers)},
@@ -95,6 +97,7 @@ export class HelpCommand implements ArgCommand {
 			{name: config, value: await createList(configurators)},
 			{name: misc, value: await createList(random)}
 		);
+		*/
 		// Creating message components
 		/** 
 		const prev_button = {
@@ -117,16 +120,21 @@ export class HelpCommand implements ArgCommand {
 		*/
 		// Sending embed page + reactions
 		
-		this.msg.channel.send(embed).then(async (msg)=>{
+		this.msg.channel.send({embeds: [embed]}).then(async (msg)=>{
 			const pages = 3
 			let page = 1
 			try{
+<<<<<<< Updated upstream
 			await msg.react('⬅️');await msg.react('➡️')
 			const f: CollectorFilter = (reaction: MessageReaction, user: User) => {
 				if(!this.msg) return false
 				if((reaction.emoji.name === '➡️' || reaction.emoji.name === '⬅️') && user.id == this.msg.author.id) return true
 				else return false
 			};
+=======
+				await msg.react('⬅️');
+				await msg.react('➡️')
+>>>>>>> Stashed changes
 			const loadPage = async (p: number)=>{
 				let e: MessageEmbed = new MessageEmbed()
 				switch(p){
@@ -134,13 +142,12 @@ export class HelpCommand implements ArgCommand {
 					case 2: e = embed2; break;
 					case 3: e = embed3
 				}
-				e.setFooter(await l.translate('info.help.general.footer', `${p}`, `${pages}`, `${this.prefix}`))
-				msg.edit(e);
+				e.setFooter({text: await l.translate('info.help.general.footer', `${p}`, `${pages}`, `${this.prefix}`)})
+				msg.edit({embeds: [e]});
 			};
-			const rc = new ReactionCollector(msg, f, {idle: 120000})
+			const rc = new ReactionCollector(msg, {idle: 120000})
 			
-			rc.on('collect', async (reaction, user)=>{
-				if(!f(reaction, user)) return
+			rc.on('collect', async (reaction)=>{
 				if(reaction.emoji.name == '➡️'){
 					reaction.remove(); if(page==pages) return;page++;
 					loadPage(page)
@@ -153,9 +160,9 @@ reaction.remove();if(page==1) return;page--;
 			});
 			rc.once('end', ()=>{
 				if(!msg.guild || !msg.client.user) return false
-				const m = msg.guild.member(msg.client.user)
+				const m = MemberFinder.getMember(msg, msg.client.user.id)
 				if(!m) return
-				if(m.hasPermission("MANAGE_MESSAGES")) msg.reactions.removeAll()
+				if(m.permissions.has("MANAGE_MESSAGES")) msg.reactions.removeAll()
 			});
 			}catch(error){
 				if(!this.msg || !this.lang) return
@@ -197,8 +204,8 @@ reaction.remove();if(page==1) return;page--;
 			if(argCommand.commandNames.length > 0) embed.addField(await l.translate(about + 'aliases'),argCommand.commandNames.join(', '),true)
 			embed.addField(await l.translate(about + 'usage'),`${this.prefix}${name} \`${await l.translate(argCommand.usage)}\``,true)
 			.addField(await l.translate(about + 'required'),await buildField(),true)
-			.addField(await l.translate(about + 'examples'),argCommand.examples.map(e=>`${this.prefix}${name} ${e}\n`))
-			.setFooter(await l.translate(about + 'footer'))
+			.addField(await l.translate(about + 'examples'), argCommand.examples.map(e=>`${this.prefix}${name} ${e}`).join('\n'))
+			.setFooter({text: await l.translate(about + 'footer')})
 			.setTimestamp();
 		}
 		if(!embed){
@@ -207,14 +214,15 @@ reaction.remove();if(page==1) return;page--;
             return
         }
 		const bot = this.msg.client.user
-		if(!bot || !this.msg.guild) return
-		const m = this.msg.guild.member(bot)
+		if(!bot || !this.msg.guild ) return
+		const m = MemberFinder.getMember(this.msg, bot.id)
 		if(!m) return
 		if(this.msg.guild) embed.setColor(m.displayColor)
 		else embed.setColor(0xffffff)
 		const a = bot.avatarURL({dynamic:true})
 		if(!a) return
-		this.msg.channel.send(embed.setAuthor(bot.tag, a))
+		embed.setAuthor({name: bot.tag, url: a})
+		this.msg.channel.send({embeds: [embed]})
 		.then(()=>console.log('Embed de ayuda enviado')).catch(e=>{
 			if(!this.msg || !this.lang) return
 			const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES']), this.msg, this.lang)
