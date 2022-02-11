@@ -17,12 +17,6 @@ export default class SnipeHandler {
     Logger.logDeleted(msg, g.id, new Lang(<Message>msg))
     Connections.db.execute('INSERT INTO deleted VALUES (?, ?, ?, ?, ?, ?, ?, ?)',[content,null, author.username, author.discriminator, author.avatarURL({dynamic:true}), g.id, msg.channel.id,msg.createdTimestamp])
     console.log('Mensaje borrado guardado')
-
-
-    Logger.logDeleted(msg, g.id, new Lang(msg))
-    Connections.db.execute('INSERT INTO deleted VALUES (?, ?, ?, ?, ?, ?, ?, ?)',[content,null, author.username, author.discriminator, author.avatarURL({dynamic:true}), g.id, msg.channel.id,msg.createdTimestamp])
-    console.log('Mensaje borrado guardado')
-
   }
   
   async saveEditedMessage(msg:Message | PartialMessage, u: Message | PartialMessage):Promise<void>{
