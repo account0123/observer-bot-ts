@@ -1,4 +1,4 @@
-import { Message, MessageReaction, ReactionCollector, User, Permissions} from "discord.js";
+import { Message, Permissions} from "discord.js";
 import ArgCommand from "./commandArgInterface";
 import { Lang } from "./lang/Lang";
 import {RAE}  from "rae-api"
@@ -39,74 +39,6 @@ export class DefineCommand implements ArgCommand {
 		}else t = await l.translate('info.rae.title', res.getHeader())
 
 		await m.edit(`**${t}**\n**1.** *${definitions[0].getType()}* ${definitions[0].getDefinition()}`)
-        //const pages = definitions.length
-		//let page = 1
-		//if(results.length > 1) await m.react('⬇️')
-		//const d_react = await m.react('▶️')
-		const f = (reaction: MessageReaction, user: User) => {
-			const e = reaction.emoji.name
-			if((e == '▶️' || e == '◀️' || e == '⬇️') && user.id == msg.author.id) return true
-			else return false
-		};
-            const rc = new ReactionCollector(m, {idle: 30000})
-            rc.on('collect', async (reaction, user)=>{
-				if(!f(reaction, user)) return
-
-				/**
-				if(reaction.emoji.name == '⬇️'){
-					reaction.remove()
-					if(results.length < 2) return
-					if(r == results.length) d_react.remove()
-					r++
-					page = 1
-					fetchWord()
-				}
-				
-
-				if(reaction.emoji.name == '▶️'){
-                    if(page == pages) return
-					loadPage(++page)
-					if(page == 2){
-						await m.reactions.removeAll()
-						await m.react('◀️')
-						if(page < pages) m.react('▶️')
-					}else reaction.remove()
-				}
-
-				if(reaction.emoji.name === '◀️'){
-                    if(page == 1) return
-					loadPage(--page)
-					if(page == pages - 1){
-						await m.reactions.removeAll()
-						if(page > 1) await m.react('◀️')
-						m.react('▶️')
-					}else reaction.remove()
-				}
-				*/
-				/**
-				async function fetchWord(){
-					res = results[r]
-					id = res.getId()
-			
-					word = await rae.fetchWord(id)
-					definitions = word.getDefinitions()
-					if(l.language == 'en'){
-						const p = res.getHeader()
-						const pC = p.replace(p.charAt(0), p.charAt(0).toUpperCase())
-						t = await l.translate('info.rae.title', pC)
-					}else t = await l.translate('info.rae.title', res.getHeader())
-					loadPage(1)
-				}
-
-				async function loadPage(p: number){
-					const d = definitions[p - 1]
-                    m.edit(`**${t}**\n**${p}.** *${d.getType()}* ${d.getDefinition()}`)
-				}
-				*/
-			});
-			rc.once('end', ()=>{
-				m.reactions.removeAll()
-			});
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		if(msg.channel.type == 'DM') return true
