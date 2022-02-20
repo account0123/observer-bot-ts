@@ -1,16 +1,18 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, MessageEmbed, Permissions, ReactionCollector } from "discord.js";
+import { BaseCommandInteraction, ButtonInteraction, CacheType, Client, CommandInteraction, Guild, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, Permissions } from "discord.js";
 import CommandHandler from "../commandHandler";
-import { Lang } from "./lang/Lang";
+import { InteractionLang, Lang } from "./lang/Lang";
 import Command from "./commandInterface";
 import { PermissionsChecker } from "../util/PermissionsChecker";
-import { MemberFinder } from "../util/MemberFinder";
+import { APIButtonComponent, RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
+import SlashCommand from "./slashCommandInterface";
+import { SlashCommandBuilder } from '@discordjs/builders';
 
 type BotCommand = {
 	name: string
 	summary: string
 }
-export class HelpCommand implements ArgCommand {
+export class HelpCommand implements SlashCommand {
 	type: string | undefined;
 	permission = ''
 	shortdescription = 'info.help.description'
@@ -20,25 +22,46 @@ export class HelpCommand implements ArgCommand {
 	examples: string[] = ['', 'createrole']
 	usage = 'info.help.usage'
 	guildExclusive = false
-	lang: Lang | undefined
+	lang: Lang | InteractionLang | undefined
 	prefix: string | undefined
-	msg: Message | undefined
+	guild: Guild | undefined
 	async run(msg: Message,l: Lang, args: string[], prefix: string): Promise<void> {
 		this.lang = l
 		this.prefix = prefix
-		this.msg = msg
-		if (args.length > 0) this.createHelpEmbed(args[0])
-		else this.createCommandList()
+		this.guild = msg.guild || undefined
+		if (args.length > 0) this.createHelpEmbed(args[0], msg)
+		else{
+			this.createCommandList(msg)
+		}
 	}
-	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		if(msg.channel.type == 'DM') return true
-		return PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS']), msg, l)
+	async checkPermissions(): Promise<boolean> {
+		return true
 	}
-	private async createCommandList() {
-		if(!this.lang || !this.prefix || !this.msg) return
-		const l = this.lang, t = 'categories.', [manage, info, misc, mod, config] = await Promise.all([l.translate(t+'manage'), l.translate(t+'info'),l.translate(t+'misc'), l.translate(t+'mod'), l.translate(t+'config')])
+	private async buildCommandList(page: 1 | 2 | 3, msg: Message | BaseCommandInteraction | MessageComponentInteraction): Promise<MessageEmbed>{
+		// verification
+		const f = new MessageEmbed().setDescription('Embed not available')
+		if(!this.lang || !this.prefix)
+			return f
+		// declarations
 		const managers: BotCommand[] = [], informers: BotCommand[] = [], random: BotCommand[] = [],  
 		moderators: BotCommand[] = [], configurators: BotCommand[] = []
+		const embed = new MessageEmbed(), l = this.lang, bot = msg.client.user
+		const t = 'categories.', [manage, info, misc, mod, config] = await Promise.all([l.translate(t+'manage'), l.translate(t+'info'),l.translate(t+'misc'), l.translate(t+'mod'), l.translate(t+'config')])
+		if(!bot) return f
+
+		// builds a generic embed
+		if(msg.guild){
+			const m = msg.guild.members.resolve(bot)
+			if(m) embed.setColor(m.displayColor)
+		}
+		else embed.setColor(0xffffff)
+		const a = bot.avatarURL({dynamic:true})
+		if(!a) return f
+		embed.setAuthor({name: bot.tag, url: a})
+		const title = await l.translate('info.help.general.title')
+		embed.setTitle(title)
+
+
 		// separates commands by their type
 		const divideList = async (c:Command | ArgCommand) => {
 			const o = {name: c.commandNames[0], summary: c.shortdescription}
@@ -63,126 +86,60 @@ export class HelpCommand implements ArgCommand {
 				const description = await l.translate(c.summary);
 				a.push(`\`${c.name}\` - ${description}`)
 			}
-			return a
+			return a.join('\n')
 		}
-		
-		// Building an embed page
-		const title = await l.translate('info.help.general.title')
-		const footer = await l.translate('info.help.general.footer', '1', '3', this.prefix)
-		const embed = new MessageEmbed().setTitle(title).setFooter(footer).setTimestamp();
-		const bot = this.msg.client.user
-		if(!bot) return
-		if(this.msg.guild){
-			const m = this.msg.guild.members.resolve(bot)
-			if(m) embed.setColor(m.displayColor)
-		}
-		else embed.setColor(0xffffff)
-		const a = bot.avatarURL({dynamic:true})
-		if(!a) return 
-		embed.setAuthor(bot.tag,)
-		// copy
-		const embed2 = new MessageEmbed(embed)
-		const embed3 = new MessageEmbed(embed)
-		// Field to embed 1
-		embed.addField(mod, (await createList(moderators)).join('\n'))
 
-		/**
-		// Fiels to embed 2
-		embed2.addFields(
-			{name: manage, value: await createList(managers)},
-			{name: info, value: await createList(informers)}
-		);
-		// Fields to embed 3
-		embed3.addFields(
-			{name: config, value: await createList(configurators)},
-			{name: misc, value: await createList(random)}
-		);
-		*/
-		// Creating message components
-		/** 
-		const prev_button = {
-			type: 2,
-			style: 2,
-			label: "<",
-			custom_id: "previous",
-			disabled: true
-		};
-		const next_button = {
-			type: 2,
-			style: 1,
-			label: ">",
-			custom_id: "next"
-		};
-		const row = {
-			type: 1,
-			components: [prev_button, next_button]
+		// builds each page and returns
+		if(page == 1){
+			embed.addField(mod, await createList(moderators))
+			const footer = await l.translate('info.help.general.footer', '1', '3', this.prefix)
+			embed.setFooter({text: footer}).setTimestamp();
+			return embed
 		}
-		*/
+		if(page == 2){
+			embed.addFields([
+				{name: manage, value: await createList(managers)},
+				{name: info, value: await createList(informers)}
+			]);
+			const footer = await l.translate('info.help.general.footer', '2', '3', this.prefix)
+			embed.setFooter({text: footer}).setTimestamp();
+			return embed
+		}
+		if(page == 3){
+			embed.addFields([
+				{name: config, value: await createList(configurators)},
+				{name: misc, value: await createList(random)}
+			]);
+			const footer = await l.translate('info.help.general.footer', '3', '3', this.prefix)
+			embed.setFooter({text: footer}).setTimestamp();
+			return embed
+		}
+		return f
+	}
+	private async createCommandList(msg: Message) {
+		const embed = await this.buildCommandList(1, msg)
+		// Creating components list
+		const prev_button = new MessageButton({style: 1, customId: 'help_previous', label: '<', disabled: true})
+		const next_button = new MessageButton({style: 1, label: '>', customId: 'help_next'})
+		const row = new MessageActionRow({components: [prev_button, next_button]})
 		// Sending embed page + reactions
-		
-		this.msg.channel.send({embeds: [embed]}).then(async (msg)=>{
-			const pages = 3
-			let page = 1
-			try{
-				await msg.react('⬅️');
-				await msg.react('➡️')
-			const loadPage = async (p: number)=>{
-				let e: MessageEmbed = new MessageEmbed()
-				switch(p){
-					case 1: e = embed; break;
-					case 2: e = embed2; break;
-					case 3: e = embed3
-				}
-				e.setFooter({text: await l.translate('info.help.general.footer', `${p}`, `${pages}`, `${this.prefix}`)})
-				msg.edit({embeds: [e]});
-			};
-			const rc = new ReactionCollector(msg, {idle: 120000})
-			
-			rc.on('collect', async (reaction)=>{
-				if(reaction.emoji.name == '➡️'){
-					reaction.remove()
-					if(page==pages) return
-					if(page == 1) msg.react('⬅️')
-					page++
-					loadPage(page)
-					if(page != pages) msg.react('➡️')
-				}
-
-				if(reaction.emoji.name === '⬅️'){
-					reaction.remove()
-					if(page==1) return
-					page--
-					loadPage(page)
-					if(page != 1){
-						msg.react('⬅️')
-						msg.react('➡️')
-					}
-				}
-			});
-			rc.once('end', ()=>{
-				if(!msg.guild || !msg.client.user) return false
-				const m = MemberFinder.getMember(msg, msg.client.user.id)
-				if(!m) return
-				if(m.permissions.has("MANAGE_MESSAGES")) msg.reactions.removeAll()
-			});
-			}catch(error){
-				if(!this.msg || !this.lang) return
-				const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES', 'ADD_REACTIONS', 'MANAGE_MESSAGES']), this.msg, this.lang)
-				p.then((c)=>{if(c) console.error(error)}).catch(err=>console.error(err))
-			}
+		msg.channel.send({embeds: [embed], components: [row]}).then(()=>{
 			console.log('Embed de ayuda enviado')
 		})
 	}
 
-	private async createHelpEmbed(commandName:string) {
-		if(!this.lang || !this.msg) return
+	private async buildHelpEmbed(commandName: string, guild: Guild | null, client: Client): Promise<MessageEmbed>{
+		// verification
+		const f = new MessageEmbed().setDescription('Embed not available')
+		if(!this.lang || !this.prefix)
+			return f
 		const l = this.lang
+		const embed = new MessageEmbed()
 		const command = CommandHandler.commands.find(command => command.commandNames.includes(commandName.toLowerCase()))
 		const argCommand = CommandHandler.argCommands.find(command => command.commandNames.includes(commandName.toLowerCase()))
 		const about = 'info.help.about.'
-		let embed
 		if (command) {
-			embed = new MessageEmbed().setTitle(await l.translate(about + 'title',command.commandNames.shift() || ''))
+			embed.setTitle(await l.translate(about + 'title',command.commandNames.shift() || ''))
 			.setDescription(await l.translate(command.fulldescription))
 			.addField(await l.translate(about + 'aliases'),command.commandNames.join(', '),true)
 			.addField(await l.translate(about + 'usage'),await l.translate('info.help.default.no_usage'),true)
@@ -201,33 +158,152 @@ export class HelpCommand implements ArgCommand {
 				}
 			}
 			const name = argCommand.commandNames.shift() || ''
-			embed = new MessageEmbed().setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,Permissions.DEFAULT.toString(16)))
+			embed.setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,Permissions.DEFAULT.toString(16)))
 			if(argCommand.commandNames.length > 0) embed.addField(await l.translate(about + 'aliases'),argCommand.commandNames.join(', '),true)
 			embed.addField(await l.translate(about + 'usage'),`${this.prefix}${name} \`${await l.translate(argCommand.usage)}\``,true)
-			.addField(await l.translate(about + 'required'),await buildField(),true)
 			.addField(await l.translate(about + 'examples'), argCommand.examples.map(e=>`${this.prefix}${name} ${e}`).join('\n'))
+			.addField(await l.translate(about + 'required'),await buildField())
 			.setFooter({text: await l.translate(about + 'footer')})
 			.setTimestamp();
 		}
-		if(!embed){
-            this.msg.react('❌')
-            l.send('info.help.not_found', commandName)
-            return
-        }
-		const bot = this.msg.client.user
-		if(!bot || !this.msg.guild ) return
-		const m = MemberFinder.getMember(this.msg, bot.id)
-		if(!m) return
-		if(this.msg.guild) embed.setColor(m.displayColor)
+		const bot = client.user
+		if(!bot) return f
+		let m
+		if(guild) m = guild.members.resolve(bot)
+		if(m) embed.setColor(m.displayColor)
 		else embed.setColor(0xffffff)
 		const a = bot.avatarURL({dynamic:true})
-		if(!a) return
-		embed.setAuthor({name: bot.tag, url: a})
-		this.msg.channel.send({embeds: [embed]})
+		if(!a) return f
+		return embed.setAuthor({name: bot.tag, url: a})
+	}
+
+	private async createHelpEmbed(commandName:string, msg: Message) {
+		if(!this.lang) return
+		const embed = await this.buildHelpEmbed(commandName, msg.guild, msg.client)
+		if(embed.title == null){
+            msg.react('❌').catch(e=>console.error(e))
+			if(this.lang instanceof Lang)
+				this.lang.reply('info.help.not_found', commandName)
+            return
+        }
+		
+		msg.channel.send({embeds: [embed]})
 		.then(()=>console.log('Embed de ayuda enviado')).catch(e=>{
-			if(!this.msg || !this.lang) return
-			const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES']), this.msg, this.lang)
+			if(!msg || !(this.lang instanceof Lang)) return
+			const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES']), msg, this.lang)
 			p.then((c)=>{if(c) console.error(e)}).catch(err=>console.error(err))
 		});
+	}
+
+	static get(): RESTPostAPIApplicationCommandsJSONBody{
+		const s = new SlashCommandBuilder()
+		.setName('help')
+		.setDescription('Shows command list or information about a command')
+		.addStringOption(op=>op.setName('command').setDescription('The command to search about'))
+		return s.toJSON()
+	}
+	async change_page(button: ButtonInteraction, l: InteractionLang, prefix: string): Promise<void>{
+		this.prefix = prefix
+		// 1 & 2
+		if(button.customId == 'help_next'){
+			const footer = button.message.embeds[0].footer
+			if(!footer) return
+			const matches = footer.text.match(/[1-3]+/)
+			if(!matches) return
+			const next_page = parseInt(matches[0]) + 1
+
+			const c = button.message.components
+			if(!c) return
+			const comps = <APIButtonComponent[]>c[0].components
+			const next = comps.find(a=>a.label=='>')
+			const prev = comps.find(a=>a.label=='<')
+			if(!prev) return
+			if(!next) return
+			
+			if(next_page == 2){
+				prev.disabled = false
+				const prev_button = new MessageButton(prev)
+				const next_button = new MessageButton(next)
+				const row = new MessageActionRow({components: [prev_button, next_button]})
+				const embed = await this.buildCommandList(2, button)
+				return button.update({embeds: [embed], components: [row]})
+			}
+			if(next_page == 3){
+				next.disabled = true
+				const prev_button = new MessageButton(prev)
+				const next_button = new MessageButton(next)
+				const row = new MessageActionRow({components: [prev_button, next_button]})
+				const embed = await this.buildCommandList(3, button)
+				return button.update({embeds: [embed], components: [row]})
+			}
+		}
+		// 2 & 3
+		if(button.customId == 'help_previous'){
+			const footer = button.message.embeds[0].footer
+			if(!footer) return
+			const matches = footer.text.match(/[1-3]+/)
+			if(!matches) return
+			const previous_page = parseInt(matches[0]) - 1
+
+			const c = button.message.components
+			if(!c) return
+			const comps = <APIButtonComponent[]>c[0].components
+			const next = comps.find(a=>a.label=='>')
+			const prev = comps.find(a=>a.label=='<')
+			if(!prev) return
+			if(!next) return
+
+			if(previous_page == 1){
+				prev.disabled = true
+				const prev_button = new MessageButton(prev)
+				const next_button = new MessageButton(next)
+				const row = new MessageActionRow({components: [prev_button, next_button]})
+				const embed = await this.buildCommandList(1, button)
+				return button.update({embeds: [embed], components: [row]})
+			}
+			if(previous_page == 2){
+				next.disabled = false
+				const prev_button = new MessageButton(prev)
+				const next_button = new MessageButton(next)
+				const row = new MessageActionRow({components: [prev_button, next_button]})
+				const embed = await this.buildCommandList(2, button)
+				return button.update({embeds: [embed], components: [row]})
+			}
+		}
+	}
+	verify(): Promise<boolean> {
+		return Promise.resolve(true)
+	}
+	async interact(interaction: CommandInteraction<CacheType>, l: InteractionLang, prefix: string): Promise<void> {
+		this.lang = l
+		this.prefix = prefix
+		if(interaction.options.data.length == 0){
+			const prev_button = {
+				type: 2,
+				style: 1,
+				label: "<",
+				customId: "help_previous",
+				disabled: true
+			};
+			const next_button = {
+				type: 2,
+				style: 1,
+				label: ">",
+				customId: "help_next"
+			};
+			const row = {
+				type: 1, components: [prev_button, next_button]
+			}
+			const embed = await this.buildCommandList(1, interaction)
+			return interaction.reply({embeds: [embed], components: [row]})
+		}else{
+			const commandName = interaction.options.getString('command', true)
+			const embed = await this.buildHelpEmbed(commandName, interaction.guild, interaction.client)
+			if(embed.title == null){
+			if(this.lang instanceof InteractionLang)
+				return this.lang.reply('info.help.not_found', commandName)
+			}
+			return interaction.reply({embeds: [embed]})
+		}
 	}
 }

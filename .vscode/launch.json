@@ -6,16 +6,17 @@
 	"configurations": [
 		{
 			"command": "npm test",
-			"name": "Test bot",
+			"name": "Test changes",
 			"request": "launch",
 			"type": "node-terminal"
 		},
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Launch Program",
+			"name": "Start debug mode",
 			"skipFiles": [
-				"<node_internals>/**"
+				"<node_internals>/**",
+				"${workspaceFolder}/src"
 			],
 			"program": "${workspaceFolder}\\build\\index.js",
 			"args": [

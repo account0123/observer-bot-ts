@@ -7,13 +7,19 @@ import { Connections } from './config/connections';
 import { RowDataPacket } from 'mysql2';
 import { REST } from '@discordjs/rest';
 import { RESTPostAPIApplicationCommandsJSONBody, Routes } from 'discord-api-types/rest/v9';
-import { AddRoleCommand, SayCommand } from './commands';
+import { AddRoleCommand, CreateRoleCommand, DefineCommand, HelpCommand, SayCommand } from './commands';
 
 const PORT = parseInt(process.argv[2]) || 5000;
 
 const app = express();
 const client = new Discord.Client({ws:{large_threshold: 1000}, intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_BANS', 'GUILD_INTEGRATIONS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_WEBHOOKS']});
-const commands: RESTPostAPIApplicationCommandsJSONBody[] = [SayCommand.get(), AddRoleCommand.get()]
+const commands: RESTPostAPIApplicationCommandsJSONBody[] = [
+  SayCommand.get(),
+  AddRoleCommand.get(),
+  HelpCommand.get(),
+  DefineCommand.get(),
+  CreateRoleCommand.get()
+]
 
 //////////////////////////////////////////////////////////////////
 //             EXPRESS SERVER SETUP FOR UPTIME ROBOT            //
@@ -101,14 +107,20 @@ client.on("error", e =>{
 })
 
 
-async function register(rest: REST){
+async function register(rest: REST, testing: boolean){
   try {
 		console.log('Started refreshing application (/) commands.');
-
+    if(testing){
 		await rest.put(
-			Routes.applicationGuildCommands('708884260664246324', '722867541957148713'),
+			Routes.applicationGuildCommands('708884260664246324', '706215432503164979'),
 			{ body: commands },
 		);
+    }else{
+      await rest.put(
+        Routes.applicationCommands('708884260664246324'),
+        { body: commands },
+      );
+    }
 
 		console.log('Successfully reloaded application (/) commands.');
 	} catch (error) {
@@ -121,12 +133,13 @@ let rest
 if(process.argv[2] == '--beta'){
   client.login('NzA4ODg0MjYwNjY0MjQ2MzI0.Xrd16g.3CkRz6-jepJ5P8d3qcSnjMKu1lo').catch(e=>console.error(e));
   rest = new REST({ version: '9' }).setToken('NzA4ODg0MjYwNjY0MjQ2MzI0.Xrd16g.3CkRz6-jepJ5P8d3qcSnjMKu1lo');
+  register(rest, true)
 }else{
   client.login(DISCORD_TOKEN).catch(e=>console.error(e));
   rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN || '');
+  register(rest, false)
 }
 
-register(rest)
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}!`))
 
