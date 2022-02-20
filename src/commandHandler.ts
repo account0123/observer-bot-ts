@@ -3,7 +3,7 @@ import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, A
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
-import { Lang } from "./commands/lang/Lang";
+import { InteractionLang, Lang } from "./commands/lang/Lang";
 import { Connections } from "./config/connections";
 import { RowDataPacket } from "mysql2";
 import SlashCommand from "./commands/slashCommandInterface";
@@ -61,7 +61,10 @@ export default class CommandHandler {
     ];
     const slashCommands = [
       AddRoleCommand,
-      SayCommand
+      DefineCommand,
+      SayCommand,
+      HelpCommand,
+      CreateRoleCommand
     ];
     CommandHandler.commands = commandClasses.map(c => new c());
     CommandHandler.argCommands = argCommandClasses.map(c=>new c())
@@ -162,15 +165,35 @@ export default class CommandHandler {
   }
 
   async handleInteraction(interaction: Interaction): Promise<void>{
+    let lang: InteractionLang
+    if (interaction.guild === null) lang = new InteractionLang(interaction)
+    else{
+      lang = new InteractionLang(interaction)
+      const g = interaction.guild
+      const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix FROM guilds WHERE id=?', [g.id])
+      if(rows[0].prefix) this.prefix = rows[0].prefix
+      else Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [g.id, g.name, '!!', 'es']).then(()=>console.log('Servidor registrado: ' + g.id)).catch(e=>console.error(e));
+    }
+    if(interaction.isButton()){
+        if(interaction.customId.startsWith('help')){
+            const h = <HelpCommand>CommandHandler.argCommands.find(c=>c.commandNames[0] == 'help')
+            h.change_page(interaction, lang, this.prefix)
+        }
+        if(interaction.customId.endsWith('def')){
+          const d = <DefineCommand>CommandHandler.argCommands.find(c=>c.commandNames[0] == 'define')
+          d.change_page(interaction)
+        }
+    }
     if (!interaction.isCommand()) return;
     const command = CommandHandler.slashes.find(c => c.commandNames[0] == interaction.commandName)
     if (!command) return
     try {
-      const v = await command.verify(interaction)
-      if(v) command.interact(interaction)
+      const v = await command.verify(interaction, lang)
+      if(v) command.interact(interaction, lang, this.prefix)
     } catch (error) {
       console.error(error);
-      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+      const err_reply = await lang.translate('errors.unknown')
+      await interaction.reply({ content: err_reply, ephemeral: true });
     }
   }
   

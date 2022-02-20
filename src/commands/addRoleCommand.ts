@@ -2,7 +2,7 @@ import { CacheType, CommandInteraction, GuildMember, Message, Permissions, Role,
 import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 import { CleanCommand } from "./cleanCommand";
-import { Lang } from "./lang/Lang";
+import { InteractionLang, Lang } from "./lang/Lang";
 import { PermissionsChecker } from "../util/PermissionsChecker";
 import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 import { SlashCommandBuilder } from '@discordjs/builders';
@@ -138,14 +138,14 @@ export class AddRoleCommand implements SlashCommand {
 		}
 		return true
 	}
-	async interact(interaction: CommandInteraction): Promise<void>{
+	async interact(interaction: CommandInteraction, l: InteractionLang): Promise<void>{
 		if(!interaction.member) return
-		if(!interaction.guild) return interaction.reply({content: 'This command is only for guilds', ephemeral: true})
+		if(!interaction.guild) return interaction.reply({content: await l.translate('errors.no_dms'), ephemeral: true})
 		const user = interaction.options.getUser('member', true)
 		const role = <Role>interaction.options.getRole('role', true)
 		const target = interaction.guild.members.resolve(user)
 		const mod = <User>interaction.member.user
-		if(!target) return interaction.reply({content: 'The member could not be found', ephemeral: true})
+		if(!target) return interaction.reply({content: await l.translate('errors.invalid_member', user.tag), ephemeral: true})
 		const m = await target.roles.add(role, `Command executed by ${mod.tag}`)
 		return interaction.reply(`**${role.name}** role was added to **${m.displayName}**!`)
 	}

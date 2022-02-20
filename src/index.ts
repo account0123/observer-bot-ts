@@ -7,13 +7,19 @@ import { Connections } from './config/connections';
 import { RowDataPacket } from 'mysql2';
 import { REST } from '@discordjs/rest';
 import { RESTPostAPIApplicationCommandsJSONBody, Routes } from 'discord-api-types/rest/v9';
-import { AddRoleCommand, SayCommand } from './commands';
+import { AddRoleCommand, CreateRoleCommand, DefineCommand, HelpCommand, SayCommand } from './commands';
 
 const PORT = parseInt(process.argv[2]) || 5000;
 
 const app = express();
 const client = new Discord.Client({ws:{large_threshold: 1000}, intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_BANS', 'GUILD_INTEGRATIONS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_WEBHOOKS']});
-const commands: RESTPostAPIApplicationCommandsJSONBody[] = [SayCommand.get(), AddRoleCommand.get()]
+const commands: RESTPostAPIApplicationCommandsJSONBody[] = [
+  SayCommand.get(),
+  AddRoleCommand.get(),
+  HelpCommand.get(),
+  DefineCommand.get(),
+  CreateRoleCommand.get()
+]
 
 //////////////////////////////////////////////////////////////////
 //             EXPRESS SERVER SETUP FOR UPTIME ROBOT            //
@@ -106,7 +112,7 @@ async function register(rest: REST){
 		console.log('Started refreshing application (/) commands.');
 
 		await rest.put(
-			Routes.applicationGuildCommands('708884260664246324', '722867541957148713'),
+			Routes.applicationGuildCommands('708884260664246324', '706215432503164979'),
 			{ body: commands },
 		);
 
