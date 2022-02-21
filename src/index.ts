@@ -117,7 +117,7 @@ async function register(rest: REST, testing: boolean){
 		);
     }else{
       await rest.put(
-        Routes.applicationCommands('708884260664246324'),
+        Routes.applicationCommands('685645806069612621'),
         { body: commands },
       );
     }
