@@ -1,7 +1,6 @@
-import { ButtonInteraction, CacheType, CommandInteraction, Message, MessageActionRow, MessageButton, MessageEmbed} from "discord.js";
+import { ButtonInteraction, CacheType, CommandInteraction, Message, MessageActionRow, MessageActionRowComponent, MessageButton, MessageEmbed} from "discord.js";
 import { InteractionLang, Lang } from "./lang/Lang";
 import {Definition, RAE}  from "rae-api"
-import { APIButtonComponent, RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 import { SlashCommandBuilder } from '@discordjs/builders';
 import SlashCommand from "./slashCommandInterface";
 
@@ -68,7 +67,7 @@ export class DefineCommand implements SlashCommand {
 	async checkPermissions(): Promise<boolean> {
 		return true
 	}
-	static get(): RESTPostAPIApplicationCommandsJSONBody{
+	static get(): any{
 		const s = new SlashCommandBuilder()
 		.setName('define')
 		.setDescription('Define una palabra buscando en la RAE')
@@ -101,7 +100,7 @@ export class DefineCommand implements SlashCommand {
 
 			const c = button.message.components
 			if(!c) return
-			const comps = <APIButtonComponent[]>c[0].components
+			const comps = <MessageButton[]>c[0].components
 			const next = comps.find(a=>a.label=='>')
 			const prev = comps.find(a=>a.label=='<')
 			if(!prev) return
@@ -139,7 +138,7 @@ export class DefineCommand implements SlashCommand {
 
 			const c = button.message.components
 			if(!c) return
-			const comps = <APIButtonComponent[]>c[0].components
+			const comps = <MessageButton[]>c[0].components
 			const next = comps.find(a=>a.label=='>')
 			const prev = comps.find(a=>a.label=='<')
 			if(!prev) return

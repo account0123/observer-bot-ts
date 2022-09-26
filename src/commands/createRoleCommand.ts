@@ -2,7 +2,6 @@ import { Message, Permissions, MessageEmbed, RoleData, CreateRoleOptions, CacheT
 import { InteractionLang, Lang } from "./lang/Lang";
 import { MemberFinder } from "../util/MemberFinder";
 import SlashCommand from "./slashCommandInterface";
-import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
 export class CreateRoleCommand implements SlashCommand{
@@ -91,7 +90,7 @@ export class CreateRoleCommand implements SlashCommand{
 		return true
 	}
 
-	static get(): RESTPostAPIApplicationCommandsJSONBody{
+	static get(): any {
 		const s = new SlashCommandBuilder()
 		.setName('createrole')
 		.setDescription('Creates a role as you want')

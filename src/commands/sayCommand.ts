@@ -3,7 +3,6 @@ import { Lang } from "./lang/Lang";
 import { ChannelFinder } from "../util/ChannelFinder";
 import { MemberFinder } from "../util/MemberFinder";
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/rest/v9/interactions";
 import SlashCommand from "./slashCommandInterface";
 
 export class SayCommand implements SlashCommand {
@@ -39,7 +38,7 @@ export class SayCommand implements SlashCommand {
 		setTimeout(()=>msg.delete(), 200)
 	}
 
-	static get(): RESTPostAPIApplicationCommandsJSONBody{
+	static get(): any{
 		const s = new SlashCommandBuilder()
 		.setName('say')
 		.setDescription('I say whatever you want')

@@ -47,7 +47,8 @@ async function userEmbed(member:GuildMember, l: Lang, showDetails:boolean) {
 		.setAuthor({name: member.id, url: member.displayAvatarURL()})
 		.setThumbnail(member.user.displayAvatarURL({dynamic:true}))
 		.setColor(member.displayColor)
-	if (member.nickname) embed.addField(await l.translate(e+'nickname'),member.nickname,true)
+	if (member.nickname)
+		embed.addFields([{name: await l.translate(e+'nickname'), value: member.nickname, inline: true}])
 	embed.addFields(
 			{name: await l.translate(e+'name'), value: member.user.username, inline:true},
 			{name: await l.translate(e+'discriminator'), value: member.user.discriminator, inline: true},

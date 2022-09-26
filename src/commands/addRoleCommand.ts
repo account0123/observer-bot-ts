@@ -4,7 +4,7 @@ import { RoleFinder } from "../util/RoleFinder";
 import { CleanCommand } from "./cleanCommand";
 import { InteractionLang, Lang } from "./lang/Lang";
 import { PermissionsChecker } from "../util/PermissionsChecker";
-import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
+import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types/rest/v9";
 import { SlashCommandBuilder } from '@discordjs/builders';
 import SlashCommand from "./slashCommandInterface";
 
@@ -115,7 +115,7 @@ export class AddRoleCommand implements SlashCommand {
 		})
 	}
 	
-	static get(): RESTPostAPIApplicationCommandsJSONBody{
+	static get(): any{
 		const s = new SlashCommandBuilder()
 		.setName('addrole')
 		.setDescription('Adds a role to a member')

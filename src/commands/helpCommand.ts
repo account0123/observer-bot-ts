@@ -4,7 +4,6 @@ import CommandHandler from "../commandHandler";
 import { InteractionLang, Lang } from "./lang/Lang";
 import Command from "./commandInterface";
 import { PermissionsChecker } from "../util/PermissionsChecker";
-import { APIButtonComponent, RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 import SlashCommand from "./slashCommandInterface";
 import { SlashCommandBuilder } from '@discordjs/builders';
 
@@ -195,7 +194,7 @@ export class HelpCommand implements SlashCommand {
 		});
 	}
 
-	static get(): RESTPostAPIApplicationCommandsJSONBody{
+	static get(): any{
 		const s = new SlashCommandBuilder()
 		.setName('help')
 		.setDescription('Shows command list or information about a command')
@@ -214,7 +213,7 @@ export class HelpCommand implements SlashCommand {
 
 			const c = button.message.components
 			if(!c) return
-			const comps = <APIButtonComponent[]>c[0].components
+			const comps = <MessageButton[]>c[0].components
 			const next = comps.find(a=>a.label=='>')
 			const prev = comps.find(a=>a.label=='<')
 			if(!prev) return
@@ -247,7 +246,7 @@ export class HelpCommand implements SlashCommand {
 
 			const c = button.message.components
 			if(!c) return
-			const comps = <APIButtonComponent[]>c[0].components
+			const comps = <MessageButton[]>c[0].components
 			const next = comps.find(a=>a.label=='>')
 			const prev = comps.find(a=>a.label=='<')
 			if(!prev) return

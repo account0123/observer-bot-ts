@@ -149,15 +149,15 @@ export default class CommandHandler {
         const t = await lang.translate('errors.not_enough_args')
         const n = matchedArgCommand.commandNames[0]
         const u = `${this.prefix}${n} \`${await lang.translate(matchedArgCommand.usage)}\``
-        const e = new MessageEmbed().addField(await lang.translate('info.help.about.usage'), u)
-        e.addField(await lang.translate('info.help.about.examples'), matchedArgCommand.examples.map(e=>`${this.prefix}${n} ${e}`).join('\n'))
+        const e = new MessageEmbed().addFields([{name: await lang.translate('info.help.about.usage'), value: u}])
+        e.addFields({name: await lang.translate('info.help.about.examples'), value:  matchedArgCommand.examples.map(e=>`${this.prefix}${n} ${e}`).join('\n')})
         message.reply({content: t,embeds: [e]})
         return
       }
       await matchedArgCommand.checkPermissions(message,lang, this.prefix).then(b=>{
        if(b) matchedArgCommand.run(message,lang,commandParser.args, this.prefix).catch(error => {
          message.react('❌').catch()
-         lang.reply('errors.unknown')
+         lang.reply('errors.unknown' + `\nError: ${error.message || null}`)
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
       })});
     }else return
