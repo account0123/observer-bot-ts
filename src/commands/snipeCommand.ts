@@ -27,7 +27,6 @@ export class SnipeCommand implements Command {
 			const embed = new MessageEmbed().setAuthor({name: String(lastrow.username), iconURL: lastrow.avatar_url})
 				.setColor(color).setDescription(lastrow.content)
 				.setFooter({text: footer}).setTimestamp(lastrow.time)
-			if(lastrow.image) embed.setImage(lastrow.image)
 			msg.channel.send({embeds: [embed]}).catch(e=>{
 				l.reply('info.snipe.error')
 				console.error(e.stack)

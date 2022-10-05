@@ -9,7 +9,8 @@
     "prestart:dev": "npm run build",
     "start:dev": "nodemon build/index.js",
     "prebuild": "rimraf ./build",
-    "build": "npx tsc",
+    "tsc": "./node_modules/typescript/bin/tsc",
+    "build": "tsc",
     "postbuild": "copyfiles -u 1 \"./src/**/*.json\" ./build/",
     "prestart": "npm run build",
     "start": "node build/index.js",
@@ -39,8 +40,7 @@
     "copyfiles": "^2.3.0",
     "eslint": "^7.4.0",
     "nodemon": "^2.0.4",
-    "ts-node": "^8.10.2",
-    "typescript": "^4.5.5"
+    "ts-node": "^8.10.2"
   },
   "dependencies": {
     "@discordjs/rest": "^0.3.0",
@@ -55,8 +55,8 @@
     "google-search-results-nodejs": "^2.0.0",
     "mysql": "^2.18.1",
     "mysql2": "^2.1.0",
-    "npx": "^10.2.2",
     "rae-api": "^1.2.5",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "typescript": "^4.8.4"
   }
 }

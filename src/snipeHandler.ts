@@ -15,7 +15,7 @@ export default class SnipeHandler {
     const content = msg.content
     if(!content) return   
     Logger.logDeleted(msg, g.id, new Lang(<Message>msg))
-    Connections.db.execute('INSERT INTO deleted VALUES (?, ?, ?, ?, ?, ?, ?, ?)',[content,null, author.username, author.discriminator, author.avatarURL({dynamic:true}), g.id, msg.channel.id,msg.createdTimestamp])
+    Connections.db.execute('INSERT INTO deleted VALUES (?, ?, ?, ?, ?, ?, ?)',[content, author.username, author.discriminator, author.avatarURL({dynamic:true}), g.id, msg.channel.id,msg.createdTimestamp])
     console.log('Mensaje borrado guardado')
   }
   
