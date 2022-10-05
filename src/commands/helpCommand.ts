@@ -90,7 +90,7 @@ export class HelpCommand implements SlashCommand {
 
 		// builds each page and returns
 		if(page == 1){
-			embed.addField(mod, await createList(moderators))
+			embed.addFields([{name: mod, value: await createList(moderators)}])
 			const footer = await l.translate('info.help.general.footer', '1', '3', this.prefix)
 			embed.setFooter({text: footer}).setTimestamp();
 			return embed
@@ -140,8 +140,9 @@ export class HelpCommand implements SlashCommand {
 		if (command) {
 			embed.setTitle(await l.translate(about + 'title',command.commandNames.shift() || ''))
 			.setDescription(await l.translate(command.fulldescription))
-			.addField(await l.translate(about + 'aliases'),command.commandNames.join(', '),true)
-			.addField(await l.translate(about + 'usage'),await l.translate('info.help.default.no_usage'),true)
+			.addFields([
+				{name: await l.translate(about + 'aliases'), value: command.commandNames.join(', '), inline: true},
+				{name: await l.translate(about + 'usage'), value: await l.translate('info.help.default.no_usage'), inline: true}])
 			.setTimestamp();
 		}
 		if (argCommand) {
@@ -158,10 +159,12 @@ export class HelpCommand implements SlashCommand {
 			}
 			const name = argCommand.commandNames.shift() || ''
 			embed.setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,Permissions.DEFAULT.toString(16)))
-			if(argCommand.commandNames.length > 0) embed.addField(await l.translate(about + 'aliases'),argCommand.commandNames.join(', '),true)
-			embed.addField(await l.translate(about + 'usage'),`${this.prefix}${name} \`${await l.translate(argCommand.usage)}\``,true)
-			.addField(await l.translate(about + 'examples'), argCommand.examples.map(e=>`${this.prefix}${name} ${e}`).join('\n'))
-			.addField(await l.translate(about + 'required'),await buildField())
+			if(argCommand.commandNames.length > 0)
+				embed.addFields([{name: await l.translate(about + 'aliases'), value: argCommand.commandNames.join(', '), inline: true}])
+			embed.addFields([
+				{name: await l.translate(about + 'usage'), value: `${this.prefix}${name} \`${await l.translate(argCommand.usage)}\``, inline: true},
+				{name: await l.translate(about + 'examples'), value: argCommand.examples.map(e=>`${this.prefix}${name} ${e}`).join('\n')},
+				{name: await l.translate(about + 'required'), value:await buildField() }])
 			.setFooter({text: await l.translate(about + 'footer')})
 			.setTimestamp();
 		}
