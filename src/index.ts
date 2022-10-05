@@ -129,11 +129,12 @@ async function register(rest: REST, testing: boolean){
 }
 
 let rest
-// Beta NzA4ODg0MjYwNjY0MjQ2MzI0.Xrd16g.3CkRz6-jepJ5P8d3qcSnjMKu1lo
+
 if(process.argv[2] == '--beta'){
-  client.login('NzA4ODg0MjYwNjY0MjQ2MzI0.Xrd16g.3CkRz6-jepJ5P8d3qcSnjMKu1lo').catch(e=>console.error(e));
-  rest = new REST({ version: '9' }).setToken('NzA4ODg0MjYwNjY0MjQ2MzI0.Xrd16g.3CkRz6-jepJ5P8d3qcSnjMKu1lo');
-  register(rest, true)
+  //client.login
+  //rest = new REST({ version: '9' }).setToken
+  //register(rest, true)
+  console.log("Beta no disponible")
 }else{
   client.login(DISCORD_TOKEN).catch(e=>console.error(e));
   rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN || '');
