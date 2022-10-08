@@ -11,7 +11,7 @@
     "prebuild": "rimraf ./build",
     "tsc": "./node_modules/typescript/bin/tsc",
     "build": "tsc",
-    "postbuild": "copyfiles -u 1 \"./src/**/*.json\" ./build/",
+    "postbuild": "cp ./src/commands/lang/*.json ./build/commands/lang",
     "prestart": "npm run build",
     "start": "node build/index.js",
     "test": "node build/index.js --beta",
