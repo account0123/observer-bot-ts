@@ -82,7 +82,7 @@ export default class CommandHandler {
       lang = new Lang(message)
       const g = message.guild
       const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix FROM guilds WHERE id=?', [g.id])
-      if(rows[0].prefix) this.prefix = rows[0].prefix
+      if(rows.length > 0 && rows[0].hasOwnProperty("prefix")) this.prefix = rows[0].prefix
       else Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [message.guild.id, message.guild.name, '!!', 'es']).then(()=>console.log('Servidor registrado: ' + g.id)).catch(e=>console.error(e));
     }
     if(!this.isCommand(message)) return
@@ -171,7 +171,7 @@ export default class CommandHandler {
       lang = new InteractionLang(interaction)
       const g = interaction.guild
       const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix FROM guilds WHERE id=?', [g.id])
-      if(rows[0].prefix) this.prefix = rows[0].prefix
+      if(rows.length > 0 && rows[0].hasOwnProperty("prefix")) this.prefix = rows[0].prefix
       else Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [g.id, g.name, '!!', 'es']).then(()=>console.log('Servidor registrado: ' + g.id)).catch(e=>console.error(e));
     }
     if(interaction.isButton()){

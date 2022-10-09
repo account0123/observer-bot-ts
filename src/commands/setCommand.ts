@@ -1,11 +1,11 @@
-import { GuildBasedChannel, GuildChannel, Message, Role, Snowflake, TextChannel } from "discord.js";
+import { ButtonInteraction, CacheType, CommandInteraction, GuildBasedChannel, GuildChannel, Message, MessageActionRow, MessageButton, Role, Snowflake, TextChannel } from "discord.js";
 import { RowDataPacket } from "mysql2";
 import { Connections } from "../config/connections";
 import { ChannelFinder } from "../util/ChannelFinder";
 import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
 import ArgCommand from "./commandArgInterface";
-import { Lang } from "./lang/Lang";
+import { InteractionLang, Lang } from "./lang/Lang";
 import { LangCommand } from "./lang/langCommand";
 
 export class SetCommand implements ArgCommand {
@@ -89,6 +89,18 @@ export class SetCommand implements ArgCommand {
 	private setLogChannel(c: GuildBasedChannel | undefined, mention: string, msg: Message, guild_id: string, l: Lang) {
 		const gc = <GuildChannel> msg.channel
 		let reactable = false
+		const confirm = new MessageButton({style: 1, customId: 'yes', label: '✅'})
+		const reject = new MessageButton({style: 1, customId: 'no', label: '❌'})
+		const action_row = new MessageActionRow({components: [confirm, reject]})
+		if(!mention){
+			Connections.db.query<RowDataPacket[]>('SELECT log FROM guilds WHERE id=?', guild_id)
+			.then(([rows, f])=>{
+				const r = rows[0]
+				const id = r.log
+				const cont = `¿Quieres borrar el canal de registro **#${ChannelFinder.getChannel(msg, id)}**? No borraré el canal mismo`
+				msg.channel.send({content: cont, components: [action_row]})});
+			return
+		}
 		if(msg.client.user){
 			const perms = gc.permissionsFor(msg.client.user)
 			if(perms) reactable = perms.has('ADD_REACTIONS')
@@ -128,5 +140,22 @@ export class SetCommand implements ArgCommand {
 		}
 		return true
 	}
-	
+	async react(button: ButtonInteraction, l: InteractionLang, prefix: string): Promise<void>{
+		if(button.customId == 'yes'){
+			const m = button.message
+			if(m instanceof Message){
+				m.delete()
+				m.channel.send("Canal de registro borrado.")
+			}
+		}
+		if(button.customId == 'no'){
+			const m = button.message
+			if(m instanceof Message){
+				m.delete()
+				m.channel.send("Llámame cuando quieras algo serio.")
+			}
+
+		}
+	}
+
 }

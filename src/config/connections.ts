@@ -8,11 +8,12 @@ export class Connections {
     this.connect()
   }
   private async connect(){
-    const database_url = process.env.JAWSDB_MARIA_URL
+    const database_url = process.env.DATABASE_URL
     if(!database_url) throw new Error('Database URL is undefined')
-    await MySQL.createConnection(database_url).then((c)=>{
-      Connections.db = c
-      console.log('Database conectada')
-    }).catch(()=>console.error('Database no pudo ser conectada'))
+    if(database_url.startsWith('mysql'))
+      await MySQL.createConnection(database_url).then((c)=>{
+        Connections.db = c
+        console.log('Database conectada')
+      }).catch(()=>console.error('Database no pudo ser conectada'));
   }
 }

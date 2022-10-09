@@ -56,6 +56,7 @@ client.on("ready", async () => {
       }
       if(role.permissions.has('ADMINISTRATOR')) addAdminRole(role)
     }
+    console.log("---------Fin configuración de servidor------------")
   }
 });
 
@@ -74,6 +75,7 @@ client.on('guildCreate', async guild => {
     if(role.managed) continue;
     if(role.permissions.has('ADMINISTRATOR')) addAdminRole(role)
   }
+  console.log("---------Fin adaptación a nuevo servidor------------")
 });
 client.on("guildDelete", guild=>{
   const q1 = Connections.db.query('DELETE FROM guilds WHERE id=?', [guild.id])
