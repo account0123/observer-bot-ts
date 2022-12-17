@@ -394,12 +394,17 @@
             }
         },
         "set":{
-            "description": "Cambia mis ajustes (prefix,lang, logchannel).\nset prefix <prefijo>: Cambia mi prefijo (máximo 4 caracteres)\nset lang <idioma>: Cambia el idioma por el cual envío mensajes (es, en)\nset logchannel <canal>: Agrega o cambia el canal donde van los mensajes borrados y editados",
+            "description": "Cambia mis ajustes.",
+            "fulldescription": "Cambia mis ajustes (prefix,lang, logchannel).\nset prefix <prefijo>: Cambia mi prefijo (máximo 4 caracteres)\nset lang <idioma>: Cambia el idioma por el cual envío mensajes (es, en)\nset logchannel <canal>: Agrega o cambia el canal donde van los mensajes borrados y editados.\nset logchannel: Desactiva el canal de registros si existe",
             "usage": "<ajuste a cambiar> <nuevo valor>",
             "prefix_success": "Mi prefijo fue cambiado a `{prefix}`",
             "log_success": "El canal de registros será {channel}",
+            "log_delete": "¿Quieres desactivar el canal de registro {channel} ({id})?",
+            "no_log": "*No hay un canal de registros. Asigna un canal con la opción `logchannel nombredecanal`*",
+            "log_deleted": "Canal de registros ya no está asignado.",
             "mod_exists": "**{role}** ya es mod.",
-            "mod_success": "Rol **{role}** agregado como mod. Puede usar ${prefix}warn"
+            "mod_success": "Rol **{role}** agregado como mod. Puede usar ${prefix}warn.",
+            "remove_mod_success": "Rol eliminado. No puede usar comandos de moderación."
         }, 
         "snipe":{
             "description": "Muestra el último mensaje borrado.",
@@ -537,6 +542,7 @@
     "errors": {
         "clean_up_failed": "Lo siento... creo que tampoco pude limpiar este desastre. Mejor usa a Nekotina o algún bot de esos.",
         "dm_closed": "No pude enviarte un mensaje privado, quizás lo tienes cerrado o tienes desactivado los mensajes privados desde este servidor.",
+        "failed_confirm": "No estoy para bromas.",
         "forbidden": "No puedes usar ese comando",
         "enough_timers": "Tengo demasiados focos donde concentrarme. No puedo con tanto, que sea un bot no significa que merezca estos tratos.",
         "is_thread": "Disculpa, no puedes usar ese comando dentro de un hilo.",
@@ -584,7 +590,7 @@
             "unban": "no tienes permiso para quitar baneos. ||Necesitas: Banear miembros||"
         },
         "short_password": "la contraseña tiene que tener 32 caracteres exactos.",
-        "unknown": "hubo un error desconocido al ejecutar este comando :thinking:",
+        "unknown": "hubo un error desconocido al ejecutar este comando :thinking:\n{error}",
         "unsafe_integer": "La duración no puede ser mayor que `2147483` segundos.",
         "wrong_password": "Contraseña incorrecta.\n||Pista: Usa el comando getpass para obtener una contraseña||"
     },

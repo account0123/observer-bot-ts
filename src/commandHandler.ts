@@ -82,7 +82,7 @@ export default class CommandHandler {
       lang = new Lang(message)
       const g = message.guild
       const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix FROM guilds WHERE id=?', [g.id])
-      if(rows.length > 0 && rows[0].hasOwnProperty("prefix")) this.prefix = rows[0].prefix
+      if(rows.length > 0 && Object.prototype.hasOwnProperty.call(rows[0], "prefix")) this.prefix = rows[0].prefix
       else Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [message.guild.id, message.guild.name, '!!', 'es']).then(()=>console.log('Servidor registrado: ' + g.id)).catch(e=>console.error(e));
     }
     if(!this.isCommand(message)) return
@@ -96,7 +96,9 @@ export default class CommandHandler {
         const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=? OR global=?', [message.guild.id, message.channel.id, 1])
         for(const row of rows){
           if(row['command'] == matchedCommand.commandNames[0]){
+            const command = row['command']
             lang.send('disabled')
+            console.log(`${command} deshabilitado. Intente usar \`${this.prefix}enable ${command}\``)
             return
           }
         }
@@ -122,10 +124,11 @@ export default class CommandHandler {
     }else if (matchedArgCommand) {
       if(message.guild){
         const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT command FROM disabled WHERE guild_id=? AND channel_id=? OR global=?', [message.guild.id, message.channel.id, 1])
-        console.log(rows)
         for(const row of rows){
           if(row['command'] == matchedArgCommand.commandNames[0]){
+            const command = row['command']
             lang.send('disabled')
+            console.log(`${command} deshabilitado. Intente usar \`${this.prefix}enable ${command}\``)
             return
           }
         }
@@ -157,7 +160,7 @@ export default class CommandHandler {
       await matchedArgCommand.checkPermissions(message,lang, this.prefix).then(b=>{
        if(b) matchedArgCommand.run(message,lang,commandParser.args, this.prefix).catch(error => {
          message.react('❌').catch()
-         lang.reply('errors.unknown' + `\nError: ${error.message || null}`)
+         lang.reply('errors.unknown', `Error: ${error.message || 'no encontrado.'}`)
          console.error(`"${this.echoMessage(message)}" falló por "${error.stack}"`)
       })});
     }else return
@@ -171,7 +174,7 @@ export default class CommandHandler {
       lang = new InteractionLang(interaction)
       const g = interaction.guild
       const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT prefix FROM guilds WHERE id=?', [g.id])
-      if(rows.length > 0 && rows[0].hasOwnProperty("prefix")) this.prefix = rows[0].prefix
+      if(rows.length > 0 && Object.prototype.hasOwnProperty.call(rows[0], "prefix")) this.prefix = rows[0].prefix
       else Connections.db.query('INSERT INTO guilds VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE id=id;', [g.id, g.name, '!!', 'es']).then(()=>console.log('Servidor registrado: ' + g.id)).catch(e=>console.error(e));
     }
     if(interaction.isButton()){
@@ -182,6 +185,10 @@ export default class CommandHandler {
         if(interaction.customId.endsWith('def')){
           const d = <DefineCommand>CommandHandler.argCommands.find(c=>c.commandNames[0] == 'define')
           d.change_page(interaction)
+        }
+        if(interaction.customId.endsWith('delete_log')){
+          const s = <SetCommand>CommandHandler.argCommands.find(c=>c.commandNames[0] == 'set')
+          s.react(interaction, lang)
         }
     }
     if (!interaction.isCommand()) return;

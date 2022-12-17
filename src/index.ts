@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import Discord, { Message, PartialMessage, Role } from "discord.js";
-import { DISCORD_TOKEN } from './config/secrets';
+import { DISCORD_TOKEN, BETA_TOKEN } from './config/secrets';
 import CommandHandler from './commandHandler';
 import SnipeHandler from './snipeHandler';
 import { Connections } from './config/connections';
@@ -111,7 +111,7 @@ client.on("error", e =>{
 
 async function register(rest: REST, testing: boolean){
   try {
-		console.log('Started refreshing application (/) commands.');
+		console.log('Actualizando comandos de barra (/)');
     if(testing){
 		await rest.put(
 			Routes.applicationGuildCommands('708884260664246324', '706215432503164979'),
@@ -132,11 +132,14 @@ async function register(rest: REST, testing: boolean){
 
 let rest
 
-if(process.argv[2] == '--beta'){
-  //client.login
-  //rest = new REST({ version: '9' }).setToken
-  //register(rest, true)
-  console.log("Beta no disponible")
+if(process.argv[2] == '-d'){
+  if(!BETA_TOKEN){
+    console.error("No hay token para bot experimental. Intente ejecutar `npm start`.")
+    process.exit(1)
+  }
+  client.login(BETA_TOKEN).catch(e=>console.error(e))
+  rest = new REST({ version: '9' }).setToken(BETA_TOKEN)
+  register(rest, true)
 }else{
   client.login(DISCORD_TOKEN).catch(e=>console.error(e));
   rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN || '');

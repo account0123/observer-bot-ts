@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, PartialMessage, TextChannel, User, UserFlags } from "discord.js";
+import { Message, MessageEmbed, PartialMessage, TextChannel} from "discord.js";
 import { RowDataPacket } from "mysql2";
 import { Lang } from "../commands/lang/Lang";
 import { Connections } from "../config/connections";
@@ -7,6 +7,7 @@ export class Logger {
 
     static async logDeleted(msg: Message | PartialMessage, guild_id: string, l: Lang): Promise<void>{
         const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT log FROM guilds WHERE id=?', [guild_id])
+        if(rows.length == 0) return
         const row = rows[0]
         const channel_id = row.log
         if(!channel_id) return
@@ -28,6 +29,7 @@ export class Logger {
 
     static async logEdited(msg: Message | PartialMessage, u: Message | PartialMessage, guild_id: string, l: Lang): Promise<void>{
         const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT log FROM guilds WHERE id=?', [guild_id])
+        if(rows.length == 0) return
         const row = rows[0]
         const channel_id = row.log
         if(!channel_id) return
