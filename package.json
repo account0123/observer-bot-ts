@@ -14,7 +14,7 @@
     "postbuild": "cp ./src/commands/lang/*.json ./build/commands/lang",
     "prestart": "npm run build",
     "start": "node build/index.js",
-    "test": "node build/index.js --beta",
+    "test": "node build/index.js -d",
     "pretest": "npm run build"
   },
   "repository": {

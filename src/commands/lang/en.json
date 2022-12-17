@@ -391,12 +391,16 @@
             }
         },
         "set":{
-            "description": "Changes my settings (prefix,lang,logchannel).\nset prefix <prefix>: Sets my prefix (max 4 characters)\nset lang <language>: Sets the language what use to send messages (es, en)\nset logchannel <channel>: Sets the channel where i will send deleted & edited messages",
+            "description": "Changes my settings.",
+            "fulldescription": "Changes my settings (prefix,lang,logchannel).\nset prefix <prefix>: Sets my prefix (max 4 characters)\nset lang <language>: Sets the language what use to send messages (es, en)\nset logchannel <channel>: Sets the channel where i will send deleted & edited messages\nset logchannel: Disables logs channel, if any",
             "usage": "<setting to change> <new value>",
             "prefix_success": "My prefix was changed to `{prefix}`",
             "log_success": "The logs channel will be {channel}",
+            "log_delete": "Do u wanna disable the logs channel {channel} ({id})?",
+            "log_deleted": "Logs channel is no longer assigned.",
+            "no_log": "*There isn't logs channel. Assign a channel by `logchannel channelname` option*",
             "mod_exists": "**{role}** is already a mod.",
-            "mod_success": "**{role}** role added as mod. They can use ${prefix}warn"
+            "mod_success": "**{role}** role added as mod. They can use ${prefix}warn."
         }, 
         "snipe":{
             "description": "Shows the last deleted message.",
@@ -513,6 +517,7 @@
 		"clean_up_failed": "I'm sorry... i don't think I can clean up this mess either. You should use MEE6 or a bot of those.",
         "dm_closed": "i couldn't send you a private message, maybe you closed it or deactivated the private messages from this server.",
         "enough_timers": "I have to focus on many punishments. I can't support it, I'm a bot but it doesn't mean I deserve these treatments.",
+        "failed_confirm": "I'm not in the mood for jokes.",
         "forbidden": "you can't use this command.",
         "is_thread": "Sorry, you can't use this command inside a thread",
         "invalid_command": "`{command}` is not a known command",
@@ -558,7 +563,7 @@
 			"unban": "you don't have permission to remove bans. ||You need: Ban Members||"
         },
         "short_password": "The secret key must be 32 characters long.",
-        "unknown": "an error has been thrown when this command was executed.",
+        "unknown": "an error has been thrown when this command was executed.\n`${error}`",
         "unsafe_integer": "This duration is so long that almost opens a hole in space-time... or almost overloaded my memory, is the same.",
 		"wrong_password": "Wrong password.\n||Hint: Use getpass command to get a password||"
     },

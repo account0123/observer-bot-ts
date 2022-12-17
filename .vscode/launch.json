@@ -19,6 +19,7 @@
 				"${workspaceFolder}/src"
 			],
 			"program": "${workspaceFolder}/build/index.js",
+			"args": ["-d"],
 			"outFiles": [
 				"${workspaceFolder}/**/*.js"
 			]

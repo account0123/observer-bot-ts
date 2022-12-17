@@ -1,4 +1,3 @@
-import { RowDataPacket } from 'mysql2';
 import {Message, PartialMessage} from 'discord.js'
 import { Lang } from './commands/lang/Lang';
 import { Connections } from "./config/connections";
