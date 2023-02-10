@@ -382,7 +382,7 @@
                 "voice": "/{count} de voz",
                 "news": "/{count} de anuncios",
                 "stage": "/{count} de escenario",
-                "store": "/{count} de venta"
+                "forum": "/{count} de foro"
             },
             "verification":{
                 "intro": "Cada usuario debe:\n",
@@ -545,6 +545,7 @@
         "failed_confirm": "No estoy para bromas.",
         "forbidden": "No puedes usar ese comando",
         "enough_timers": "Tengo demasiados focos donde concentrarme. No puedo con tanto, que sea un bot no significa que merezca estos tratos.",
+        "high_perms": "Si no tengo permiso de {perms}, nadie lo tendrá :smiling_imp:",
         "is_thread": "Disculpa, no puedes usar ese comando dentro de un hilo.",
         "invalid_command": "`{command}` no es un comando que reconozca",
         "invalid_channel": "No pude identificar el canal {mention}",

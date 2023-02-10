@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, Role, RoleData, Permissions, PermissionString, ColorResolvable } from "discord.js";
+import { Message, Role, RoleData, ColorResolvable, PermissionFlagsBits, PermissionsBitField, PermissionsString } from "discord.js";
 import { RoleFinder } from "../util/RoleFinder";
 import { Lang } from "./lang/Lang";
 import { MemberFinder } from "../util/MemberFinder";
@@ -17,7 +17,7 @@ export class EditRoleCommand implements ArgCommand {
 	async run(msg: Message, l:Lang, args: string[]): Promise<void> {
 		const g = msg.guild
 		if(!g || !msg.client.user) return
-		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+		const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 		if(!bot) return
 		const botposition = bot.roles.highest.position
 		// Se asume a la mención de rol como la primera palabra de los argumentos
@@ -28,7 +28,7 @@ export class EditRoleCommand implements ArgCommand {
 		if (regex) mention = regex[1]
 		// En caso de no existir el nombre en el patrón, se resatura al valor anterior
 		if (!mention || mention.length == 0) mention = args[0]
-		const role = RoleFinder.getRole(msg,mention.trim())
+		const role = RoleFinder.getRole(msg.guild,mention.trim())
 		if(!role){
 			l.reply('info.editrole.not_found',args[0])
 			return
@@ -79,12 +79,10 @@ export class EditRoleCommand implements ArgCommand {
 						}
 						return
 					default: {
-						let permission: PermissionString
-						for (const flag in Permissions.FLAGS) {
+						for (const flag in PermissionFlagsBits) {
 							if(target.toUpperCase().trim() === flag){
 								if (action==='add') {
-									permission = <PermissionString> flag
-									const permissions = role.permissions.add(permission)
+									const permissions = role.permissions.add(<PermissionsString>flag)
 									role.setPermissions(permissions, reason).then(async ()=>{
 										l.reply('info.editrole.permissions_change.add_success',role.name,
 										await l.translate('permissions.' + flag));
@@ -92,8 +90,7 @@ export class EditRoleCommand implements ArgCommand {
 									return
 								}
 								if(action==='remove'){
-									permission = <PermissionString> flag
-									const permissions = role.permissions.remove(permission)
+									const permissions = role.permissions.remove(<PermissionsString>flag)
 									role.setPermissions(permissions, reason).then(async ()=>{
 										l.reply('info.editrole.permissions_change.remove_success',role.name,await l.translate('permissions.' + flag));
 									});
@@ -126,7 +123,7 @@ export class EditRoleCommand implements ArgCommand {
 							l.reply('info.editrole.permissions_change.NaN')
 							return
 						}
-						await role.setPermissions(new Permissions(BigInt(perms)),reason)
+						await role.setPermissions(new PermissionsBitField(BigInt(perms)),reason)
 							.then(r=>l.reply('info.editrole.permissions_change.success',r.name,r.permissions.toArray().join(', ')))
 							.catch(err=>{
 								l.reply('info.editrole.permissions_change.error',value)
@@ -150,7 +147,7 @@ export class EditRoleCommand implements ArgCommand {
 							console.error(`Se intentó cambiar la posición a ${value} al rol @${role.name}, pero falló por ${err}`)});}
 						return
 					case 'above':{
-						const lowerRole = RoleFinder.getRole(msg,value)
+						const lowerRole = RoleFinder.getRole(msg.guild,value)
 						if(!lowerRole){
 							l.reply('info.editrole.position_change.invalid_lower_role')
 							return
@@ -165,7 +162,7 @@ export class EditRoleCommand implements ArgCommand {
 							console.error(`Se intentó cambiar la posición a ${value} al rol @${role.name}, pero falló por ${err}`)});}
 						return
 					case 'below':{
-						const higherRole = RoleFinder.getRole(msg,value)
+						const higherRole = RoleFinder.getRole(msg.guild,value)
 						if (!higherRole) {
 							l.reply('info.editrole.position_change.invalid_higher_role')
 							return
@@ -191,18 +188,18 @@ export class EditRoleCommand implements ArgCommand {
 			l.send('info.editrole.no_changes')
 			return
 		}
-		await role.edit(data,reason).then(r=>l.send('info.editrole.success',r.name))
+		await role.edit({reason, ...data}).then(r=>l.send('info.editrole.success',r.name))
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		if(!msg.client.user) return false
-		const mod = MemberFinder.getMember(msg, msg.author.id)
-		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+		if(!msg.client.user || !msg.guild) return false
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
+		const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!bot.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!bot.permissions.has('ManageRoles')) {
 			l.reply('errors.botperms.edit_role')
 			return false
 		}
-		if (!mod.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!mod.permissions.has('ManageRoles')) {
 			l.reply('errors.modperms.edit_role')
 			return false
 		}
@@ -210,8 +207,8 @@ export class EditRoleCommand implements ArgCommand {
 	}
 }
 function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | undefined {
-	if(!msg.client.user) return
-	const bot = MemberFinder.getMember(msg, msg.client.user.id)
+	if(!msg.client.user || !msg.guild) return
+	const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 	if(!bot) return
 	const botposition = bot.roles.highest.position
 	if(!str.startsWith('{') && !str.endsWith('}')) return undefined
@@ -260,7 +257,7 @@ function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | unde
 				else data.permissions = BigInt(perms)
 			break
 			case 'above': {
-				const lowerRole = RoleFinder.getRole(msg,value)
+				const lowerRole = RoleFinder.getRole(msg.guild,value)
 				if(!lowerRole) break
 				const pos = lowerRole.position + 1
 				if (pos >= botposition) {
@@ -271,7 +268,7 @@ function createData(l:Lang,msg:Message,str:string, oldRole:Role):RoleData | unde
 			}
 			break
 			case 'below': {
-				const higherRole = RoleFinder.getRole(msg,value)
+				const higherRole = RoleFinder.getRole(msg.guild,value)
 				if (!higherRole) break
 				const pos_c = higherRole.position - 1
 				if (pos_c >= botposition) {

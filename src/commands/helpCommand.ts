@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { BaseCommandInteraction, ButtonInteraction, CacheType, Client, CommandInteraction, Guild, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, Permissions } from "discord.js";
+import { BaseInteraction, ButtonComponent, ButtonInteraction, ChatInputCommandInteraction, Client, EmbedBuilder, Guild, Message, MessageComponentInteraction, PermissionsBitField, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
 import CommandHandler from "../commandHandler";
 import { InteractionLang, Lang } from "./lang/Lang";
 import Command from "./commandInterface";
@@ -36,15 +36,15 @@ export class HelpCommand implements SlashCommand {
 	async checkPermissions(): Promise<boolean> {
 		return true
 	}
-	private async buildCommandList(page: 1 | 2 | 3, msg: Message | BaseCommandInteraction | MessageComponentInteraction): Promise<MessageEmbed>{
+	private async buildCommandList(page: number, msg: Message | BaseInteraction| MessageComponentInteraction): Promise<EmbedBuilder>{
 		// verification
-		const f = new MessageEmbed().setDescription('Embed not available')
+		const f = new EmbedBuilder().setDescription('Embed not available')
 		if(!this.lang || !this.prefix)
 			return f
 		// declarations
 		const managers: BotCommand[] = [], informers: BotCommand[] = [], random: BotCommand[] = [],  
 		moderators: BotCommand[] = [], configurators: BotCommand[] = []
-		const embed = new MessageEmbed(), l = this.lang, bot = msg.client.user
+		const embed = new EmbedBuilder(), l = this.lang, bot = msg.client.user
 		const t = 'categories.', [manage, info, misc, mod, config] = await Promise.all([l.translate(t+'manage'), l.translate(t+'info'),l.translate(t+'misc'), l.translate(t+'mod'), l.translate(t+'config')])
 		if(!bot) return f
 
@@ -54,7 +54,7 @@ export class HelpCommand implements SlashCommand {
 			if(m) embed.setColor(m.displayColor)
 		}
 		else embed.setColor(0xffffff)
-		const a = bot.avatarURL({dynamic:true})
+		const a = bot.avatarURL()
 		if(!a) return f
 		embed.setAuthor({name: bot.tag, url: a})
 		const title = await l.translate('info.help.general.title')
@@ -118,22 +118,22 @@ export class HelpCommand implements SlashCommand {
 	private async createCommandList(msg: Message) {
 		const embed = await this.buildCommandList(1, msg)
 		// Creating components list
-		const prev_button = new MessageButton({style: 1, customId: 'help_previous', label: '<', disabled: true})
-		const next_button = new MessageButton({style: 1, label: '>', customId: 'help_next'})
-		const row = new MessageActionRow({components: [prev_button, next_button]})
+		const prev_button = {type: 2,style: 1, customId: 'help_previous', label: '<', disabled: true}
+		const next_button = {type: 2,style: 1, label: '>', customId: 'help_next'}
+		const row = {type: 1, components: [prev_button, next_button]}
 		// Sending embed page + reactions
 		msg.channel.send({embeds: [embed], components: [row]}).then(()=>{
 			console.log('Embed de ayuda enviado')
 		})
 	}
 
-	private async buildHelpEmbed(commandName: string, guild: Guild | null, client: Client): Promise<MessageEmbed>{
+	private async buildHelpEmbed(commandName: string, guild: Guild | null, client: Client): Promise<EmbedBuilder>{
 		// verification
-		const f = new MessageEmbed().setDescription('Embed not available')
+		const f = new EmbedBuilder().setDescription('Embed not available')
 		if(!this.lang || !this.prefix)
 			return f
 		const l = this.lang
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 		const command = CommandHandler.commands.find(command => command.commandNames.includes(commandName.toLowerCase()))
 		const argCommand = CommandHandler.argCommands.find(command => command.commandNames.includes(commandName.toLowerCase()))
 		const about = 'info.help.about.'
@@ -158,7 +158,7 @@ export class HelpCommand implements SlashCommand {
 				}
 			}
 			const name = argCommand.commandNames.shift() || ''
-			embed.setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,Permissions.DEFAULT.toString(16)))
+			embed.setTitle(await l.translate(about + 'title',name)).setDescription(await l.translate(argCommand.fulldescription,PermissionsBitField.Default.toString(16)))
 			if(argCommand.commandNames.length > 0)
 				embed.addFields([{name: await l.translate(about + 'aliases'), value: argCommand.commandNames.join(', '), inline: true}])
 			embed.addFields([
@@ -174,7 +174,7 @@ export class HelpCommand implements SlashCommand {
 		if(guild) m = guild.members.resolve(bot)
 		if(m) embed.setColor(m.displayColor)
 		else embed.setColor(0xffffff)
-		const a = bot.avatarURL({dynamic:true})
+		const a = bot.avatarURL()
 		if(!a) return f
 		return embed.setAuthor({name: bot.tag, url: a})
 	}
@@ -182,7 +182,7 @@ export class HelpCommand implements SlashCommand {
 	private async createHelpEmbed(commandName:string, msg: Message) {
 		if(!this.lang) return
 		const embed = await this.buildHelpEmbed(commandName, msg.guild, msg.client)
-		if(embed.title == null){
+		if(embed.data.title == null){
             msg.react('❌').catch(e=>console.error(e))
 			if(this.lang instanceof Lang)
 				this.lang.reply('info.help.not_found', commandName)
@@ -192,12 +192,12 @@ export class HelpCommand implements SlashCommand {
 		msg.channel.send({embeds: [embed]})
 		.then(()=>console.log('Embed de ayuda enviado')).catch(e=>{
 			if(!msg || !(this.lang instanceof Lang)) return
-			const p = PermissionsChecker.check(new Permissions(['SEND_MESSAGES']), msg, this.lang)
+			const p = PermissionsChecker.check(new PermissionsBitField('SendMessages'), msg, this.lang)
 			p.then((c)=>{if(c) console.error(e)}).catch(err=>console.error(err))
 		});
 	}
 
-	static get(): any{
+	static get(): RESTPostAPIChatInputApplicationCommandsJSONBody{
 		const s = new SlashCommandBuilder()
 		.setName('help')
 		.setDescription('Shows command list or information about a command')
@@ -206,6 +206,9 @@ export class HelpCommand implements SlashCommand {
 	}
 	async change_page(button: ButtonInteraction, l: InteractionLang, prefix: string): Promise<void>{
 		this.prefix = prefix
+		this.lang = l
+		let prev_button, next_button
+		const pages = 3
 		// 1 & 2
 		if(button.customId == 'help_next'){
 			const footer = button.message.embeds[0].footer
@@ -216,28 +219,19 @@ export class HelpCommand implements SlashCommand {
 
 			const c = button.message.components
 			if(!c) return
-			const comps = <MessageButton[]>c[0].components
+			const comps = <ButtonComponent[]>c[0].components
 			const next = comps.find(a=>a.label=='>')
 			const prev = comps.find(a=>a.label=='<')
 			if(!prev) return
 			if(!next) return
-			
-			if(next_page == 2){
-				prev.disabled = false
-				const prev_button = new MessageButton(prev)
-				const next_button = new MessageButton(next)
-				const row = new MessageActionRow({components: [prev_button, next_button]})
-				const embed = await this.buildCommandList(2, button)
-				return button.update({embeds: [embed], components: [row]})
-			}
-			if(next_page == 3){
-				next.disabled = true
-				const prev_button = new MessageButton(prev)
-				const next_button = new MessageButton(next)
-				const row = new MessageActionRow({components: [prev_button, next_button]})
-				const embed = await this.buildCommandList(3, button)
-				return button.update({embeds: [embed], components: [row]})
-			}
+			prev_button = prev.toJSON()
+			next_button = next.toJSON()
+			if(next_page == pages) next_button.disabled = true
+			if(next_page == 2) prev_button.disabled = false
+			const row = {type: 1, components: [prev_button, next_button]}
+			const embed = await this.buildCommandList(next_page, button)
+			button.update({embeds: [embed], components: [row]})
+			return
 		}
 		// 2 & 3
 		if(button.customId == 'help_previous'){
@@ -249,36 +243,29 @@ export class HelpCommand implements SlashCommand {
 
 			const c = button.message.components
 			if(!c) return
-			const comps = <MessageButton[]>c[0].components
+			const comps = <ButtonComponent[]>c[0].components
 			const next = comps.find(a=>a.label=='>')
 			const prev = comps.find(a=>a.label=='<')
 			if(!prev) return
 			if(!next) return
-
-			if(previous_page == 1){
-				prev.disabled = true
-				const prev_button = new MessageButton(prev)
-				const next_button = new MessageButton(next)
-				const row = new MessageActionRow({components: [prev_button, next_button]})
-				const embed = await this.buildCommandList(1, button)
-				return button.update({embeds: [embed], components: [row]})
+			prev_button = prev.toJSON()
+			next_button = next.toJSON()
+			if(previous_page == 1) prev_button.disabled = true
+			if(previous_page == pages - 1) next_button.disabled = false
+			const row = {
+				type: 1, components: [prev_button, next_button]
 			}
-			if(previous_page == 2){
-				next.disabled = false
-				const prev_button = new MessageButton(prev)
-				const next_button = new MessageButton(next)
-				const row = new MessageActionRow({components: [prev_button, next_button]})
-				const embed = await this.buildCommandList(2, button)
-				return button.update({embeds: [embed], components: [row]})
-			}
+			const embed = await this.buildCommandList(previous_page, button)
+			button.update({embeds: [embed], components: [row]})
 		}
 	}
 	verify(): Promise<boolean> {
 		return Promise.resolve(true)
 	}
-	async interact(interaction: CommandInteraction<CacheType>, l: InteractionLang, prefix: string): Promise<void> {
+	async interact(interaction: ChatInputCommandInteraction, l: InteractionLang, prefix: string): Promise<void> {
 		this.lang = l
 		this.prefix = prefix
+		await interaction.deferReply({ephemeral: true})
 		if(interaction.options.data.length == 0){
 			const prev_button = {
 				type: 2,
@@ -297,15 +284,17 @@ export class HelpCommand implements SlashCommand {
 				type: 1, components: [prev_button, next_button]
 			}
 			const embed = await this.buildCommandList(1, interaction)
-			return interaction.reply({embeds: [embed], components: [row]})
+			interaction.editReply({embeds: [embed], components: [row]})
+			return
 		}else{
 			const commandName = interaction.options.getString('command', true)
 			const embed = await this.buildHelpEmbed(commandName, interaction.guild, interaction.client)
-			if(embed.title == null){
+			if(embed.data.title == null){
 			if(this.lang instanceof InteractionLang)
 				return this.lang.reply('info.help.not_found', commandName)
 			}
-			return interaction.reply({embeds: [embed]})
+			interaction.editReply({embeds: [embed]})
+			return
 		}
 	}
 }

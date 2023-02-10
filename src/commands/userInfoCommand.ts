@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, GuildMember, MessageEmbed } from "discord.js";
+import { Message, GuildMember, EmbedBuilder } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { Time } from "../util/Time";
 import { Lang } from "./lang/Lang";
@@ -14,14 +14,14 @@ export class UserInfoCommand implements ArgCommand {
 	examples: string[] = ['', '123456789987654321', '@user#1234', '@nickname#1234']
 	permission = ''
 	type = 'info'
-	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		let embed: Promise<MessageEmbed>
-		const mod = MemberFinder.getMember(msg, msg.author.id)
+	async run(msg: Message<true>, l: Lang, args: string[]): Promise<void> {
+		let embed
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
 		if(!mod) return
 		const details = args.includes('--details') && mod.permissions.has(8n)
 		if((args.length > 0 && !details) || args.length > 1){
 			const mention = args.join(' ').trim()
-			const member = MemberFinder.getMember(msg,mention)
+			const member = MemberFinder.getMember(msg.guild,mention)
 			if (!member) {
 				l.reply('errors.invalid_member',mention)
 				return
@@ -29,7 +29,7 @@ export class UserInfoCommand implements ArgCommand {
 			embed = userEmbed(member,l,details)
 		}else{
 			if(!msg.guild) return
-			const m = MemberFinder.getMember(msg, msg.author.id)
+			const m = MemberFinder.getMember(msg.guild, msg.author.id)
 			if(!m) return
 			embed = userEmbed(m,l,details)
 		}
@@ -43,9 +43,9 @@ async function userEmbed(member:GuildMember, l: Lang, showDetails:boolean) {
 	const e = 'info.userinfo.embed.'
 	const creationdate = new Time(member.id, l).toString()
 	const joindate = new Time(member.joinedAt, l).toString()
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setAuthor({name: member.id, url: member.displayAvatarURL()})
-		.setThumbnail(member.user.displayAvatarURL({dynamic:true}))
+		.setThumbnail(member.user.displayAvatarURL())
 		.setColor(member.displayColor)
 	if (member.nickname)
 		embed.addFields([{name: await l.translate(e+'nickname'), value: member.nickname, inline: true}])

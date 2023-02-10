@@ -1,10 +1,10 @@
-import { Message, Permissions, MessageEmbed, PermissionString, OverwriteData, Guild, CategoryChannel, GuildMember, Role, GuildChannelCreateOptions, GuildChannelTypes } from "discord.js";
+import { Message, GuildChannelCreateOptions, ChannelType, OverwriteType, CacheType, CommandInteraction, GuildChannel, EmbedBuilder, Role, GuildMember, RESTPostAPIApplicationCommandsJSONBody, SlashCommandBuilder, ChatInputCommandInteraction} from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { RoleFinder } from "../util/RoleFinder";
-import ArgCommand from "./commandArgInterface";
-import { Lang } from "./lang/Lang";
+import { InteractionLang, Lang } from "./lang/Lang";
+import SlashCommand from "./slashCommandInterface";
 
-export class CreateChannelCommand implements ArgCommand{
+export class CreateChannelCommand implements SlashCommand{
 	permission = 'MANAGE_CHANNELS'
 	shortdescription = 'info.createchannel.description'
 	fulldescription = 'info.createchannel.fulldescription';
@@ -14,361 +14,120 @@ export class CreateChannelCommand implements ArgCommand{
 	usage = 'info.createchannel.usage'
 	guildExclusive = true
 	type = 'manage'
-	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
-		// Parámetro: tipo
-		const first_arg = (args.shift() || '').toLowerCase()
-		let channel_type: GuildChannelTypes
-		switch (first_arg) {
-			case 'text': case 'voice': case 'news': case 'store': case 'category':
-				channel_type = <GuildChannelTypes>String('GUILD_' + first_arg.toUpperCase())
-				break;
-			default:
-				l.send('errors.invalid_type',first_arg)
-				return
-		}
-		// Parámetro: nombre
-		const name = args.shift()
-		if(!name){
-			msg.react('❌').catch()
-			return
-		}
-		// Parámetros adicionales
-		const arg = args.join(' ')
-		const no_cat = await l.translate('info.createchannel.embed.no_cat')
-		const none = await l.translate('none')
-		let data
-		const g = msg.guild
-		if(!g) return
-		if(arg) data = this.createData(msg, arg, channel_type, l)
-		if (!data) {
-			g.channels.create(name, {type: channel_type}).then(async (channel) => {
-				const e = 'info.createchannel.embed.'
-				const getCategory = ()=>{
-					if(channel.parent) return channel.parent.name
-					else return no_cat
-				};
-				const overwrites = channel.permissionOverwrites.cache
-				const denyValues = ()=>{
-					const denies: string[] = []
-					overwrites.forEach(o => {
-						let name: Role | GuildMember | undefined
-						if(o.type === 'role') name = RoleFinder.getRole(msg, o.id)
-						if(o.type === 'member') name = MemberFinder.getMember(msg, o.id)
-						if(!name) return
-						const permission = o.deny.bitfield.toString(16)
-						const deny = `${name.toString()}: ${permission}`
-						denies.push(deny)
-					});
-					if(denies.length === 0) return none
-					else return denies.join('\n')
-				};
-				const allowValues = ()=>{
-					const allows: string[] = []
-					overwrites.forEach(o => {
-						let name: Role | GuildMember | undefined
-						if(o.type === 'role') name = RoleFinder.getRole(msg, o.id)
-						if(o.type === 'member') name = MemberFinder.getMember(msg, o.id)
-						if(!name) return
-						const permission = o.allow.bitfield.toString(16)
-						const allow = `${name.toString()}: ${permission}`
-						allows.push(allow)
-					});
-					if(allows.length === 0) return none
-					else return allows.join('\n')
-				};			
-				const embed = new MessageEmbed().setTitle(await l.translate(e+'title')).setColor(0)
-				.addFields([
-					{ name: await l.translate(e+'name'), value: channel.name, inline: true},
-					{ name: await l.translate(e+'position'), value: `${channel.position}`, inline: true},
-					{ name: await l.translate(e+'category'), value: getCategory(), inline: true},
-					{ name: await l.translate(e+'allowed'), value: allowValues(), inline: true},
-					{ name: await l.translate(e+'denied'), value: denyValues(), inline: true}
-				]).setTimestamp();
-				l.send('info.createchannel.success',channel.toString())
-				msg.channel.send({embeds:[embed]})
-				return
-			}).catch( (error) => {
-				if(error.code === 30013) l.send('info.createchannel.30013')
-				else l.reply('errors.unknown')
-				console.error(error)
-			});
-			return
-		}
-		// Ejecución
-		data.type = channel_type
-		g.channels.create(name,data).then(async (channel) => {
-		const e = 'info.createchannel.embed.'
-		const getCategory = ()=>{
-				if(channel.parent) return channel.parent.name
-				else return no_cat
-			};
-			const overwrites = channel.permissionOverwrites.cache
-			const denyValues = ()=>{
-				const denies: string[] = []
-				overwrites.forEach(o => {
-					let name: Role | GuildMember | undefined
-					if(o.type === 'role') name = RoleFinder.getRole(msg, o.id)
-					if(o.type === 'member') name = MemberFinder.getMember(msg, o.id)
-					if(!name) return
-					const permission = o.deny.bitfield.toString(16)
-					const deny = `${name.toString()}: ${permission}`
-					denies.push(deny)
-				});
-				if(denies.length === 0) return none
-				else return denies.join('\n')
-			};
-			const allowValues = ()=>{
-				const allows: string[] = []
-				overwrites.forEach(o => {
-					let name: Role | GuildMember | undefined
-					if(o.type === 'role') name = RoleFinder.getRole(msg, o.id)
-					if(o.type === 'member') name = MemberFinder.getMember(msg, o.id)
-					if(!name) return
-					const permission = o.allow.bitfield.toString(16)
-					const allow = `${name.toString()}: ${permission}`
-					allows.push(allow)
-				});
-				if(allows.length === 0) return none
-				else return allows.join('\n')
-			};
-			const embed = new MessageEmbed().setTitle(await l.translate(e+'title')).setColor(0)
-			.addFields([
-				{ name: await l.translate(e+'name'), value: channel.name, inline: true},
-				{ name: await l.translate(e+'position'), value: '' + channel.position, inline: true},
-				{ name: await l.translate(e+'category'), value: getCategory(), inline: true},
-				{ name: await l.translate(e+'allowed'), value: allowValues(), inline: true},
-				{ name: await l.translate(e+'denied'), value: denyValues(), inline: true}
-			]).setTimestamp();
-			l.send('info.createchannel.success', channel.toString())
-			msg.channel.send({embeds:[embed]})
-			return
-		}).catch( (error) => {
-			if(error.code === 30013) l.send('info.createchannel.30013')
-			else l.reply('errors.unknown')
-			console.error(error)
-		});
-	}
-	createData(msg: Message,str:string, channel_type: GuildChannelTypes, lang: Lang): GuildChannelCreateOptions | undefined {
-		if(str === '') return undefined
-		// {topic:something}
-		const properties_match = str.match(/topic:[\w\s]+|position:\s*\d+|nsfw/gm)
-		const properties = new Map<string, string>()
-		if (properties_match !== null) {
-			properties_match.forEach(match => {
-				const splits = match.trim().split(':')
-				const key = splits[0].trim()
-				if(key == 'nsfw') splits[1] = 'true'
-				if (splits.length != 2) return
-				properties.set(key,splits[1].trim())
-			});
-		}
-		const properties_regex = /\{[\w\s:,]+\},?/g
-		const allowed_roles_match = str.match(/allow-roles \[([^,\]]+)\]/)
-		const allowed_roles = new Map<string,PermissionString[]>()
-		if (allowed_roles_match !== null) {
-			allowed_roles_match.forEach(match => {
-				const properties_match = properties_regex.exec(match)
-				if(properties_match !== null) {
-				// rol1:{permiso1,permiso2}
-				// rol2:{permiso1,permiso2,permiso3}
-				properties_match.forEach(overwrite_object => {
-					const overwrite_split = overwrite_object.split(':')
-					if(overwrite_split.length != 2) return
-					const key = overwrite_split[0]
-					const role = RoleFinder.getRole(msg, key)
-					if(!role){
-						lang.reply('errors.invalid_role', key)
-						return
-					}
-					const v = overwrite_split[1]
-					if(!v.startsWith('{') || !v.endsWith('}')) return
-					const values = v.slice(1,-1).split(',').map(s=>s.toUpperCase()).filter(s=>{
-						const isPermission = Object.keys(Permissions.FLAGS).includes(s)
-						if(!isPermission){
-							msg.reply('Value ' + s + 'is not a valid permission name')
-							return false
-						}else return true
-					});
-					if(values.length < 1) return
-					allowed_roles.set(role.id, <PermissionString[]> values)
-				});
-				}
-			});
-		}
-		const denied_roles_match = str.match(/deny-roles \[([^,\]]+)\]/)
-		const denied_roles = new Map<string,PermissionString[]>()
-		if (denied_roles_match !== null) {
-			denied_roles_match.forEach(match => {
-				const properties_match = properties_regex.exec(match)
-				if(properties_match !== null) {
-				// The result can be accessed through the `m`-variable.
-				properties_match.forEach(overwrite_object => {
-					const overwrite_split = overwrite_object.split(':')
-					if(overwrite_split.length != 2) return
-					const key = overwrite_split[0]
-					const role = RoleFinder.getRole(msg, key)
-					if(!role){
-						lang.reply('errors.invalid_role', key)
-						return
-					}
-					const v = overwrite_split[1]
-					if(!v.startsWith('{') || !v.endsWith('}')) return
-					const values = v.slice(1,-1).split(',').map(s=>s.toUpperCase()).filter(s=>{
-						const isPermission = Object.keys(Permissions.FLAGS).includes(s)
-						if(!isPermission){
-							msg.reply('Value ' + s + 'is not a valid permission name')
-							return false
-						}else return true
-					});
-					if(values.length < 1) return
-					denied_roles.set(role.id, <PermissionString[]> values)
-				});
-				}
-			});
-		}
-		const allowed_users_match = str.match(/allow-users \[([^,\]]+)\]/)
-		const allowed_users = new Map<string,PermissionString[]>()
-		if (allowed_users_match !== null) {
-			allowed_users_match.forEach(match => {
-				const properties_match = properties_regex.exec(match)
-				if(properties_match !== null) {
-				// The result can be accessed through the `m`-variable.
-				properties_match.forEach(overwrite_object => {
-					const overwrite_split = overwrite_object.split(':')
-					if(overwrite_split.length != 2) return
-					const key = overwrite_split[0]
-					const member = MemberFinder.getMember(msg, key)
-					if(!member){
-						lang.reply('errors.invalid_role', key)
-						return
-					}
-					const v = overwrite_split[1]
-					if(!v.startsWith('{') || !v.endsWith('}')) return
-					const values = v.slice(1,-1).split(',').map(s=>s.toUpperCase()).filter(s=>{
-						const isPermission = Object.keys(Permissions.FLAGS).includes(s)
-						if(!isPermission){
-							msg.reply('Value ' + s + 'is not a valid permission name')
-							return false
-						}else return true
-					});
-					if(values.length < 1) return
-					allowed_users.set(member.id, <PermissionString[]> values)
-				});
-				}
-			});
-		}
-		const denied_users_match = str.match(/allow-users \[([^,\]]+)\]/)
-		const denied_users = new Map<string,PermissionString[]>()
-		if (denied_users_match !== null) {
-			denied_users_match.forEach(match => {
-				const properties_match = properties_regex.exec(match)
-				if(properties_match !== null) {
-				// The result can be accessed through the `m`-variable.
-				properties_match.forEach(overwrite_object => {
-					const overwrite_split = overwrite_object.split(':')
-					if(overwrite_split.length != 2) return
-					const key = overwrite_split[0]
-					const member = MemberFinder.getMember(msg, key)
-					if(!member){
-						lang.reply('errors.invalid_role', key)
-						return
-					}
-					const v = overwrite_split[1]
-					if(!v.startsWith('{') || !v.endsWith('}')) return
-					const values = v.slice(1,-1).split(',').map(s=>s.toUpperCase()).filter(s=>{
-						const isPermission = Object.keys(Permissions.FLAGS).includes(s)
-						if(!isPermission){
-							msg.reply('Value ' + s + 'is not a valid permission name')
-							return false
-						}else return true
-					});
-					if(values.length < 1) return
-					denied_users.set(member.id, <PermissionString[]> values)
-				});
-				}
-			});
-		}
-		// Default Values
-		const data: GuildChannelCreateOptions = {
-			topic: '',
-			position: 0,
-			nsfw: false,
-			parent: undefined,
-			permissionOverwrites: undefined
-		};
-		const g = msg.guild
-		if(!g) return
-		// Setting values
-		for (const [key,value] of properties) {
-			switch (key.toLowerCase()) {
-				case 'position': case 'pos':
-			data.position = parseInt(value)
-			if (isNaN(data.position)) {
-				console.error('valor position (' + value + ') no es un número')
-				data.position = 0
-			}
-			if(channel_type != 'GUILD_CATEGORY') data.parent = setParent(data.position, g)
-			break
-				case 'topic': data.topic = value
-				break
-				case 'nsfw': if(value == 'true') data.nsfw =true
-			} 
-		}
-		const permissionOverwrites: OverwriteData[] = []
-		for (const [key, value] of allowed_roles) {
-			const permissions = new Permissions(value)
-			const overwrite: OverwriteData = {id: key, allow: permissions, type: 'role'};
-			permissionOverwrites.push(overwrite)
-		}
-		for (const [key, value] of denied_roles) {
-			const permissions = new Permissions(value)
-			const overwrite: OverwriteData = {id: key, deny: permissions, type: 'role'};
-			permissionOverwrites.push(overwrite)
-		}
-		for (const [key, value] of allowed_users) {
-			const permissions = new Permissions(value)
-			const overwrite: OverwriteData = {id: key, allow: permissions, type: 'member'};
-			permissionOverwrites.push(overwrite)
-		}
-		for (const [key, value] of denied_users) {
-			const permissions = new Permissions(value)
-			const overwrite: OverwriteData = {id: key, deny: permissions, type: 'member'};
-			permissionOverwrites.push(overwrite)
-		}
-		data.permissionOverwrites = permissionOverwrites
-		return data
+	async run(msg: Message): Promise<void> {
+		msg.channel.send("This command is only available as (/) slash command")
 	}
 
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		if(!msg.client.user) return false
-		const mod = MemberFinder.getMember(msg, msg.author.id)
-		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+		if(!msg.client.user || !msg.guild) return false
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
+		const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!bot.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+		if (!bot.permissions.has('ManageChannels')) {
 			l.reply('errors.botperms.create_channel')
 			return false
 		}
-		if (!mod.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+		if (!mod.permissions.has('ManageChannels')) {
 			l.reply('errors.modperms.create_channel')
 			return false
 		}
 		return true
 	}
-}
-
-function setParent(position: number, guild: Guild){
-	if(position === 0) return undefined
-	for (const channel of guild.channels.cache.values()) {
-		if(channel.type == 'GUILD_CATEGORY'){
-			const category = <CategoryChannel> channel
-			console.log(category.name)
-			// Verificar que position sea menor a la cantidad de canales de la categoría
-			const channels = category.children.size
-			if(position <= channels) return category.id
-			else channels
+	async verify(interaction: CommandInteraction<CacheType>): Promise<boolean> {
+		if(!interaction.memberPermissions || !interaction.guild) return false
+		if(!interaction.memberPermissions.has('ManageChannels')){
+			interaction.reply({content: 'Mod no permission'})
+			return false
 		}
+		const bot = interaction.guild.members.resolve(interaction.applicationId)
+		if(!bot) return false
+		if(!bot.permissions.has('ManageChannels')){
+			interaction.reply({content: 'Bot no permission'})
+			return false
+		}
+		return true
 	}
-	const lastCategory = guild.channels.cache.filter(channel=>channel.type == 'GUILD_CATEGORY').last()
-	if(lastCategory) return lastCategory.id
-	else return undefined
+	async interact(interaction: ChatInputCommandInteraction, l: InteractionLang): Promise<void>{
+		if(!interaction.member) return
+		if(!interaction.guild){
+			interaction.reply({content: await l.translate('errors.no_dms'), ephemeral: true})
+			return
+		}
+		const opt = interaction.options
+		let parent
+		const parentOpt = opt.getChannel('category', false)
+		if(parentOpt) parent = parentOpt.type == ChannelType.GuildCategory ? parentOpt.id : null
+		const data: GuildChannelCreateOptions = {
+			name: opt.getString('name', true),
+			topic: opt.getString('topic') || undefined,
+			position: opt.getInteger('position') || undefined,
+			parent,
+			type: opt.getInteger('type') || ChannelType.GuildText
+		}
+		interaction.guild.channels.create(data).then((channel)=>{
+			this.sendResponse(channel, l, interaction)
+		});
+	}
+	static get(): RESTPostAPIApplicationCommandsJSONBody{
+		const choices: {name: string, value: number}[] = [
+			{name: 'Text', value: ChannelType.GuildText},
+			{name: 'Voice', value: ChannelType.GuildVoice},
+			{name: 'Stage', value: ChannelType.GuildStageVoice},
+			{name: 'Announcement', value: ChannelType.GuildAnnouncement}
+		]
+		const s = new SlashCommandBuilder()
+			.setName('createchannel')
+			.setDescription('Creates a channel easily')
+			.addStringOption(option=>option.setName('name').setDescription('name of the channel').setRequired(true).setMinLength(1).setMaxLength(100))
+			.addIntegerOption(option=>option.setName('type').setDescription('type of channel').setAutocomplete(true).addChoices(...choices).setRequired(false))
+			.addStringOption(option=>option.setName('topic').setDescription('topic of the channel').setRequired(false).setMaxLength(1024))
+			.addIntegerOption(option=>option.setName('position').setDescription('position of the channel').setMinValue(0))
+			.addChannelOption(option=>option.setName('category').setDescription('what category channel fits in').setRequired(false).addChannelTypes(ChannelType.GuildCategory))
+		return s.toJSON()
+	}
+	async sendResponse(channel: GuildChannel, l: InteractionLang, i: CommandInteraction): Promise<void> {
+		const no_cat = await l.translate('info.createchannel.embed.no_cat')
+		const none = await l.translate('none')
+		const e = 'info.createchannel.embed.'
+		const getCategory = ()=>channel.parent ? channel.parent.name : no_cat
+		const overwrites = channel.permissionOverwrites.cache
+		const denyValues = ()=>{
+			const denies: string[] = []
+			overwrites.forEach(o => {
+				let obj: Role | GuildMember | undefined
+				if(o.type == OverwriteType.Role) obj = RoleFinder.getRole(channel.guild, o.id)
+				if(o.type === OverwriteType.Member) obj = MemberFinder.getMember(channel.guild, o.id)
+				if(!obj) return
+				const permission = o.deny.bitfield.toString(16)
+				const deny = `${obj.toString()}: #${permission}`
+				denies.push(deny)
+			});
+			if(denies.length === 0) return none
+			else return denies.join('\n')
+		};
+		const allowValues = ()=>{
+			const allows: string[] = []
+			overwrites.forEach(o => {
+				let obj: Role | GuildMember | undefined
+				if(o.type == OverwriteType.Role) obj = RoleFinder.getRole(channel.guild, o.id)
+				if(o.type === OverwriteType.Member) obj = MemberFinder.getMember(channel.guild, o.id)
+				if(!obj) return
+				const permission = o.allow.bitfield.toString(16)
+				const allow = `${obj.toString()}: #${permission}`
+				allows.push(allow)
+			});
+			if(allows.length === 0) return none
+			else return allows.join('\n')
+		};
+		const embed = new EmbedBuilder().setTitle(await l.translate(e+'title')).setColor(0)
+			.addFields([
+					{ name: await l.translate(e+'name'), value: channel.name, inline: true},
+					{ name: await l.translate(e+'position'), value: `${channel.position}`, inline: true},
+					{ name: await l.translate(e+'category'), value: getCategory(), inline: true},
+					{ name: await l.translate(e+'allowed'), value: allowValues(), inline: true},
+					{ name: await l.translate(e+'denied'), value: denyValues(), inline: true}
+				]).setTimestamp()
+		const text = await l.translate('info.createchannel.success', channel.toString())
+		i.reply({content: text,embeds: [embed], ephemeral: true})
+	}
 }

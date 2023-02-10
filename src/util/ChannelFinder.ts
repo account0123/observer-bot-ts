@@ -1,4 +1,4 @@
-import { Message, Guild, GuildChannel, CategoryChannel, Snowflake, TextChannel, GuildBasedChannel } from "discord.js";
+import { Message, Guild, CategoryChannel, Snowflake, TextChannel, GuildBasedChannel } from "discord.js";
 export class ChannelFinder {
   /**
    * 

@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface"
-import { GuildTextBasedChannel, Message, Permissions, ReactionUserManager, TextChannel } from "discord.js"
+import { GuildTextBasedChannel, Message, ReactionUserManager, TextChannel } from "discord.js"
 import { Lang } from "./lang/Lang"
 import { FormatCommand } from "./formatCommand"
 import { MemberFinder } from "../util/MemberFinder"
@@ -16,15 +16,15 @@ export class CopyCommand implements ArgCommand {
   type = 'mod'
   async run(msg: Message, l:Lang, args: string[]): Promise<void> {
 	if(!msg.guild || !msg.client.user) return
-	const mod = MemberFinder.getMember(msg, msg.author.id)
-	const bot = MemberFinder.getMember(msg, msg.client.user.id)
+	const mod = MemberFinder.getMember(msg.guild, msg.author.id)
+	const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 	if(!mod || !bot) return
 	const c = <GuildTextBasedChannel>msg.channel
-	if (!bot.permissionsIn(c).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+	if (!bot.permissionsIn(c).has('ManageMessages')) {
 		l.reply('errors.botperms.clean')
 		ReactionUserManager
 	}
-	if (!mod.permissionsIn(c).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+	if (!mod.permissionsIn(c).has('ManageMessages')) {
 		l.reply('errors.modperms.clean')
 		return
 	}
@@ -56,16 +56,16 @@ export class CopyCommand implements ArgCommand {
 	let webhook = FormatCommand.webhooks.get(msg.channel.id)
 	const force = true
 	const cache = false
-	if(!webhook && (msg.channel.type == 'GUILD_TEXT' || msg.channel.type == 'GUILD_NEWS')){
-		if(bot.permissionsIn(msg.channel).has(Permissions.FLAGS.MANAGE_WEBHOOKS)){
-			webhook = await msg.channel.createWebhook('Clone', {
+	if(!webhook && (msg.channel.type == 0|| msg.channel.type == 5)){
+		if(bot.permissionsIn(msg.channel).has('ManageMessages')){
+			webhook = await msg.channel.createWebhook({name: 'Clone',
 				avatar: 'https://i.imgur.com/n1MdeHO.png',
 			});
 
 			const channel = await msg.client.channels.fetch(channelID, {force, cache})
 			if(!channel) return Promise.reject('invalid link')
 			if(!(channel instanceof TextChannel)) return Promise.reject('invalid link')
-			const message = await channel.messages.fetch(messageID, {force, cache})
+			const message = await channel.messages.fetch({message: messageID, cache, force})
 			if(!message){
 				l.send('errors.invalid_message', messageID)
 				return
@@ -79,14 +79,14 @@ export class CopyCommand implements ArgCommand {
 			await webhook.send({
 				content: `${message.content} ${files.join(' ')}`,
 				username: user.username,
-				avatarURL: user.displayAvatarURL({dynamic:true}),
+				avatarURL: user.displayAvatarURL({forceStatic:true}),
 				allowedMentions: {parse: ['users', 'roles']}
 			}).then(()=>msg.delete());
 		}else{
 			const channel = await msg.client.channels.fetch(channelID, {force, cache})
 			if(!channel) return Promise.reject('invalid link')
 			if(!(channel instanceof TextChannel)) return Promise.reject('invalid link')
-			const message = await channel.messages.fetch(messageID, {force, cache})
+			const message = await channel.messages.fetch({message: messageID, force, cache})
 			if(!message){
 				l.send('errors.invalid_message', messageID)
 				return

@@ -1,5 +1,5 @@
 import Command from "./commandInterface"
-import { Message, Permissions } from "discord.js"
+import { Message } from "discord.js"
 import { Connections } from "../config/connections"
 import { Lang } from "./lang/Lang"
 import { FormatCommand } from "./formatCommand"
@@ -27,7 +27,7 @@ export class StopCommand implements Command {
         if(!message.client.user) return
         const bot = guild.members.resolve(message.client.user)
         if(bot){
-          if(bot.permissions.has(Permissions.FLAGS.MANAGE_WEBHOOKS)){
+          if(bot.permissions.has('ManageWebhooks')){
             wh.delete('Bot is shutting down')
               .then(()=>console.log(`Webhook ${wh.id} from the channel ${wh.channelId} from the guild ${wh.guildId} has been deleted!`))
               .catch((err)=>console.error(err.stack));

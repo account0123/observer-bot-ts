@@ -15,10 +15,10 @@ export class WarnCommand implements ArgCommand {
     examples: string[] = ['@user spam', '123456789987654321 no memes in general'];
     permission = ''
     type = 'mod'
-    async run(msg: Message, l: Lang, args: string[]): Promise<void> {
+    async run(msg: Message<true>, l: Lang, args: string[]): Promise<void> {
         const g = msg.guild
         const mention = args.shift() || ''
-        const m = MemberFinder.getMember(msg, mention)
+        const m = MemberFinder.getMember(g, mention)
         
         if(!g) return
         if(!m){

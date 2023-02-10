@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { Connections } from "../../config/connections";
-import { BaseCommandInteraction, Guild, Interaction, Message} from "discord.js";
+import { ChatInputCommandInteraction, Guild, Interaction, Message} from "discord.js";
 import { RowDataPacket } from 'mysql2';
 export class Lang {
 	language:string | undefined
@@ -69,10 +69,15 @@ export class InteractionLang {
 		this.action = action
 	}
 
+	async edit(code: string, ...values: string[]): Promise<void>{
+		const text = await this.translate(code, ...values)
+		if(this.action instanceof ChatInputCommandInteraction)
+			this.action.editReply(text)
+	}
 	async reply(code:string,...values:string[]):Promise<void>{
 		const text = await this.translate(code, ...values)
-		if(this.action instanceof BaseCommandInteraction)
-			return this.action.reply(text)
+		if(this.action instanceof ChatInputCommandInteraction)
+			this.action.reply(text)
 	}
 
 	async translate(code:string,...values:string[]):Promise<string>{

@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, Permissions } from "discord.js";
+import { Message } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { Lang } from "./lang/Lang";
 
@@ -14,9 +14,10 @@ export class DemoteCommand implements ArgCommand {
 	guildExclusive = true
 	type = 'manage'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
+		if(!msg.guild) return
 		const mention = args.shift() || ''
-		const member = MemberFinder.getMember(msg,mention)
-		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const member = MemberFinder.getMember(msg.guild,mention)
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
 		if(!mod) return
 		if(!member){
 			l.reply('errors.invalid_member',mention)
@@ -39,9 +40,9 @@ export class DemoteCommand implements ArgCommand {
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+		const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 		if(!bot) return false
-		if (!bot.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!bot.permissions.has('ManageRoles')) {
 			l.reply('errors.botperms.remove_role')
 			return false
 		}

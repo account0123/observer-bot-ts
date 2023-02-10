@@ -29,11 +29,5 @@ export class Connections {
         console.error('Database no pudo ser conectada')
       })
     }
-
-    /*
-      await MySQL.createConnection(database_url).then((c)=>{
-        Connections.db = c
-        console.log('Database conectada')
-      }).catch(()=>console.error('Database no pudo ser conectada'));*/
   }
 }

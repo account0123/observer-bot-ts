@@ -37,7 +37,8 @@ export class FocusKickCommand {
 			return
 		}
 		const mention = args.shift() || ''
-		const member = MemberFinder.getMember(msg,mention)
+		if(!msg.guild) return
+		const member = MemberFinder.getMember(msg.guild,mention)
 		if(!member){
 			l.reply('errors.invalid_member',mention)
 			return

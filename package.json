@@ -9,7 +9,6 @@
     "prestart:dev": "npm run build",
     "start:dev": "nodemon build/index.js",
     "prebuild": "rimraf ./build",
-    "tsc": "./node_modules/typescript/bin/tsc",
     "build": "tsc",
     "postbuild": "cp ./src/commands/lang/*.json ./build/commands/lang",
     "prestart": "npm run build",
@@ -43,13 +42,11 @@
     "ts-node": "^8.10.2"
   },
   "dependencies": {
-    "@discordjs/rest": "^0.3.0",
     "@types/aes-js": "^3.1.1",
     "@types/express": "^4.17.13",
     "@types/mysql": "^2.15.15",
     "aes-js": "^3.1.2",
-    "discord-api-types": "^0.26.1",
-    "discord.js": "^13.6.0",
+    "discord.js": "^14.7.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "google-search-results-nodejs": "^2.0.0",

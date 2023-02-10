@@ -1,5 +1,5 @@
 import Command from "./commandInterface";
-import { Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Message} from "discord.js";
 import console from "console";
 import { Connections } from "../config/connections";
 import { Lang } from "./lang/Lang";
@@ -14,7 +14,7 @@ export class SnipeCommand implements Command {
 	fulldescription = 'info.snipe.fulldescription'
 	async run(msg: Message, l: Lang): Promise<void> {
 		if(!msg.guild || !msg.client.user) return
-		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+		const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 		if(!bot) return
 		const color = bot.displayColor
 		const [rows] = await Connections.db.execute<RowDataPacket[]>('SELECT * FROM deleted WHERE channel=? and guild=?',[msg.channel.id, msg.guild.id])
@@ -24,7 +24,7 @@ export class SnipeCommand implements Command {
 			}
 			const footer = await l.translate('info.snipe.success')
 			const lastrow = rows[rows.length - 1]
-			const embed = new MessageEmbed().setAuthor({name: String(lastrow.username), iconURL: lastrow.avatar_url})
+			const embed = new EmbedBuilder().setAuthor({name: String(lastrow.username), iconURL: lastrow.avatar_url})
 				.setColor(color).setDescription(lastrow.content)
 				.setFooter({text: footer}).setTimestamp(lastrow.time)
 			msg.channel.send({embeds: [embed]}).catch(e=>{

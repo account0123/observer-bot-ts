@@ -1,5 +1,5 @@
-import { Interaction, Message, MessageEmbed, Snowflake } from "discord.js";
-import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, SetCommand, EditChannelCommand, CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand, WarnCommand, WarningsCommand, DefineCommand } from "./commands";
+import { EmbedBuilder, Interaction, Message, Snowflake } from "discord.js";
+import {StopCommand, AvatarCommand, CreateRoleCommand, BanCommand, SayCommand, AddRoleCommand, EditRoleCommand, CleanCommand, DemoteCommand, RemoveRoleCommand, HelpCommand, GetPassCommand, KickCommand, RoleInfoCommand, ServerInfoCommand, ResetAllRolesCommand, UserInfoCommand, SnipeCommand, EditSnipeCommand, LangCommand, InfoCommand, FocusBanCommand, FormatCommand, CodeCommand, CancelCommand, FocusKickCommand, CreateChannelCommand, DeleteDisCommand, SetCommand,CreateWebhookCommand, CopyCommand, DisableCommand, EnableCommand, WarnCommand, WarningsCommand, DefineCommand } from "./commands";
 import Command from "./commands/commandInterface";
 import { CommandParser } from "./models/commandParser";
 import ArgCommand from "./commands/commandArgInterface";
@@ -51,7 +51,6 @@ export default class CommandHandler {
       FocusKickCommand,
       CreateChannelCommand,
       SetCommand,
-      EditChannelCommand,
       CopyCommand,
       DisableCommand,
       EnableCommand,
@@ -112,7 +111,7 @@ export default class CommandHandler {
         }else this.uses.delete(a)
       }else this.uses.set(a, Date.now())
 
-      if (message.channel.type == "DM" && matchedCommand.guildExclusive) {
+      if(!message.guild && matchedCommand.guildExclusive){
         lang.reply('errors.no_dms')
         return
       }
@@ -143,7 +142,7 @@ export default class CommandHandler {
         }else this.uses.delete(a)
       }else this.uses.set(a, Date.now())
       
-      if (message.channel.type == "DM" && matchedArgCommand.guildExclusive) {
+      if (!message.guild && matchedArgCommand.guildExclusive) {
         lang.reply('errors.no_dms')
         return
       }
@@ -152,7 +151,7 @@ export default class CommandHandler {
         const t = await lang.translate('errors.not_enough_args')
         const n = matchedArgCommand.commandNames[0]
         const u = `${this.prefix}${n} \`${await lang.translate(matchedArgCommand.usage)}\``
-        const e = new MessageEmbed().addFields([{name: await lang.translate('info.help.about.usage'), value: u}])
+        const e = new EmbedBuilder().addFields([{name: await lang.translate('info.help.about.usage'), value: u}])
         e.addFields({name: await lang.translate('info.help.about.examples'), value:  matchedArgCommand.examples.map(e=>`${this.prefix}${n} ${e}`).join('\n')})
         message.reply({content: t,embeds: [e]})
         return
@@ -191,15 +190,15 @@ export default class CommandHandler {
           s.react(interaction, lang)
         }
     }
-    if (!interaction.isCommand()) return;
+    if(!interaction.isChatInputCommand()) return
     const command = CommandHandler.slashes.find(c => c.commandNames[0] == interaction.commandName)
-    if (!command) return
-    try {
+    if(!command) return
+    try{
       const v = await command.verify(interaction, lang)
       if(v) command.interact(interaction, lang, this.prefix)
-    } catch (error) {
+    } catch(error){
       console.error(error);
-      const err_reply = await lang.translate('errors.unknown')
+      const err_reply = await lang.translate('errors.unknown', Object(error).toString());
       await interaction.reply({ content: err_reply, ephemeral: true });
     }
   }

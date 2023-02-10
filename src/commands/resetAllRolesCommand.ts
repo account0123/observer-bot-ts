@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, Permissions, Role} from "discord.js";
+import { Message, PermissionsBitField, Role} from "discord.js";
 import { GetPassCommand } from ".";
 import console from "console";
 import { Lang } from "./lang/Lang";
@@ -15,8 +15,7 @@ export class ResetAllRolesCommand implements ArgCommand {
 	examples: string[] = ['832abc370fa879d2', '832abc370fa879d2 13b9c4']
 	permission = 'MANAGE_ROLES'
 	type = 'manage'
-	async run(msg: Message,l: Lang, args: string[]): Promise<void> {
-		if(!msg.guild) return
+	async run(msg: Message<true>,l: Lang, args: string[]): Promise<void> {
 		if(!GetPassCommand.validatePassword(msg.author.id, msg.guild.id, l, args[0])) return
 		let perms = 0
 		if (args[1]) {
@@ -34,13 +33,13 @@ export class ResetAllRolesCommand implements ArgCommand {
 		const botperms = bot.permissions.bitfield
 		const b_perms = BigInt(perms)
 		if (!bot.permissions.has(8n) && perms > botperms) {
-			l.reply('info.resetallroles.permission_limit',new Permissions(b_perms - botperms).toArray().join(', '))
+			l.reply('info.resetallroles.permission_limit',new PermissionsBitField(b_perms - botperms).toArray().join(', '))
 			await l.send('cancelling').then(m=>setTimeout(m.delete, 1000))
 			l.send('canceled')
 			return
 		}
 		const botposition = bot.roles.highest.position
-		await l.send('info.resetallroles.start','' + (botposition -1),new Permissions(b_perms).toArray().join(', '))
+		await l.send('info.resetallroles.start','' + (botposition -1),new PermissionsBitField(b_perms).toArray().join(', '))
 		const asyncForEach = async (a:Role[], callback: { (r: Role): Promise<void>; (arg0: Role, arg1: number, arg2: Role[]): Promise<void>; }) => {
 			for (let i = 0; i < a.length; i++) {
 				await new Promise<void>((res)=>setTimeout(()=>res(), 500))
@@ -62,14 +61,14 @@ export class ResetAllRolesCommand implements ArgCommand {
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const mod = MemberFinder.getMember(msg, msg.author.id)
-		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
+		const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!mod.permissions.has(Permissions.FLAGS.MANAGE_ROLES)){
+		if (!mod.permissions.has('ManageRoles')){
 			l.reply('errors.botperms.edit_role')
 			return false
 		}
-		if (!bot.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+		if (!bot.permissions.has('ManageRoles')) {
 			l.reply('errors.modperms.edit_role')
 			return false
 		}
