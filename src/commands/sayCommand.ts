@@ -1,17 +1,18 @@
-import { CommandInteraction, Message, TextChannel } from "discord.js";
+import { ChannelType, ChatInputCommandInteraction, Message, PermissionsBitField, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
 import { Lang } from "./lang/Lang";
 import { ChannelFinder } from "../util/ChannelFinder";
 import { MemberFinder } from "../util/MemberFinder";
 import { SlashCommandBuilder } from '@discordjs/builders';
 import SlashCommand from "./slashCommandInterface";
+import { PermissionsChecker } from "../util/PermissionsChecker";
 
 export class SayCommand implements SlashCommand {
 	type: string | undefined;
 	permission = ''
 	shortdescription = 'info.say.description'
 	fulldescription: string = this.shortdescription
-	async checkPermissions(): Promise<boolean> {
-		return true
+	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
+		return PermissionsChecker.check(new PermissionsBitField('ManageMessages'), msg, l)
 	}
 	commandNames: string[] = ['say', 'tell', 'speak']
 	requiredArgs = 1
@@ -23,13 +24,13 @@ export class SayCommand implements SlashCommand {
 		const regex = /to ([\w]+)$/m
 		const m = text.match(regex)
 		if(m && msg.guild && msg.client.user){
-			const bot = MemberFinder.getMember(msg, msg.client.user.id)
+			const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 			if(!bot) return
 			const channel = ChannelFinder.getChannel(msg, m[1])
 			if(!channel) return
 			const p = channel.permissionsFor(bot)
-			if(channel.type === 'GUILD_TEXT' && p.has('SEND_MESSAGES')){
-				const c = <TextChannel>channel
+			if(channel.type === ChannelType.GuildText && p.has('SendMessages')){
+				const c = channel
 				await c.send({content: text.replace(regex,''), allowedMentions: {parse: ['users', 'roles']}})
 				return
 			}
@@ -38,7 +39,7 @@ export class SayCommand implements SlashCommand {
 		setTimeout(()=>msg.delete(), 200)
 	}
 
-	static get(): any{
+	static get(): RESTPostAPIChatInputApplicationCommandsJSONBody{
 		const s = new SlashCommandBuilder()
 		.setName('say')
 		.setDescription('I say whatever you want')
@@ -50,8 +51,9 @@ export class SayCommand implements SlashCommand {
 		return Promise.resolve(true)
 	}
 	
-	async interact(interaction: CommandInteraction): Promise<void>{
+	async interact(interaction: ChatInputCommandInteraction): Promise<void>{
 		const words = interaction.options.getString('words', true)
-		return interaction.reply(words);
+		interaction.reply(words)
+		return
 	}
 }

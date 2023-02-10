@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { GuildTextBasedChannel, Message, Permissions } from "discord.js";
+import { GuildTextBasedChannel, Message} from "discord.js";
 import { Lang } from "./lang/Lang";
 import { MemberFinder } from "../util/MemberFinder";
 
@@ -21,14 +21,14 @@ export class CleanCommand implements ArgCommand {
 		const c = <GuildTextBasedChannel>msg.channel
 		// Verificación
 		if(!msg.client.user) return
-		const mod = MemberFinder.getMember(msg, msg.author.id)
-		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+		const mod = MemberFinder.getMember(c.guild, msg.author.id)
+		const bot = MemberFinder.getMember(c.guild, msg.client.user.id)
 		if(!mod || !bot) return
-		if(!bot.permissionsIn(c).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+		if(!bot.permissionsIn(c).has('ManageMessages')) {
 			l.reply('errors.botperms.clean')
 			return
 		}
-		if(!mod.permissionsIn(c).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+		if(!mod.permissionsIn(c).has('ManageMessages')) {
 			l.reply('errors.modperms.clean')
 			return
 		}

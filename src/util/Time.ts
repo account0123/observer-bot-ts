@@ -7,7 +7,7 @@ export class Time {
 	constructor(snowflake: string| Date| null, language:Lang){
 		this.lang = language
 		if (typeof snowflake == 'string') {
-			this.date = SnowflakeUtil.deconstruct(snowflake).date
+			this.date = new Date(Number(SnowflakeUtil.deconstruct(snowflake).timestamp))
 		}else{
 			this.date = snowflake
 		}

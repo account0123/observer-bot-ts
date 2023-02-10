@@ -1,4 +1,4 @@
-import { ButtonInteraction, CacheType, CommandInteraction, Message, MessageActionRow, MessageActionRowComponent, MessageButton, MessageEmbed} from "discord.js";
+import { ButtonComponent, ButtonInteraction, CacheType, ChatInputCommandInteraction, EmbedBuilder, Message,RESTPostAPIApplicationCommandsJSONBody} from "discord.js";
 import { InteractionLang, Lang } from "./lang/Lang";
 import {Definition, RAE}  from "rae-api"
 import { SlashCommandBuilder } from '@discordjs/builders';
@@ -55,7 +55,7 @@ export class DefineCommand implements SlashCommand {
 		const row = {
 			type: 1, components: [prev_button, next_button]
 		}
-		const embed = new MessageEmbed().setTitle(t)
+		const embed = new EmbedBuilder().setTitle(t)
 		.setDescription(`**1.** *${definitions[0].getType()}* ${definitions[0].getDefinition()}`)
 		.setFooter({text: footer})
 		
@@ -67,7 +67,7 @@ export class DefineCommand implements SlashCommand {
 	async checkPermissions(): Promise<boolean> {
 		return true
 	}
-	static get(): any{
+	static get(): RESTPostAPIApplicationCommandsJSONBody{
 		const s = new SlashCommandBuilder()
 		.setName('define')
 		.setDescription('Define una palabra buscando en la RAE')
@@ -76,9 +76,11 @@ export class DefineCommand implements SlashCommand {
 	}
 
 	async change_page(button: ButtonInteraction<CacheType>): Promise<void> {
+		let prev_button
+		let next_button
 		// 1, 2...
 		if(button.customId == 'next_def'){
-			const embed = button.message.embeds[0]
+			const embed = button.message.embeds[0].toJSON()
 			const description = embed.description
 			if(!description) return
 			const page_matches = description.match(/[\d]+/)
@@ -99,24 +101,24 @@ export class DefineCommand implements SlashCommand {
 			const pages = definitions.length
 
 			const c = button.message.components
-			if(!c) return
-			const comps = <MessageButton[]>c[0].components
+			if(c.length==0) return
+			const comps = <ButtonComponent[]>c[0].components
 			const next = comps.find(a=>a.label=='>')
 			const prev = comps.find(a=>a.label=='<')
 			if(!prev) return
 			if(!next) return
-
-			if(next_page == pages) next.disabled = true
-			if(next_page == 2) prev.disabled = false
-			const prev_button = new MessageButton(prev)
-			const next_button = new MessageButton(next)
-			const row = new MessageActionRow({components: [prev_button, next_button]})
+			prev_button = prev.toJSON()
+			next_button = next.toJSON()
+			if(next_page == pages) next_button.disabled = true
+			if(next_page == 2) prev_button.disabled = false
+			const row = {type: 1, components: [prev_button, next_button]}
 			const new_description = `**${next_page}** *${definitions[next_page - 1].getType()}* ${definitions[next_page - 1].getDefinition()}`
 			embed.description = new_description
-			return button.update({embeds: [embed], components: [row]})
+			button.update({embeds: [embed], components: [row]})
+			return
 		}
 		if(button.customId == 'previous_def'){
-			const embed = button.message.embeds[0]
+			const embed = button.message.embeds[0].toJSON()
 			const description = embed.description
 			if(!description) return
 			const page_matches = description.match(/[\d]+/)
@@ -138,31 +140,35 @@ export class DefineCommand implements SlashCommand {
 
 			const c = button.message.components
 			if(!c) return
-			const comps = <MessageButton[]>c[0].components
+			const comps = <ButtonComponent[]>c[0].components
 			const next = comps.find(a=>a.label=='>')
 			const prev = comps.find(a=>a.label=='<')
 			if(!prev) return
 			if(!next) return
-
-			if(prev_page == 1) prev.disabled = true
-			if(prev_page == pages - 1) next.disabled = false
-			const prev_button = new MessageButton(prev)
-			const next_button = new MessageButton(next)
-			const row = new MessageActionRow({components: [prev_button, next_button]})
+			prev_button = prev.toJSON()
+			next_button = next.toJSON()
+			if(prev_page == 1) prev_button.disabled = true
+			if(prev_page == pages - 1) next_button.disabled = false
+			const row = {
+				type: 1, components: [prev_button, next_button]
+			}
 			const new_description = `**${prev_page}** *${definitions[prev_page - 1].getType()}* ${definitions[prev_page - 1].getDefinition()}`
 			embed.description = new_description
-			return button.update({embeds: [embed], components: [row]})
+			button.update({embeds: [embed], components: [row]})
 		}
 	}
 
 	verify(): Promise<boolean> {
 		return Promise.resolve(true)
 	}
-	async interact(interaction: CommandInteraction<CacheType>, l: InteractionLang): Promise<void> {
+	async interact(interaction: ChatInputCommandInteraction, l: InteractionLang): Promise<void> {
+		await interaction.deferReply()
 		const input = interaction.options.getString('palabra', true)
 		const search = await this.rae.searchWord(input)
-		if(search.getRes().length === 0)
-			return interaction.reply(await l.translate('info.rae.no_results', input))
+		if(search.getRes().length === 0){
+			interaction.reply(await l.translate('info.rae.no_results', input))
+			return
+		}
 		const results = search.getRes()
 	
 		const res = results[0]
@@ -195,12 +201,12 @@ export class DefineCommand implements SlashCommand {
 		const row = {
 			type: 1, components: [prev_button, next_button]
 		}
-		const embed = new MessageEmbed().setTitle(t)
+		const embed = new EmbedBuilder().setTitle(t)
 			.setDescription(`**1.** *${definitions[0].getType()}* ${definitions[0].getDefinition()}`)
 			.setFooter({text: footer})
 		if(definitions.length == 1)
-			return interaction.reply({embeds: [embed]})
+			interaction.editReply({embeds: [embed]})
 		else
-			return interaction.reply({embeds: [embed],components: [row]})
+			interaction.editReply({embeds: [embed],components: [row]})
 	}
 }

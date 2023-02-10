@@ -1,4 +1,4 @@
-import { DMChannel, GuildTextBasedChannel, Message, Permissions, Snowflake, Webhook } from "discord.js";
+import { BaseGuildTextChannel, DMChannel, Message, Snowflake, Webhook } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { UserFinder } from "../util/UserFinder";
 import ArgCommand from "./commandArgInterface";
@@ -18,19 +18,20 @@ export class FormatCommand implements ArgCommand {
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		const c = args.join(' ')
 		let f = c.replace('\\n','\n').replace('\\t','\t').replace('\\r','\r').replace('\\b','\b').replace('\\v','\v').replace('\\0','\0').replace('\\f','\f')
-		if(!msg.client.user) return
-		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+		if(!msg.client.user || !msg.guild) return
+		const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 		if(!bot) return
 		const user = msg.author
 		if(!FormatCommand.webhooks) FormatCommand.webhooks = new Map()
 		if (msg.channel instanceof DMChannel) {
 			await msg.channel.send(f)
 		} else {
-			const c = <GuildTextBasedChannel>msg.channel
+			const c = <BaseGuildTextChannel>msg.channel
 			let webhook = FormatCommand.webhooks.get(msg.channel.id)
-			if(!webhook && (c.type == 'GUILD_TEXT' || c.type == 'GUILD_NEWS')){
-				if(bot.permissionsIn(c).has(Permissions.FLAGS.MANAGE_WEBHOOKS)){
-					webhook = await c.createWebhook('Clone', {
+			if(!webhook){
+				if(bot.permissionsIn(<Extract<BaseGuildTextChannel, {rateLimitPerUser: number}>>c).has('ManageWebhooks')){
+					webhook = await c.createWebhook({
+						name: 'Clone',
 						avatar: 'https://i.imgur.com/n1MdeHO.png',
 					});
 					FormatCommand.webhooks.set(msg.channel.id,webhook)
@@ -60,7 +61,7 @@ export class FormatCommand implements ArgCommand {
 			await webhook.send({
 				content: f,
 				username: user.username,
-				avatarURL: user.displayAvatarURL({dynamic:true}),
+				avatarURL: user.displayAvatarURL(),
 				allowedMentions: {parse: ['users']}
 			}).then(msg.delete);
 		}	

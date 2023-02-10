@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, MessageEmbed, Permissions } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import { RoleFinder } from "../util/RoleFinder";
 import { Time } from "../util/Time";
 import { Lang } from "./lang/Lang";
@@ -14,9 +14,9 @@ export class RoleInfoCommand implements ArgCommand {
 	examples: string[] = ['123456789987654321', '@Mod', 'new role']
 	permission = ''
 	type = 'info'
-	async run(msg: Message, l:Lang, args: string[]): Promise<void> {
+	async run(msg: Message<true>, l:Lang, args: string[]): Promise<void> {
 		const mention = args.join(' ').trim()
-		const role = RoleFinder.getRole(msg,mention)
+		const role = RoleFinder.getRole(msg.guild,mention)
 		if (!role) {
 			l.reply('errors.invalid_role',mention)
 			return
@@ -39,7 +39,7 @@ export class RoleInfoCommand implements ArgCommand {
 		const isMentionable = async ()=>role.mentionable? yes : no
 
 		const dividePermissions = async () =>{
-			if(role.permissions.bitfield == Permissions.ALL || role.permissions.bitfield == 8n) return [[all],['\u200B'],['\u200B']]
+			if(role.permissions.bitfield == PermissionsBitField.All || role.permissions.bitfield == 8n) return [[all],['\u200B'],['\u200B']]
 			const a = await Promise.all(role.permissions.toArray().map(s=>l.translate('permissions.'+s)))
 			if(a.length === 0) return [[none],['\u200B'],['\u200B']]
 			if(a.length < 13) return [a,['\u200B'],['\u200B']]
@@ -47,7 +47,7 @@ export class RoleInfoCommand implements ArgCommand {
 			return [a.slice(0,12),a.slice(12,24),a.slice(24)]
 		};
 		const permissionsvalue = await dividePermissions()
-		const embed = new MessageEmbed().setTitle(title).setColor(role.color || 0)
+		const embed = new EmbedBuilder().setTitle(title).setColor(role.color || 0)
                 .addFields([
 					{ name: 'ID'       , value: role.id              , inline: true},
                     { name: 'Color'    , value: role.hexColor        , inline: true},

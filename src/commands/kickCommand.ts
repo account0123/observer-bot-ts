@@ -1,5 +1,5 @@
 import ArgCommand from "./commandArgInterface";
-import { Message, MessageEmbed, Permissions } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import { Lang } from "./lang/Lang";
 import { PermissionsChecker } from "../util/PermissionsChecker";
@@ -18,11 +18,11 @@ export class KickCommand implements ArgCommand {
 	type = 'mod'
 	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
 		if(!msg.guild || !msg.client.user) return
-		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
 		if(!mod) return
 		const mention = args.splice(0,1).toString()
 		const reason = args.join(' ') || await l.translate('info.kick.embed.default_reason')
-		const member = MemberFinder.getMember(msg, mention);
+		const member = MemberFinder.getMember(msg.guild, mention);
 		if(!member){
 			l.reply('errors.invalid_member',mention)
 			return
@@ -42,10 +42,10 @@ export class KickCommand implements ArgCommand {
 			}
 			Connections.db.execute('INSERT INTO users values(?, ?, ?, ?, ?, ?)', [kicked.id, kicked.guild.id, warnings, kicks + 1, bans, reason])
 			if(!msg.guild || !msg.client.user) return
-			const a = msg.client.user.avatarURL({dynamic: true})
+			const a = msg.client.user.avatarURL()
 			if(!a) return
 			const e = 'info.kick.embed.'
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({name: await l.translate(e+'title',msg.guild.name), url: a})
 				.setTitle(await l.translate(e+'reason'))
 				.setDescription(reason)
@@ -55,17 +55,17 @@ export class KickCommand implements ArgCommand {
 	}
 	async checkPermissions(msg: Message, l:Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const mod = MemberFinder.getMember(msg, msg.author.id)
-		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
+		const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 		if(!mod || !bot) return false
-		if (!bot.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) {
+		if (!bot.permissions.has('KickMembers')) {
 			l.reply('errors.botperms.kick')
 			return false
 		}
-		if (!mod.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) {
+		if (!mod.permissions.has('KickMembers')) {
 			l.reply('errors.modperms.kick')
 			return false
 		}
-		return PermissionsChecker.check(new Permissions(['SEND_MESSAGES']), msg, l)
+		return PermissionsChecker.check(new PermissionsBitField('SendMessages'), msg, l)
 	}
 }

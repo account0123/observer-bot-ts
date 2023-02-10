@@ -1,4 +1,4 @@
-import { GuildTextBasedChannel, Message, Permissions, ThreadChannel } from "discord.js";
+import { GuildTextBasedChannel, Message, ThreadChannel } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import Command from "./commandInterface";
 import { Lang } from "./lang/Lang";
@@ -11,15 +11,15 @@ export class CreateWebhookCommand implements Command {
 	type = 'mod'
 	async run(msg: Message, l: Lang): Promise<void> {
 		if(!msg.guild || !msg.client.user) return
-		const mod = MemberFinder.getMember(msg, msg.author.id)
-		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
+		const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 		if(!mod || !bot) return
 		const c = <GuildTextBasedChannel>msg.channel
-		if(!bot.permissionsIn(c).has(Permissions.FLAGS.MANAGE_WEBHOOKS)){
+		if(!bot.permissionsIn(c).has('ManageWebhooks')){
 			l.reply('errors.botperms.create_webhook')
 			return
 		}
-		if(!mod.permissionsIn(c).has(Permissions.FLAGS.MANAGE_WEBHOOKS)){
+		if(!mod.permissionsIn(c).has('ManageWebhooks')){
 			l.reply('errors.modperms.create_webhook')
 			return
 		}
@@ -35,10 +35,8 @@ export class CreateWebhookCommand implements Command {
 		const collector = q.channel.createMessageCollector({time: 60000})
 		collector.on('collect', (m: Message)=>{
 			if(m.author.id != msg.author.id) return
-			const name = m.content
-			channel.createWebhook(name)
-				.then(()=>msg.author.send(success)
-					.catch(()=>msg.channel.send(fail)))
+			channel.createWebhook({name: m.content})
+				.then(()=>msg.author.send(success).catch(async ()=>msg.channel.send(fail)))
 				.catch((error)=>{
 					if(error.code === 30007) l.send('info.createwebhook.30007')
 				})

@@ -70,7 +70,7 @@ export class GetPassCommand implements ArgCommand {
 	}
 	async checkPermissions(msg: Message, l: Lang, prefix: string): Promise<boolean> {
 		if(!msg.guild) return false
-		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
 		if(!mod) return false
 		if (!mod.permissions.has(8n)) {
 			l.reply('info.getpass.no_admin', prefix, mod.toString())

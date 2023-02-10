@@ -50,8 +50,9 @@ export class LangCommand implements ArgCommand {
 		}
 	}
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		const mod = MemberFinder.getMember(msg, msg.author.id)
-		if (!mod?.permissions.has(8n)){
+		if(!msg.guild) return false
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
+		if (!mod?.permissions.has('Administrator')){
 			l.reply('errors.modperms.admin')
 			return false
 		}

@@ -1,4 +1,4 @@
-import { ButtonInteraction, CacheType, CommandInteraction, GuildBasedChannel, GuildChannel, Message, MessageActionRow, MessageButton, Role, Snowflake, TextChannel } from "discord.js";
+import { ButtonInteraction, GuildChannel, Message, Role, Snowflake, TextChannel } from "discord.js";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { Connections } from "../config/connections";
 import { ChannelFinder } from "../util/ChannelFinder";
@@ -13,12 +13,12 @@ export class SetCommand implements ArgCommand {
 	commandNames: string[] = ['set', 'change', 'modify']
 	guildExclusive = true
 	shortdescription = 'info.set.description'
-	fulldescription: string = 'info.set.fulldescription'
+	fulldescription = 'info.set.fulldescription'
 	usage = 'info.set.usage'
 	examples: string[] = ['prefix <', 'logchannel logs']
 	permission = 'ADMINISTRATOR'
 	type = 'config'
-	async run(msg: Message, l: Lang, args: string[]): Promise<void> {
+	async run(msg: Message<true>, l: Lang, args: string[]): Promise<void> {
 		const target = args.shift() || ''
         const value = args[0]
 		const values = args
@@ -52,11 +52,11 @@ export class SetCommand implements ArgCommand {
 		}
 	}
 
-	private async addModRole(values: string[], msg: Message, id: string, l: Lang) {
+	private async addModRole(values: string[], msg: Message<true>, id: string, l: Lang) {
 		// Asociar value a rol objetivo
 		const roles: Role[] = [];
 		for (const value of values) {
-			const r = RoleFinder.getRole(msg, value)
+			const r = RoleFinder.getRole(msg.guild, value)
 			if(r) roles.push(r)
 		}
 		if(roles.length == 0){
@@ -90,7 +90,7 @@ export class SetCommand implements ArgCommand {
 				})
 		}
 	}
-	private async removeModRole(values: string[], msg: Message<boolean>, id: string, l: Lang) {
+	private async removeModRole(values: string[], msg: Message<true>, id: string, l: Lang) {
 		if(values.length == 0){
 			msg.react('❌').catch()
 			return
@@ -98,7 +98,7 @@ export class SetCommand implements ArgCommand {
 		// Asociar value a rol objetivo
 		const roles: Role[] = [];
 		for (const value of values) {
-			const r = RoleFinder.getRole(msg, value)
+			const r = RoleFinder.getRole(msg.guild, value)
 			if(r) roles.push(r)
 		}
 		if(roles.length == 0){
@@ -125,9 +125,9 @@ export class SetCommand implements ArgCommand {
 	private async setLogChannel(mention: string, msg: Message, guild_id: string, l: Lang) {
 		const gc = <GuildChannel> msg.channel
 		let reactable = false
-		const confirm = new MessageButton({style: 1, customId: 'yes_delete_log', label: '✅'})
-		const reject = new MessageButton({style: 1, customId: 'no_delete_log', label: '❌'})
-		const action_row = new MessageActionRow({components: [confirm, reject]})
+		const confirm = {type: 2, style: 1, customId: 'yes_delete_log', label: '✅'}
+		const reject = {type: 2, style: 1, customId: 'no_delete_log', label: '❌'}
+		const action_row = {type: 1, components: [confirm, reject]}
 		if(!mention){
 			const [rows] = await Connections.db.query<RowDataPacket[]>('SELECT log FROM guilds WHERE id=?', guild_id)
 			if(rows.length > 0){
@@ -142,7 +142,7 @@ export class SetCommand implements ArgCommand {
 		const c = ChannelFinder.getChannel(msg, mention)
 		if(msg.client.user){
 			const perms = gc.permissionsFor(msg.client.user)
-			if(perms) reactable = perms.has('ADD_REACTIONS')
+			if(perms) reactable = perms.has('AddReactions')
 		}
 
 		if(!c){
@@ -169,9 +169,8 @@ export class SetCommand implements ArgCommand {
 			l.send('info.set.prefix_success', prefix)
 		});
 	}
-	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
-		if(!msg.guild) return false
-		const mod = MemberFinder.getMember(msg, msg.author.id)
+	async checkPermissions(msg: Message<true>, l: Lang): Promise<boolean> {
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
 		if(!mod) return false
 		if (!mod.permissions.has(8n)) {
 			l.reply('errors.modperms.admin')
@@ -192,14 +191,14 @@ export class SetCommand implements ArgCommand {
 			});
 			if(m instanceof Message){
 				m.delete()
-				m.channel.send("Canal de registro ya no está asignado.")
+				button.reply(await l.translate('info.set.log_deleted'))
 			}
 		}
 		if(button.customId.startsWith('n')){
 			const m = button.message
 			if(m instanceof Message){
 				m.delete()
-				m.channel.send("No estoy para bromas.")
+				l.reply('errors.canceled')
 			}
 
 		}

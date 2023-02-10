@@ -1,4 +1,4 @@
-import { Message, Permissions, Snowflake } from "discord.js";
+import { Message, Snowflake } from "discord.js";
 import { MemberFinder } from "../util/MemberFinder";
 import Command from "./commandInterface";
 import { Lang } from "./lang/Lang";
@@ -79,16 +79,17 @@ export class CancelCommand implements Command {
 		collector.once('dispose',()=>l.send('info.cancel.timeout'));
 	}
 	checkPermissions(msg: Message, id: string, command: string): boolean {
-		const member = MemberFinder.getMember(msg, id)
+		if(!msg.guild) return false
+		const member = MemberFinder.getMember(msg.guild, id)
 		if(member){
 			switch (command) {
 				case 'Kick':
-					if(member.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return true
+					if(member.permissions.has('KickMembers')) return true
 					break
 				case 'Ban':
-					if(member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return true
+					if(member.permissions.has('KickMembers')) return true
 			}
-		}else return false
+		}
 		return false
 	}
 }

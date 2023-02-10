@@ -48,7 +48,7 @@ export class EnableCommand implements ArgCommand {
 
 	async checkPermissions(msg: Message, l: Lang): Promise<boolean> {
 		if(!msg.guild || !msg.client.user) return false
-		const mod = MemberFinder.getMember(msg, msg.author.id)
+		const mod = MemberFinder.getMember(msg.guild, msg.author.id)
 		if(!mod) return false
 		if (!mod.permissions.has(8n)) {
 			l.reply('errors.modperms.admin')

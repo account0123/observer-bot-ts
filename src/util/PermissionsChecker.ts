@@ -1,11 +1,11 @@
-import { Permissions, Message, GuildTextBasedChannel } from "discord.js";
+import { Message, GuildTextBasedChannel, PermissionsBitField } from "discord.js";
 import { Lang } from "../commands/lang/Lang";
 import { MemberFinder } from "./MemberFinder";
 
 export class PermissionsChecker {
-	static async check(permissions: Permissions, msg: Message, l: Lang): Promise<boolean>{
-		if(!msg.client.user) return false
-		const bot = MemberFinder.getMember(msg, msg.client.user.id)
+	static async check(permissions: PermissionsBitField, msg: Message, l: Lang): Promise<boolean>{
+		if(!msg.client.user || !msg.guild) return false
+		const bot = MemberFinder.getMember(msg.guild, msg.client.user.id)
 		if(!bot) return false
 		const perms = permissions.toArray()
 		const rejected: string[] = []
@@ -18,10 +18,10 @@ export class PermissionsChecker {
 			rejected.push(await l.translate('permissions.' + p))
 		}
 		if(rejected.length == 0) return true
-		if(bot.permissions.has('ADD_REACTIONS')) msg.react('❌')
+		if(bot.permissions.has('AddReactions')) msg.react('❌')
 		const first = await l.translate('checking.first')
         let m: Message | null = null
-        if(bot.permissions.has('SEND_MESSAGES')) m = await msg.channel.send(first)
+        if(bot.permissions.has('SendMessages')) m = await msg.channel.send(first)
 		const missing = await l.translate('checking.missing')
 		const list = PermissionsChecker.createPermissionsList(allowed, rejected, missing)
 		if(m) m.edit(first + '\n\n' + list)

@@ -375,11 +375,11 @@
             },
             "channels":{
                 "categories": "{count} categories",
-                "text": "{count} text channels",
-                "voice": "{count} voice channels",
-                "news": "{count} news channels",
-                "stage": "{count} stage channels",
-                "store": "{count} store channels"
+                "text": "/{count} text channels",
+                "voice": "/{count} voice channels",
+                "news": "/{count} news channels",
+                "stage": "/{count} stage channels",
+                "forum": "/{count} forum channels"
             },
             "verification":{
                 "intro": "All users must:\n",

@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import { RowDataPacket } from "mysql2";
 import { Connections } from "../config/connections";
 import { MemberFinder } from "../util/MemberFinder";
@@ -18,14 +18,14 @@ export class WarningsCommand implements ArgCommand {
     async run(msg: Message, l: Lang, args: string[]): Promise<void> {
         if(!msg.guild) return
         const user = args[0]
-        const m = MemberFinder.getMember(msg, user)
+        const m = MemberFinder.getMember(msg.guild, user)
         if(!m){
             l.send('errors.invalid_member', user)
             return
         }
 
         const [rows] = await Connections.db.query<RowDataPacket[]>('SELECT warnings, kicks, bans, reason FROM users WHERE id=?', [m.id])
-        const embed = new MessageEmbed().setAuthor(await l.translate('info.warnings.title', m.user.username))
+        const embed = new EmbedBuilder().setAuthor({name: await l.translate('info.warnings.title', m.user.username)})
         let w = 0, k = 0, b = 0, action = '', desc = ''
         if(rows.length == 0){
             embed.setDescription(await l.translate('info.warnings.empty'))
@@ -53,8 +53,5 @@ export class WarningsCommand implements ArgCommand {
         embed.setDescription(desc)
         loading.edit({content: '', embeds: [embed]})
     }
-    async checkPermissions(): Promise<boolean> {
-        return true
-    }
-    
+    checkPermissions = ():Promise<boolean>=>Promise.resolve(true)
 }

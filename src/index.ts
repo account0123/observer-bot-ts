@@ -1,24 +1,25 @@
 import express, { Request, Response } from 'express';
-import Discord, { Message, PartialMessage, Role } from "discord.js";
+import Discord, { Message, PartialMessage, REST, Role, Routes } from "discord.js";
 import { DISCORD_TOKEN, BETA_TOKEN } from './config/secrets';
 import CommandHandler from './commandHandler';
 import SnipeHandler from './snipeHandler';
 import { Connections } from './config/connections';
 import { RowDataPacket } from 'mysql2';
-import { REST } from '@discordjs/rest';
-import { RESTPostAPIApplicationCommandsJSONBody, Routes } from 'discord-api-types/rest/v9';
-import { AddRoleCommand, CreateRoleCommand, DefineCommand, HelpCommand, SayCommand } from './commands';
+import { AddRoleCommand, BanCommand, CreateRoleCommand, DefineCommand, HelpCommand, RemoveRoleCommand, SayCommand } from './commands';
 
 const PORT = parseInt(process.argv[2]) || 5000;
 
 const app = express();
-const client = new Discord.Client({ws:{large_threshold: 1000}, intents: ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_BANS', 'GUILD_INTEGRATIONS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_WEBHOOKS']});
-const commands: RESTPostAPIApplicationCommandsJSONBody[] = [
+// ['DIRECT_MESSAGES', 'GUILDS', 'GUILD_BANS', 'GUILD_INTEGRATIONS', 'GUILD_MESSAGES', 'GUILD_MESSAGE_REACTIONS', 'GUILD_WEBHOOKS']
+const client = new Discord.Client({ws:{large_threshold: 1000}, intents: ['DirectMessages', 'Guilds', 'GuildBans', 'GuildIntegrations', 'MessageContent', 'GuildMessageReactions', 'GuildWebhooks']});
+const commands = [
   SayCommand.get(),
   AddRoleCommand.get(),
+  BanCommand.get(),
   HelpCommand.get(),
   DefineCommand.get(),
-  CreateRoleCommand.get()
+  CreateRoleCommand.get(),
+  RemoveRoleCommand.get()
 ]
 
 //////////////////////////////////////////////////////////////////
@@ -54,7 +55,7 @@ client.on("ready", async () => {
           Connections.db.execute('DELETE FROM roles WHERE id=?', [role.id]).then(()=>console.log('Rol %s eliminado', role.id))
         continue
       }
-      if(role.permissions.has('ADMINISTRATOR')) addAdminRole(role)
+      if(role.permissions.has('Administrator')) addAdminRole(role)
     }
     console.log("---------Fin configuración de servidor------------")
   }
@@ -73,7 +74,7 @@ client.on('guildCreate', async guild => {
   for (const role of guild.roles.cache.values()) {
     if(roles.includes(role.id)) continue;
     if(role.managed) continue;
-    if(role.permissions.has('ADMINISTRATOR')) addAdminRole(role)
+    if(role.permissions.has('Administrator')) addAdminRole(role)
   }
   console.log("---------Fin adaptación a nuevo servidor------------")
 });
@@ -89,7 +90,7 @@ client.on("guildDelete", guild=>{
   q3.catch((e: string)=>console.error(e));
 })
 client.on("roleCreate", (role: Role)=>{
-  if(!role.permissions.has('ADMINISTRATOR')) return
+  if(!role.permissions.has('Administrator')) return
   if(role.managed) return
   addAdminRole(role)
 })
@@ -99,7 +100,7 @@ client.on("roleDelete", (role: Role)=>{
   q.catch((e: string)=>console.error(e))
 })
 client.on("roleUpdate", (old_role: Role, new_role: Role) => {
-  if(old_role.permissions.missing('ADMINISTRATOR') && new_role.permissions.has('ADMINISTRATOR'))
+  if(old_role.permissions.missing('Administrator') && new_role.permissions.has('Administrator'))
     addAdminRole(new_role);
 })
 
@@ -138,11 +139,11 @@ if(process.argv[2] == '-d'){
     process.exit(1)
   }
   client.login(BETA_TOKEN).catch(e=>console.error(e))
-  rest = new REST({ version: '9' }).setToken(BETA_TOKEN)
+  rest = new REST({ version: '10' }).setToken(BETA_TOKEN)
   register(rest, true)
 }else{
   client.login(DISCORD_TOKEN).catch(e=>console.error(e));
-  rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN || '');
+  rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN || '');
   register(rest, false)
 }
 
