@@ -8,7 +8,7 @@
     "lint-and-fix": "eslint . --ext .ts --fix",
     "prestart:dev": "npm run build",
     "start:dev": "nodemon build/index.js",
-    "prebuild": "rimraf ./build",
+    "prebuild": "rm -r ./build",
     "build": "tsc",
     "postbuild": "cp ./src/commands/lang/*.json ./build/commands/lang",
     "prestart": "npm run build",
