@@ -1,7 +1,7 @@
 {
   "name": "observer-bot",
   "version": "1.0.0",
-  "description": "Discord bot written in Typescript and discord.js hosted on Heroku",
+  "description": "Discord bot written in Typescript and discord.js hosted",
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --ext .ts",
