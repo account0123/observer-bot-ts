@@ -6,6 +6,7 @@ import SnipeHandler from './snipeHandler';
 import { Connections } from './config/connections';
 import { RowDataPacket } from 'mysql2';
 import { AddRoleCommand, BanCommand, CreateRoleCommand, DefineCommand, HelpCommand, RemoveRoleCommand, SayCommand } from './commands';
+import { exit } from 'process';
 
 const PORT = parseInt(process.argv[2]) || 5000;
 
@@ -34,6 +35,14 @@ app.use('/', (request: Request, response: Response) => {
 const sniper = new SnipeHandler();
 const handler = new CommandHandler();
 
+
+// Sleep time
+setTimeout(sleep, 12 * 60 * 60 * 1000)
+
+function sleep(){
+  console.log("Hora de dormir (%d minutos completados)", performance.now() / 60000)
+  exit(0)
+}
 //////////////////////////////////////////////////////////////////
 //                    DISCORD CLIENT LISTENERS                  //
 //////////////////////////////////////////////////////////////////
